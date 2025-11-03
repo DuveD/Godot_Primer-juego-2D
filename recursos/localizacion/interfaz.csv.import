@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bk6brsumtc5u6"
+
+[deps]
+
+files=["res://recursos/localizacion/interfaz.es.translation", "res://recursos/localizacion/interfaz.en.translation"]
+
+source_file="res://recursos/localizacion/interfaz.csv"
+dest_files=["res://recursos/localizacion/interfaz.es.translation", "res://recursos/localizacion/interfaz.en.translation"]
+
+[params]
+
+compress=true
+delimiter=0

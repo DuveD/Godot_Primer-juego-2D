@@ -60,7 +60,7 @@ move_down={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://recursos/traducciones/interfaz.en.translation", "res://recursos/traducciones/interfaz.es.translation")
+locale/translations=PackedStringArray("res://recursos/localizacion/interfaz.en.translation", "res://recursos/localizacion/interfaz.es.translation")
 
 [rendering]
 
