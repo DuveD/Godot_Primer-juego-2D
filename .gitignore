@@ -27,6 +27,7 @@ mono_crash.*
 bld/
 [Dd]ebug/
 [Rr]elease/
+Backup/
 
 # Carpetas de caché de VS que no deben compartirse.
 .vs/

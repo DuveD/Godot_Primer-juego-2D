@@ -7,7 +7,7 @@ path="res://.godot/imported/gameover.wav-9a27062a0c672718edb244ad6052d4da.sample
 
 [deps]
 
-source_file="res://recursos/musica/gameover.wav"
+source_file="res://recursos/audio/gameover.wav"
 dest_files=["res://.godot/imported/gameover.wav-9a27062a0c672718edb244ad6052d4da.sample"]
 
 [params]
