@@ -1,9 +1,12 @@
-using Godot;
-using Godot.Collections;
+namespace Primerjuego2D.escenas.entidades.enemigo;
+
 using System;
 using System.Collections.Generic;
+using Godot;
+using Godot.Collections;
+using Primerjuego2D.nucleo.utilidades;
 
-public partial class Enemy : RigidBody2D
+public partial class Enemigo : RigidBody2D
 {
     public const string ANIMATION_FLY = "fly";
 

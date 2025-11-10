@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://qrdflnq7hp0f"]
+
+[ext_resource type="Script" path="res://escenas/batalla/BatallaControlador.cs" id="1_trjjg"]
+
+[node name="BatallaControlador" type="Node"]
+process_mode = 3
+script = ExtResource("1_trjjg")

@@ -1,9 +1,12 @@
+namespace Primerjuego2D.nucleo.utilidades;
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Godot;
+using Primerjuego2D.nucleo.ajustes;
 
-public class UtilidadesNodos
+public static class UtilidadesNodos
 {
     /// <summary>
     /// Pausa o reanuda el nodo y todo su árbol.
@@ -71,5 +74,14 @@ public class UtilidadesNodos
     public static void MostrarTodo(Node padre)
     {
         MostrarMenos(padre);
+    }
+
+    /// <summary>
+    /// Espera hasta que el nodo se reanude si está pausado.
+    /// </summary>
+    public static async Task EsperarRenaudar(Node node)
+    {
+        while (node.GetTree().Paused)
+            await node.ToSignal(node.GetTree(), "process_frame");
     }
 }

@@ -1,10 +1,10 @@
 [gd_scene load_steps=7 format=3 uid="uid://c5upcb2qwjqbe"]
 
-[ext_resource type="PackedScene" uid="uid://cmwoy08j3qtdy" path="res://escenas/entidades/Player/Player.tscn" id="1_6xjdp"]
-[ext_resource type="Script" path="res://escenas/Batalla/Batalla.cs" id="1_nawo2"]
-[ext_resource type="PackedScene" uid="uid://b77k6jhiy8djq" path="res://escenas/entidades/Enemy/Enemy.tscn" id="2_7rrnp"]
-[ext_resource type="PackedScene" uid="uid://bkvjycp3edtfo" path="res://escenas/Batalla/BatallaHUD.tscn" id="4_ef4qm"]
-[ext_resource type="PackedScene" uid="uid://djs1en1bm3xlp" path="res://escenas/Batalla/ControladorPausa.tscn" id="5_kuqqq"]
+[ext_resource type="PackedScene" uid="uid://cmwoy08j3qtdy" path="res://escenas/entidades/jugador/Jugador.tscn" id="1_6xjdp"]
+[ext_resource type="Script" path="res://escenas/batalla/Batalla.cs" id="1_jxdra"]
+[ext_resource type="PackedScene" uid="uid://b77k6jhiy8djq" path="res://escenas/entidades/enemigo/Enemigo.tscn" id="2_7rrnp"]
+[ext_resource type="PackedScene" uid="uid://bkvjycp3edtfo" path="res://escenas/batalla/BatallaHUD.tscn" id="4_ef4qm"]
+[ext_resource type="PackedScene" uid="uid://qrdflnq7hp0f" path="res://escenas/batalla/BatallaControlador.tscn" id="5_kuqqq"]
 
 [sub_resource type="Curve2D" id="Curve2D_w0at3"]
 _data = {
@@ -14,7 +14,7 @@ point_count = 5
 
 [node name="Batalla" type="Node"]
 process_mode = 3
-script = ExtResource("1_nawo2")
+script = ExtResource("1_jxdra")
 EnemyScene = ExtResource("2_7rrnp")
 
 [node name="ColorRect" type="ColorRect" parent="."]
@@ -25,7 +25,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0.45098, 0.45098, 1)
 
-[node name="Player" parent="." instance=ExtResource("1_6xjdp")]
+[node name="Jugador" parent="." instance=ExtResource("1_6xjdp")]
 position = Vector2(-161, 113)
 
 [node name="EnemyTimer" type="Timer" parent="."]
@@ -47,11 +47,12 @@ curve = SubResource("Curve2D_w0at3")
 
 [node name="BatallaHUD" parent="." instance=ExtResource("4_ef4qm")]
 
-[node name="ControladorPausa" parent="." instance=ExtResource("5_kuqqq")]
+[node name="BatallaControlador" parent="." instance=ExtResource("5_kuqqq")]
 
-[connection signal="HitByEnemy" from="Player" to="." method="GameOver"]
+[connection signal="HitByEnemy" from="Jugador" to="." method="JugadorGolpeadoPorEnemigo"]
 [connection signal="timeout" from="EnemyTimer" to="." method="OnEnemyTimerTimeout"]
 [connection signal="timeout" from="ScoreTimer" to="." method="OnScoreTimerTimeout"]
 [connection signal="timeout" from="StartTimer" to="." method="OnStartTimerTimeout"]
-[connection signal="StartGame" from="BatallaHUD" to="." method="NewGame"]
-[connection signal="PauseButtonPressed" from="ControladorPausa" to="BatallaHUD" method="OnPauseButtonPressed"]
+[connection signal="BatallaFinalizada" from="BatallaControlador" to="BatallaHUD" method="ShowGameOver"]
+[connection signal="BatallaIniciada" from="BatallaControlador" to="BatallaHUD" method="ShowStartMessage"]
+[connection signal="PauseBattle" from="BatallaControlador" to="BatallaHUD" method="OnPauseBattle"]

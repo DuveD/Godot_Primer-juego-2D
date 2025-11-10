@@ -1,6 +1,8 @@
+namespace Primerjuego2D.nucleo.utilidades;
+
 using System;
 
-public class UtilidadesMatematicas
+public static class UtilidadesMatematicas
 {
     /// <summary>
     /// FUnción que convierte radianes a grados.

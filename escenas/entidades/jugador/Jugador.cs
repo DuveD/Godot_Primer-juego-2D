@@ -1,5 +1,11 @@
+namespace Primerjuego2D.escenas.entidades.jugador;
+
 using Godot;
-public partial class Player : Area2D
+using Primerjuego2D.escenas.entidades.enemigo;
+using Primerjuego2D.nucleo.constantes;
+using Primerjuego2D.nucleo.utilidades;
+
+public partial class Jugador : Area2D
 {
     // Señal "HitByEnemy" para indicar colisión con el jugador.
     [Signal]
@@ -19,7 +25,7 @@ public partial class Player : Area2D
     [Export]
     public int Speed { get; set; } = 400; // Velocidad de movimiento dle jugador (pixels/sec).
 
-    private Vector2 ScreenSize => GetViewportRect().Size;
+    private Vector2 TamanoPantalla => UtilidadesPantalla.ObtenerTamanoPantalla(this);
 
     // Se llama cuando el nodo entra por primera vez en el árbol de escenas.
     public override void _Ready()
@@ -32,6 +38,34 @@ public partial class Player : Area2D
 
     // Se llama en cada fotograma. 'delta' es el tiempo transcurrido desde el fotograma anterior.
     public override void _Process(double delta)
+    {
+        var velocity = CalcularVectorVelocidadMedianteBotonesPulsados();
+
+        // Indicamos la animación inicial para que mire hacia arriba.
+        //this.AnimatedSprite2D.Animation = ANIMATION_UP;
+
+        // Idicamos la animación según si está en movimiento o parado.
+        if (velocity.Length() > 0)
+        {
+            velocity = velocity.Normalized() * Speed;
+            this.AnimatedSprite2D.Play();
+        }
+        else
+        {
+            this.AnimatedSprite2D.Stop();
+        }
+
+        // Utilizar el valor delta asegura que el movimiento se mantenga consistente incluso si la velocidad de cuadros cambia.
+        this.Position += velocity * (float)delta;
+
+        // Evitamos que el jugador se salga de la pantalla.
+        this.Position = new Vector2(x: Mathf.Clamp(Position.X, 0, TamanoPantalla.X), y: Mathf.Clamp(Position.Y, 0, TamanoPantalla.Y));
+
+        // Rotamos el sprite a la dirección acorde a la velocidad de cada eje.
+        RotarSpriteADireccion(velocity, this.AnimatedSprite2D);
+    }
+
+    private static Vector2 CalcularVectorVelocidadMedianteBotonesPulsados()
     {
         var velocity = Vector2.Zero; // El vector de movimiento del jugador.
 
@@ -52,28 +86,11 @@ public partial class Player : Area2D
             velocity.Y -= 1;
         }
 
-        this.AnimatedSprite2D.Animation = ANIMATION_UP;
-
-        if (velocity.Length() > 0)
-        {
-            velocity = velocity.Normalized() * Speed;
-            this.AnimatedSprite2D.Play();
-        }
-        else
-        {
-            this.AnimatedSprite2D.Stop();
-        }
-
-        RotateSpriteToDirection(velocity, this.AnimatedSprite2D);
-
-        // Utilizar el valor delta asegura que el movimiento se mantenga consistente incluso si la velocidad de cuadros cambia.
-        this.Position += velocity * (float)delta;
-
-        // Evitamos que el jugador se salga de la pantalla.
-        this.Position = new Vector2(x: Mathf.Clamp(Position.X, 0, ScreenSize.X), y: Mathf.Clamp(Position.Y, 0, ScreenSize.Y));
+        return velocity;
     }
 
-    private static void RotateSpriteToDirection(Vector2 velocity, AnimatedSprite2D animatedSprite2D)
+
+    private static void RotarSpriteADireccion(Vector2 velocity, AnimatedSprite2D animatedSprite2D)
     {
         // 8 direcciones
 
@@ -140,7 +157,7 @@ public partial class Player : Area2D
 
     private void OnBodyEntered(Node2D body)
     {
-        if (body is Enemy)
+        if (body is Enemigo)
         {
             OnEnemyBodyEntered();
         }

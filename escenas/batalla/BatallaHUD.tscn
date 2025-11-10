@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://bkvjycp3edtfo"]
 
 [ext_resource type="FontFile" uid="uid://8565x6jerbm3" path="res://recursos/fuentes/Xolonium-Regular.ttf" id="1_gg8ny"]
-[ext_resource type="Script" path="res://escenas/Batalla/BatallaHUD.cs" id="1_osa72"]
+[ext_resource type="Script" path="res://escenas/batalla/BatallaHUD.cs" id="1_osa72"]
 [ext_resource type="Texture2D" uid="uid://b7ot3b2kkcphi" path="res://recursos/imagenes/banderas/flag_spain.png" id="3_h4f14"]
 [ext_resource type="Texture2D" uid="uid://bpiwulkracpb5" path="res://recursos/imagenes/banderas/flag_uk.png" id="4_uv30c"]
 
@@ -81,6 +81,24 @@ popup/item_1/text = "BatallaHUD.boton.ingles"
 popup/item_1/icon = ExtResource("4_uv30c")
 popup/item_1/checkable = 2
 popup/item_1/id = 1
+
+[node name="MensajePausa" type="Label" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -560.0
+offset_top = -72.0
+offset_right = 560.0
+offset_bottom = 87.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("1_gg8ny")
+theme_override_font_sizes/font_size = 64
+text = "BatallaHUD.mensaje.pausa"
+horizontal_alignment = 1
 
 [connection signal="pressed" from="StartButton" to="." method="OnStartButtonPressed"]
 [connection signal="timeout" from="MessageTimer" to="." method="OnMessageTimerTimeout"]

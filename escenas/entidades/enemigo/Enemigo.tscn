@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://b77k6jhiy8djq"]
 
-[ext_resource type="Script" path="res://escenas/entidades/Enemy/Enemy.cs" id="1_lpjhc"]
+[ext_resource type="Script" path="res://escenas/entidades/enemigo/Enemigo.cs" id="1_lpjhc"]
 [ext_resource type="Texture2D" uid="uid://dh65lrlh20del" path="res://recursos/imagenes/enemigo/enemyFlyingAlt_1.png" id="1_t0n5c"]
 [ext_resource type="Texture2D" uid="uid://cxyrixnbf0qt0" path="res://recursos/imagenes/enemigo/enemyFlyingAlt_2.png" id="2_inyhn"]
 [ext_resource type="Texture2D" uid="uid://bxi2iaa7muomi" path="res://recursos/imagenes/enemigo/enemySwimming_1.png" id="3_2g3yt"]

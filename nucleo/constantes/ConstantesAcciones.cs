@@ -1,3 +1,5 @@
+namespace Primerjuego2D.nucleo.constantes;
+
 using Godot;
 
 public class ConstantesAcciones

@@ -1,7 +1,9 @@
-using Godot;
-using System;
+namespace Primerjuego2D.nucleo.utilidades;
 
-public class Randomizer
+using System;
+using Godot;
+
+public static class Randomizer
 {
     /// <summary>
     /// Función que retorna un número aleatório entre minValue y maxValue.

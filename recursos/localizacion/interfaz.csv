@@ -7,4 +7,4 @@ BatallaHUD.boton.start,Inicio,Start
 BatallaHUD.boton.lenguaje,Lenguaje,Language
 BatallaHUD.boton.castellano,Castellano,Spanish
 BatallaHUD.boton.ingles,Inglés,English
-ControladorPausa.mensaje.pausa,Juego Pausado,Game Paused
+BatallaHUD.mensaje.pausa,Juego Pausado,Game Paused
