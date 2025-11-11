@@ -7,14 +7,17 @@ He ampliado el proyecto con características extra para aprender más sobre Godo
 
 ## 📂 Estructura del proyecto
 
-escenas/ → todas las escenas del juego (Main, Player, Enemy, MainHUD, etc.).
+- escenas/ → Todas las escenas del juego: Batalla (BatallaHUD, BatallaControlador), Jugador, Enemigo, etc.
 
-recursos/ → imágenes, audio, fuentes, traducciones y scripts de utilidad.
+- nucleo/ → Archivos de configuración, archivos de constantes, localización, utilidades, etc.
+
+- recursos/ → Imágenes, audio, fuentes, archivos de traduccion, etc.
 
 ## ⚡ Características añadidas
 
 - Movimiento en 8 direcciones con "animación" correspondiente.
 - Localización.
+- Pausa de la partida.
 
 ## 📖 Referencias
 
