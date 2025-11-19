@@ -23,7 +23,7 @@ public static class Logger
 
     public static bool EscribirLogEnFichero = Ajustes.EscribirLogEnFichero;
 
-    private const int ContextWidth = 40;
+    private const int ContextWidth = 60;
 
     private static readonly string pathLog;
 
@@ -103,7 +103,7 @@ public static class Logger
         string time = DateTime.Now.ToString(FORMATO_FECHA_LOG);
 
         // Base del mensaje
-        string mensajeBase = $"{time} [{level}] [{context}]: ";
+        string mensajeBase = $"[{time}][{level}][{context}]: ";
 
         // Calculamos el ancho total deseado
         int widthContext = ContextWidth - mensajeBase.Length;
