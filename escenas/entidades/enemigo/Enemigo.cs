@@ -6,6 +6,8 @@ using Godot;
 using Godot.Collections;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
+using static Primerjuego2D.nucleo.utilidades.log.Logger;
+
 
 [AtributoNivelLog(NivelLog.Info)]
 
