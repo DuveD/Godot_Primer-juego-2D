@@ -1,16 +1,15 @@
+namespace Primerjuego2D.nucleo.utilidades.log;
+
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Godot;
 using Primerjuego2D.nucleo.ajustes;
 
-namespace Primerjuego2D.nucleo.utilidades.log;
-
 public static class Logger
 {
-    public const string FORMATO_FECHA_LOG = "yyyy-MM-dd HH:mm:ss";
-
-    public enum LogLevel
+    public enum NivelLog
     {
         Trace,
         Info,
@@ -19,7 +18,8 @@ public static class Logger
         None
     }
 
-    public static LogLevel NivelLog = Ajustes.NivelLog;
+    public const string FORMATO_FECHA_LOG = "yyyy-MM-dd HH:mm:ss";
+
 
     public static bool EscribirLogEnFichero = Ajustes.EscribirLogEnFichero;
 
@@ -44,49 +44,65 @@ public static class Logger
 
     public static void Trace(string message, string context = "")
     {
-        if (NivelLog > LogLevel.Trace) return;
+        NivelLog nivelLog = ObtenerNivelLog();
+        if (nivelLog > NivelLog.Trace) return;
         if (string.IsNullOrEmpty(context)) context = ObtenerContexto();
         EscribirLog("TRAZA", message, context, GD.Print);
     }
 
     public static void Info(string message, string context = "")
     {
-        if (NivelLog > LogLevel.Info) return;
+        NivelLog nivelLog = ObtenerNivelLog();
+        if (nivelLog > NivelLog.Info) return;
         if (string.IsNullOrEmpty(context)) context = ObtenerContexto();
         EscribirLog("INFO", message, context, GD.Print);
     }
 
     public static void Warn(string message, string context = "")
     {
-        if (NivelLog > LogLevel.Warning) return;
+        NivelLog nivelLog = ObtenerNivelLog();
+        if (nivelLog > NivelLog.Warning) return;
         if (string.IsNullOrEmpty(context)) context = ObtenerContexto();
         EscribirLog("WARN", message, context, GD.PushWarning);
     }
 
     public static void Error(string message, string context = "")
     {
-        if (NivelLog > LogLevel.Error) return;
+        NivelLog nivelLog = ObtenerNivelLog();
+        if (nivelLog > NivelLog.Error) return;
         if (string.IsNullOrEmpty(context)) context = ObtenerContexto();
         EscribirLog("ERROR", message, context, GD.PrintErr);
     }
 
     // ================== Internals ==================
 
+    private static NivelLog ObtenerNivelLog()
+    {
+        var frame = new StackTrace().GetFrame(2);
+        var metodo = frame.GetMethod();
+        Type tipoLlamador = metodo.DeclaringType;
+
+        var atributoLogLevel = tipoLlamador.GetCustomAttributes(typeof(AtributoNivelLog), inherit: true)
+                   .FirstOrDefault() as AtributoNivelLog;
+
+        return atributoLogLevel?.NivelLog ?? Ajustes.NivelLog; // si no tiene atributo, usa NivelLog global
+    }
+
     private static string ObtenerContexto()
     {
         var frame = new StackTrace(true).GetFrame(2);
-        var method = frame.GetMethod();
+        var metodo = frame.GetMethod();
 
-        string clase = method.DeclaringType?.Name ?? "UnknownClass";
-        string metodo = method.Name;
+        string clase = metodo.DeclaringType?.Name ?? "UnknownClass";
+        string nombreMetodo = metodo.Name;
 
-        int linea = frame.GetFileLineNumber(); // ★ ← aquí obtenemos la línea
+        int linea = frame.GetFileLineNumber();
 
-        // Si no hay info de PDB, devolver sin línea
+        // Si no hay info de PDB, devolver sin línea.
         if (linea <= 0)
-            return $"{clase}.{metodo}";
+            return $"{clase}.{nombreMetodo}";
 
-        return $"{clase}.{metodo}:{linea}";
+        return $"{clase}.{nombreMetodo}:{linea}";
     }
 
     private static void EscribirLog(string level, string message, string context, Action<string> consoleOutput)

@@ -3,6 +3,7 @@ namespace Primerjuego2D.nucleo.ajustes;
 using System;
 using Godot;
 using Primerjuego2D.nucleo.localizacion;
+using Primerjuego2D.nucleo.utilidades.log;
 using static Primerjuego2D.nucleo.utilidades.log.Logger;
 
 public static class Ajustes
@@ -20,7 +21,7 @@ public static class Ajustes
     /// <summary>
     /// Nivel de log actual.
     /// </summary>
-    public static LogLevel NivelLog { get; set; } = LogLevel.Trace;
+    public static NivelLog NivelLog { get; set; } = NivelLog.Trace;
 
     /// <summary>
     /// Indica si se debe escribir el log en un archivo.

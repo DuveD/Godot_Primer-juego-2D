@@ -7,6 +7,7 @@ using Godot.Collections;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
 
+[AtributoNivelLog(NivelLog.Info)]
 
 public partial class Enemigo : RigidBody2D
 {
@@ -16,14 +17,14 @@ public partial class Enemigo : RigidBody2D
 
     public const string ANIMATION_WALK = "walk";
 
-    public const string GROUP_ENEMIES = "Enemies";
+    public const string GROUP_ENEMIES_NAME = "Enemies";
 
     private AnimatedSprite2D _AnimatedSprite2D;
     private AnimatedSprite2D AnimatedSprite2D => _AnimatedSprite2D ??= GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 
-    public static Array<Node> GetAllEnemies(Node parentNode) => parentNode.GetTree().GetNodesInGroup(GROUP_ENEMIES);
+    public static Array<Node> GetAllEnemies(Node parentNode) => parentNode.GetTree().GetNodesInGroup(GROUP_ENEMIES_NAME);
 
-    public static void DeleteAllEnemies(Node parentNode) => parentNode.GetTree().CallGroup(GROUP_ENEMIES, Node.MethodName.QueueFree);
+    public static void DeleteAllEnemies(Node parentNode) => parentNode.GetTree().CallGroup(GROUP_ENEMIES_NAME, Node.MethodName.QueueFree);
 
     public override void _Ready()
     {
@@ -37,8 +38,11 @@ public partial class Enemigo : RigidBody2D
         this.AnimatedSprite2D.Play();
     }
 
-    private void OnVisibleOnScreenNotifier2DScreenExited()
+    private void EliminarEnemigo()
     {
+        Logger.Trace("Enemigo Eliminado.");
+
+        // Cuando el enemigo salga de la pantalla, se elimina a sí mismo.
         QueueFree();
     }
 }
