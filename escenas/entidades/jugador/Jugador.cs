@@ -39,7 +39,7 @@ public partial class Jugador : Area2D
         // Oculatamos el sprite al inicio de la partida.
         this.Hide();
 
-        this.CollisionShape2D.SetDeferred(nameof(CollisionShape2D.Disabled), true);
+        this.CollisionShape2D.SetDeferred(CollisionShape2D.PropertyName.Disabled, true);
     }
 
     // Se llama en cada fotograma. 'delta' es el tiempo transcurrido desde el fotograma anterior.
@@ -158,7 +158,7 @@ public partial class Jugador : Area2D
 
         this.Muerto = false;
 
-        this.CollisionShape2D.SetDeferred("nameof(CollisionShape2D.Disabled)", false);
+        this.CollisionShape2D.SetDeferred(CollisionShape2D.PropertyName.Disabled, false);
     }
 
     private void OnBodyEntered(Node2D body)
@@ -175,7 +175,7 @@ public partial class Jugador : Area2D
 
         // Desactivamos la colisión para que la señal no se siga emitiendo.
         // Debe ser diferido ya que no podemos cambiar las propiedades físicas en un callback de física.
-        this.CollisionShape2D.SetDeferred(nameof(CollisionShape2D.Disabled), true);
+        this.CollisionShape2D.SetDeferred(CollisionShape2D.PropertyName.Disabled, true);
 
         // Marcamos al jugador como muerto.
         this.Muerto = true;

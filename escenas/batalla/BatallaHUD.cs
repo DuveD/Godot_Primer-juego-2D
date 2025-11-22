@@ -27,7 +27,7 @@ public partial class BatallaHUD : CanvasLayer
     private BatallaControlador _Batallacontrolador;
     private BatallaControlador BatallaControlador => _Batallacontrolador ??= GetNode<BatallaControlador>("../BatallaControlador");
 
-    Dictionary<CanvasItem, bool> visibilidadElementosPausa;
+    Dictionary<CanvasItem, bool> VisibilidadElementosPausa;
 
     public override void _Ready()
     {
@@ -74,7 +74,7 @@ public partial class BatallaHUD : CanvasLayer
     {
         if (Ajustes.JuegoPausado)
         {
-            this.visibilidadElementosPausa = this.GetChildren()
+            this.VisibilidadElementosPausa = this.GetChildren()
                 .OfType<CanvasItem>()
                 .Where(item => item != this.MensajePausa && item != this.ScoreLabel)
                 .ToDictionary(item => item, item => item.Visible);
@@ -85,8 +85,8 @@ public partial class BatallaHUD : CanvasLayer
         }
         else
         {
-            var elementosVisibles = this.visibilidadElementosPausa
-                .Where(kv => !kv.Key.Visible && kv.Value == true)
+            var elementosVisibles = this.VisibilidadElementosPausa
+                .Where(kv => !kv.Key.Visible && kv.Value)
                 .Select(kv => kv.Key)
                 .ToList();
 
