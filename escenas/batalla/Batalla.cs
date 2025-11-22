@@ -1,6 +1,7 @@
 namespace Primerjuego2D.escenas.batalla;
 
 using System;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Godot;
@@ -103,7 +104,7 @@ public partial class Batalla : Node
         Enemigo enemigo = EnemyScene.Instantiate<Enemigo>();
 
         // Elegimos una localización aleatória del path 2D de los enemigos.
-        this.MobSpawnLocation.ProgressRatio = Randomizer.GetRandomFloat();
+        this.MobSpawnLocation.ProgressRatio = Randomizador.GetRandomFloat();
 
         // Set the mob's position to a random location.
         enemigo.Position = this.MobSpawnLocation.Position;
@@ -112,11 +113,11 @@ public partial class Batalla : Node
         float direction = this.MobSpawnLocation.RotationDegrees + 90;
 
         // Randomizamos la dirección, de -45 a 45.
-        direction += (float)Randomizer.GetRandomInt(-45, 45);
+        direction += (float)Randomizador.GetRandomInt(-45, 45);
         enemigo.RotationDegrees = direction;
 
         // Informamos el vector de velocidad y dirección.
-        Vector2 velocity = new Vector2((float)Randomizer.GetRandomDouble(150.0, 250.0), 0);
+        Vector2 velocity = new Vector2((float)Randomizador.GetRandomDouble(150.0, 250.0), 0);
         float directionRad = (float)UtilidadesMatematicas.DegreesToRadians(direction);
         enemigo.LinearVelocity = velocity.Rotated(directionRad);
 

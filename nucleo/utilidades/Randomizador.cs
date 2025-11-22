@@ -3,7 +3,7 @@ namespace Primerjuego2D.nucleo.utilidades;
 using System;
 using Godot;
 
-public static class Randomizer
+public static class Randomizador
 {
     // Instancia global compartida (para uso rápido y general)
     private static readonly Random GlobalRandom = new();
