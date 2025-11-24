@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bkvjycp3edtfo" path="res://escenas/batalla/BatallaHUD.tscn" id="4_ef4qm"]
 [ext_resource type="PackedScene" uid="uid://qrdflnq7hp0f" path="res://escenas/batalla/BatallaControlador.tscn" id="5_kuqqq"]
 [ext_resource type="Script" uid="uid://b4ipj0a72tkyu" path="res://escenas/batalla/SpawnMonedas.cs" id="6_w3cb5"]
-[ext_resource type="PackedScene" uid="uid://c1ptij2whe824" path="res://escenas/objetos/Moneda.tscn" id="7_t4q4m"]
+[ext_resource type="PackedScene" uid="uid://c1ptij2whe824" path="res://escenas/objetos/moneda/Moneda.tscn" id="7_t4q4m"]
 
 [sub_resource type="Curve2D" id="Curve2D_w0at3"]
 _data = {

@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Godot.Collections;
-using Primerjuego2D.escenas.objetos;
+using Primerjuego2D.escenas.objetos.moneda;
 
 public partial class SpawnMonedas : Control
 {
+	public int MonedasRecogidas;
+
 	// Señal "MonedaRecogida" para indicar que el jugador ha recogido una moneda.
 	[Signal]
 	public delegate void MonedaRecogidaEventHandler();
@@ -15,6 +17,8 @@ public partial class SpawnMonedas : Control
 
 	public override void _Ready()
 	{
+		this.MonedasRecogidas = 0;
+
 		Spawn();
 	}
 
@@ -45,6 +49,8 @@ public partial class SpawnMonedas : Control
 
 	public void OnMonedaRecogida()
 	{
+		this.MonedasRecogidas += 1;
+
 		// Emitimos la señal de que el jugador ha recogido una moneda.
 		EmitSignal(SignalName.MonedaRecogida);
 	}

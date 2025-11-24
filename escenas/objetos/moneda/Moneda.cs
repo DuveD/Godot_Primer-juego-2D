@@ -1,9 +1,10 @@
 using Godot;
 using Primerjuego2D.escenas.entidades.jugador;
+using Primerjuego2D.escenas.sistema;
 using Primerjuego2D.nucleo.utilidades.log;
 using static Primerjuego2D.nucleo.utilidades.log.LoggerJuego;
 
-namespace Primerjuego2D.escenas.objetos;
+namespace Primerjuego2D.escenas.objetos.moneda;
 
 [AtributoNivelLog(NivelLog.Info)]
 public partial class Moneda : Area2D
@@ -39,6 +40,8 @@ public partial class Moneda : Area2D
 
 		// Emitimos la señal de que el jugador ha recogido la moneda.
 		EmitSignal(SignalName.Recogida);
+
+		Global.GestorAudio.ReproducirSonido("moneda.wav");
 
 		// Cuando el jugador recoja la moneda, la destruimos.
 		QueueFree();

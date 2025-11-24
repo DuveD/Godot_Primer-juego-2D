@@ -1,0 +1,67 @@
+[gd_scene load_steps=7 format=3 uid="uid://c1ptij2whe824"]
+
+[ext_resource type="Script" uid="uid://c51kjrj56le5y" path="res://escenas/objetos/moneda/Moneda.cs" id="1_dsggl"]
+[ext_resource type="Texture2D" uid="uid://85ugxays0w5s" path="res://recursos/imagenes/star-coin.png" id="2_xd7qd"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_xd7qd"]
+radius = 24.0
+
+[sub_resource type="Animation" id="Animation_xd7qd"]
+resource_name = "AnimacionMoneda"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.125, 0.125), Vector2(-0.125, 0.125), Vector2(0.125, 0.125)]
+}
+
+[sub_resource type="Animation" id="Animation_jg48b"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.125, 0.125)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jg48b"]
+_data = {
+&"AnimacionMoneda": SubResource("Animation_xd7qd"),
+&"RESET": SubResource("Animation_jg48b")
+}
+
+[node name="Moneda" type="Area2D"]
+collision_layer = 32
+collision_mask = 2
+script = ExtResource("1_dsggl")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.125, 0.125)
+texture = ExtResource("2_xd7qd")
+region_enabled = true
+region_rect = Rect2(74, 74, 364, 364)
+region_filter_clip_enabled = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_xd7qd")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_jg48b")
+}
+autoplay = "AnimacionMoneda"
+
+[connection signal="body_entered" from="." to="." method="OnBodyEntered"]

@@ -24,6 +24,8 @@ He ampliado el proyecto con características extra para aprender más sobre Godo
 ## 📖 Referencias
 
 - Tutorial oficial de Godot 4: [Your First 2D Game](https://docs.godotengine.org/en/4.4/getting_started/first_2d_game/index.html)
+- Video tutorial de Alva Majo: [Godot para retrasados [Tutorial]](https://www.youtube.com/watch?v=eQ_HBvtdoiU&t=663s)
+- Andrew Vickerman Godot Audio Manager: [Godot Audio Manager](https://github.com/insideout-andrew/godot-audio-manager/tree/main)
 
 ## ⚖️ Aviso de uso
 
