@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://cmwoy08j3qtdy"]
 
 [ext_resource type="Texture2D" uid="uid://dmcu4nsau6pwg" path="res://recursos/imagenes/jugador/playerGrey_up1.png" id="1_q37t8"]
-[ext_resource type="Script" path="res://escenas/entidades/jugador/Jugador.cs" id="1_rxq4h"]
+[ext_resource type="Script" uid="uid://dh8ks5vgkrt60" path="res://escenas/entidades/jugador/Jugador.cs" id="1_rxq4h"]
 [ext_resource type="Texture2D" uid="uid://dvm73enov43rw" path="res://recursos/imagenes/jugador/playerGrey_up2.png" id="2_8s4iu"]
 [ext_resource type="Texture2D" uid="uid://cf3syb5p2rus5" path="res://recursos/imagenes/jugador/playerGrey_walk1.png" id="3_05eoq"]
 [ext_resource type="Texture2D" uid="uid://bc7cnb0weu2xd" path="res://recursos/imagenes/jugador/playerGrey_walk2.png" id="4_fc2oy"]
@@ -32,12 +32,13 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nbws6"]
-radius = 25.0
-height = 64.0
+radius = 24.0
+height = 48.0
 
-[node name="Player" type="Area2D" node_paths=PackedStringArray("_CollisionShape2D")]
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 0
 script = ExtResource("1_rxq4h")
-_CollisionShape2D = NodePath("CollisionShape2D")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.5, 0.5)
@@ -47,4 +48,11 @@ animation = &"up"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_nbws6")
 
-[connection signal="body_entered" from="." to="." method="OnBodyEntered"]
+[node name="HitBox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 100
+
+[node name="HitBoxCollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+shape = SubResource("CapsuleShape2D_nbws6")
+
+[connection signal="body_entered" from="HitBox" to="." method="OnBodyEntered"]
