@@ -30,11 +30,7 @@ public static class LoggerJuego
 
     static LoggerJuego()
     {
-        string nombreJuego = (string)ProjectSettings.GetSetting("application/config/name");
-
-        // Ruta a Documentos/MiJuego/logs/
-        string pathMisDocumentos = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
-        string pathCarpetaLogs = Path.Combine(pathMisDocumentos, nombreJuego, "logs");
+        string pathCarpetaLogs = Ajustes.RutaLogs;
         if (!Directory.Exists(pathCarpetaLogs))
             Directory.CreateDirectory(pathCarpetaLogs);
 
@@ -47,7 +43,6 @@ public static class LoggerJuego
     {
         NivelLog nivelLog = ObtenerNivelLog();
         if (nivelLog > NivelLog.Trace) return;
-        if (string.IsNullOrEmpty(context)) context = ObtenerContexto();
         EscribirLog("TRAZA", message, context, "gray");
     }
 
@@ -55,7 +50,6 @@ public static class LoggerJuego
     {
         NivelLog nivelLog = ObtenerNivelLog();
         if (nivelLog > NivelLog.Info) return;
-        if (string.IsNullOrEmpty(context)) context = ObtenerContexto();
         EscribirLog("INFO", message, context);
     }
 
@@ -63,7 +57,6 @@ public static class LoggerJuego
     {
         NivelLog nivelLog = ObtenerNivelLog();
         if (nivelLog > NivelLog.Warning) return;
-        if (string.IsNullOrEmpty(context)) context = ObtenerContexto();
         EscribirLog("WARN", message, context, "yellow");
     }
 
@@ -71,7 +64,6 @@ public static class LoggerJuego
     {
         NivelLog nivelLog = ObtenerNivelLog();
         if (nivelLog > NivelLog.Error) return;
-        if (string.IsNullOrEmpty(context)) context = ObtenerContexto();
         EscribirLog("ERROR", message, context, "red");
     }
 
@@ -83,6 +75,11 @@ public static class LoggerJuego
         var metodo = frame.GetMethod();
         Type tipoLlamador = metodo.DeclaringType;
 
+        return ObtenerNivelLog(tipoLlamador);
+    }
+
+    private static NivelLog ObtenerNivelLog(Type tipoLlamador)
+    {
         var atributoLogLevel = tipoLlamador.GetCustomAttributes(typeof(AtributoNivelLog), inherit: true)
                    .FirstOrDefault() as AtributoNivelLog;
 
@@ -110,7 +107,10 @@ public static class LoggerJuego
             if (tipo != typeof(LoggerJuego) &&
                 !nombreMetodo.Contains(">d__") &&
                 !nombreMetodo.Contains("MoveNext") &&
-                tipo.Namespace != "System.Runtime.CompilerServices")
+                !nombreMetodo.Contains("b__") &&              // ignora lambdas
+                !tipo.Name.Contains("<>c__DisplayClass") &&   // ignora clases de cierre
+                tipo.Namespace != "System.Runtime.CompilerServices" &&
+                tipo.Namespace != "Godot")                    // ignora clases internas de Godor
             {
                 metodo = frameMethod;
                 tipoClase = tipo;
@@ -134,8 +134,11 @@ public static class LoggerJuego
         return linea > 0 ? $"{clase}.{nombre}:{linea}" : $"{clase}.{nombre}";
     }
 
-    private static void EscribirLog(string level, string message, string context, string color = "white")
+    public static void EscribirLog(string level, string message, string context, string color = "white")
     {
+        if (string.IsNullOrEmpty(context))
+            context = ObtenerContexto();
+
         string mensajeLog = FormatearMensajeLog(level, context, message);
 
         // Aplicamos color en la consola

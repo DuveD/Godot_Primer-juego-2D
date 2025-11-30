@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using Primerjuego2D.nucleo.configuracion;
 using Primerjuego2D.nucleo.utilidades.log;
+using static Primerjuego2D.nucleo.utilidades.log.LoggerJuego;
 
 namespace Primerjuego2D.escenas.sistema;
 
+[AtributoNivelLog(NivelLog.Info)]
 public partial class GestorAudio : Node
 {
 	public const string RUTA_MUSICA = "res://recursos/audio/musica";
@@ -14,12 +17,12 @@ public partial class GestorAudio : Node
 
 	public readonly string[] ExtensionesAceptadas = { ".mp3", ".wav", ".ogg" };
 
-	private int SfxIndex = 0;
+	private int _sfxIndex = 0;
 
 	[Export]
-	private int NumSfxPlayers { get; set; } = 5;
+	private int _numSfxPlayers { get; set; } = 5;
 
-	private readonly List<AudioStreamPlayer> SfxPlayers = new();
+	private readonly List<AudioStreamPlayer> _sfxPlayers = new();
 
 	private Node _EffectsContainer;
 	private Node EffectsContainer => _EffectsContainer ??= GetNode<Node>("EffectsContainer");
@@ -30,13 +33,43 @@ public partial class GestorAudio : Node
 	private AudioStreamPlayer _AudioStreamPlayer2;
 	private AudioStreamPlayer AudioStreamPlayer2 => _AudioStreamPlayer2 ??= GetNode<AudioStreamPlayer>("AudioStreamPlayer2");
 
-	private readonly Dictionary<string, AudioStream> CacheMusica = new();
+	private readonly Dictionary<string, AudioStream> _cacheMusica = new();
 
-	private readonly Dictionary<string, AudioStream> CacheSonidos = new();
+	private readonly Dictionary<string, AudioStream> _cacheSonidos = new();
 
-	private float PosicionPausa = 0f;
+	private float _posicionPausa = 0f;
 
-	private bool CrossfadeEnProceso = false;
+	private bool _crossfadeEnProceso = false;
+
+	public float VolumenGeneral
+	{
+		get => Ajustes.VolumenGeneral;
+		set
+		{
+			Ajustes.VolumenGeneral = Mathf.Clamp(value, 0f, 1f);
+			ActualizarVolumenGlobal();
+		}
+	}
+
+	public float VolumenMusica
+	{
+		get => Ajustes.VolumenMusica;
+		set
+		{
+			Ajustes.VolumenMusica = Mathf.Clamp(value, 0f, 1f);
+			ActualizarVolumenMusica();
+		}
+	}
+
+	public float VolumenSonidos
+	{
+		get => Ajustes.VolumenSonidos;
+		set
+		{
+			Ajustes.VolumenSonidos = Mathf.Clamp(value, 0f, 1f);
+			ActualizarVolumenSfx();
+		}
+	}
 
 	private Queue<string> _colaCrossfade = new();
 
@@ -46,27 +79,32 @@ public partial class GestorAudio : Node
 
 		InicializarSfxPool();
 		CargarRecursosAudio();
+
+		// Inicializar volúmenes según ajustes
+		ActualizarVolumenGlobal();
 	}
 
 	private void InicializarSfxPool()
 	{
-		SfxPlayers.Clear();
+		_sfxPlayers.Clear();
 
-		for (int i = 0; i < NumSfxPlayers; i++)
+		for (int i = 0; i < _numSfxPlayers; i++)
 		{
 			var player = new AudioStreamPlayer();
 			EffectsContainer.AddChild(player);
 
 			// Conectamos la señal Finished...
-			player.Finished += () =>
-			{
-				// ...para marcarlo como libre.
-				player.Stream = null;
-				LoggerJuego.Trace($"Player {player.Name} terminado.");
-			};
+			player.Finished += () => LiberarSfxPlayer(player);
 
-			SfxPlayers.Add(player);
+			_sfxPlayers.Add(player);
 		}
+	}
+
+	private void LiberarSfxPlayer(AudioStreamPlayer player)
+	{
+		// ...para marcarlo como libre.
+		player.Stream = null;
+		LoggerJuego.Trace($"Player '{player.Name}' terminado.");
 	}
 
 	private void CargarRecursosAudio()
@@ -92,7 +130,7 @@ public partial class GestorAudio : Node
 			{
 				var musica = ObtenerMusica(nombreArchivoMusica);
 				if (musica != null)
-					CacheMusica[nombreArchivoMusica] = musica;
+					_cacheMusica[nombreArchivoMusica] = musica;
 			}
 		}
 	}
@@ -111,10 +149,43 @@ public partial class GestorAudio : Node
 			{
 				var sonido = ObtenerSonido(nombreArchivoSonido);
 				if (sonido != null)
-					CacheSonidos[nombreArchivoSonido] = sonido;
+					_cacheSonidos[nombreArchivoSonido] = sonido;
 			}
 		}
 	}
+
+	private void ActualizarVolumenGlobal()
+	{
+		// Esto puede afectar música y SFX simultáneamente si quieres un volumen maestro
+		ActualizarVolumenMusica();
+		ActualizarVolumenSfx();
+	}
+
+	private void ActualizarVolumenMusica()
+	{
+		if (AudioStreamPlayer != null)
+			AudioStreamPlayer.VolumeDb = LinearToDb(VolumenMusica * VolumenGeneral);
+
+		if (AudioStreamPlayer2 != null)
+			AudioStreamPlayer2.VolumeDb = LinearToDb(VolumenMusica * VolumenGeneral);
+	}
+
+	private void ActualizarVolumenSfx()
+	{
+		float volumen = LinearToDb(VolumenSonidos * VolumenGeneral);
+		foreach (var player in _sfxPlayers)
+		{
+			player.VolumeDb = volumen;
+		}
+	}
+
+	// Convierte volumen lineal [0,1] a dB [-80,0]
+	private static float LinearToDb(float linear)
+	{
+		linear = Mathf.Clamp(linear, 0.0001f, 1f); // evitar log(0)
+		return (float)(20.0 * Math.Log10(linear));
+	}
+
 
 	private string[] FiltrarExtensionesAceptadas(string[] nombresArchivos)
 	{
@@ -141,21 +212,21 @@ public partial class GestorAudio : Node
 	private AudioStreamPlayer BuscarPlayerLibre()
 	{
 		// 🔍 Buscamos un player que no esté reproduciendo nada
-		foreach (var player in SfxPlayers)
+		foreach (var player in _sfxPlayers)
 		{
 			if (!player.Playing && player.Stream == null)
 				return player;
 		}
 
 		// 🔄 Si no hay libres, uso circular como fallback
-		var p2 = SfxPlayers[SfxIndex];
-		SfxIndex = (SfxIndex + 1) % SfxPlayers.Count;
+		var p2 = _sfxPlayers[_sfxIndex];
+		_sfxIndex = (_sfxIndex + 1) % _sfxPlayers.Count;
 		return p2;
 	}
 
 	public void ReproducirSonido(string nombreSonido)
 	{
-		if (!CacheSonidos.TryGetValue(nombreSonido, out var sonido))
+		if (!_cacheSonidos.TryGetValue(nombreSonido, out var sonido))
 		{
 			LoggerJuego.Error($"Efecto no encontrado: '{nombreSonido}'");
 			return;
@@ -170,7 +241,7 @@ public partial class GestorAudio : Node
 
 	public void ReproducirMusica(string nombreMusica)
 	{
-		if (!CacheMusica.TryGetValue(nombreMusica, out var cancion))
+		if (!_cacheMusica.TryGetValue(nombreMusica, out var cancion))
 		{
 			LoggerJuego.Error($"Música no encontrada: '{nombreMusica}'");
 			return;
@@ -180,21 +251,21 @@ public partial class GestorAudio : Node
 			return;
 
 		AudioStreamPlayer.Stream = cancion;
-		AudioStreamPlayer.Play(PosicionPausa);
-		PosicionPausa = 0f;
+		AudioStreamPlayer.Play(_posicionPausa);
+		_posicionPausa = 0f;
 
 		LoggerJuego.Trace($"Reproduciendo música '{nombreMusica}'.");
 	}
 
 	public void PauseMusic()
 	{
-		PosicionPausa = AudioStreamPlayer.GetPlaybackPosition();
+		_posicionPausa = AudioStreamPlayer.GetPlaybackPosition();
 		AudioStreamPlayer.Stop();
 	}
 
 	public void StopMusic()
 	{
-		PosicionPausa = 0f;
+		_posicionPausa = 0f;
 		AudioStreamPlayer.Stop();
 	}
 
@@ -203,7 +274,7 @@ public partial class GestorAudio : Node
 		if (string.IsNullOrEmpty(nuevaCancion)) return;
 
 		_colaCrossfade.Enqueue(nuevaCancion);
-		if (!CrossfadeEnProceso)
+		if (!_crossfadeEnProceso)
 		{
 			_ = EjecutarCrossfade(duracion);
 		}
@@ -211,15 +282,15 @@ public partial class GestorAudio : Node
 
 	private async System.Threading.Tasks.Task EjecutarCrossfade(float duracion)
 	{
-		if (CrossfadeEnProceso)
+		if (_crossfadeEnProceso)
 			return;
 
-		CrossfadeEnProceso = true;
+		_crossfadeEnProceso = true;
 
 		while (_colaCrossfade.Count > 0)
 		{
 			string cancionNombre = _colaCrossfade.Dequeue();
-			if (!CacheMusica.TryGetValue(cancionNombre, out var cancion))
+			if (!_cacheMusica.TryGetValue(cancionNombre, out var cancion))
 			{
 				LoggerJuego.Error($"Música no encontrada: {cancionNombre}");
 				continue;
@@ -248,6 +319,6 @@ public partial class GestorAudio : Node
 			(_AudioStreamPlayer2, _AudioStreamPlayer) = (_AudioStreamPlayer, _AudioStreamPlayer2);
 		}
 
-		CrossfadeEnProceso = false;
+		_crossfadeEnProceso = false;
 	}
 }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Godot;
-using Primerjuego2D.nucleo.configuracion;
 
 namespace Primerjuego2D.nucleo.utilidades;
 
@@ -11,10 +10,9 @@ public static class UtilidadesNodos
     /// <summary>
     /// Pausa o reanuda el nodo y todo su árbol.
     /// </summary>
-    public static void PausarNodo(Node node, bool pausar, bool marcarJuegoPausado = false)
+    public static void PausarNodo(Node node, bool pausar)
     {
         node.GetTree().Paused = pausar;
-        Ajustes.JuegoPausado = marcarJuegoPausado;
     }
 
     /// <summary>
