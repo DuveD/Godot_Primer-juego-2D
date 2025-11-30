@@ -72,7 +72,7 @@ public partial class BatallaHUD : CanvasLayer
 
     public void OnPauseBattle()
     {
-        if (Ajustes.JuegoPausado)
+        if (this.BatallaControlador.JuegoPausado)
         {
             this.VisibilidadElementosPausa = this.GetChildren()
                 .OfType<CanvasItem>()

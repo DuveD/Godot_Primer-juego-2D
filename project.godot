@@ -12,11 +12,12 @@ config_version=5
 
 config/name="Primer juego 2D"
 config/version="1.2.0.2025-11-23"
+config/tags=PackedStringArray("2d")
 run/main_scene="res://escenas/Juego.tscn"
 config/features=PackedStringArray("4.5", "C#", "GL Compatibility")
 run/flush_stdout_on_print=true
 boot_splash/show_image=false
-config/icon="uid://d4jc7gkuct8gb"
+config/icon="uid://bh53fpw6usj8u"
 
 [autoload]
 
@@ -47,6 +48,7 @@ folder_colors={
 "res://escenas/entidades/jugador/": "orange",
 "res://escenas/menuPrincipal/": "pink",
 "res://escenas/miscelaneo/": "purple",
+"res://escenas/objetos/": "yellow",
 "res://escenas/sistema/": "blue"
 }
 
@@ -85,6 +87,19 @@ pausar_juego={
 [internationalization]
 
 locale/translations=PackedStringArray("res://recursos/localizacion/interfaz.en.translation", "res://recursos/localizacion/interfaz.es.translation")
+
+[layer_names]
+
+2d_physics/layer_1="Mundo"
+2d_physics/layer_2="Jugador"
+2d_physics/layer_3="Enemigos"
+2d_physics/layer_4="AtaqueJugador"
+2d_physics/layer_5="AtaqueEnemigo"
+2d_physics/layer_6="Interactuables"
+2d_physics/layer_7="Deteccion"
+2d_physics/layer_8="Proyectiles"
+2d_physics/layer_9="NPC"
+2d_physics/layer_10="UI"
 
 [rendering]
 

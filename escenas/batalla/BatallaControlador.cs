@@ -19,6 +19,8 @@ public partial class BatallaControlador : Node
 
     public bool BatallaEnCurso { get; private set; } = false;
 
+    public bool JuegoPausado { get; set; } = false;
+
     public override void _Ready()
     {
         LoggerJuego.Trace(this.Name + " Ready.");
@@ -38,14 +40,14 @@ public partial class BatallaControlador : Node
         if (!this.BatallaEnCurso)
             return;
 
-        bool pausarJuego = !Ajustes.JuegoPausado;
+        this.JuegoPausado = !JuegoPausado;
 
-        if (pausarJuego)
+        if (this.JuegoPausado)
             LoggerJuego.Trace("Juego pausado.");
         else
             LoggerJuego.Trace("Juego renaudado.");
 
-        UtilidadesNodos.PausarNodo(this, pausarJuego, pausarJuego);
+        UtilidadesNodos.PausarNodo(this, this.JuegoPausado);
 
         EmitSignal(SignalName.PauseBattle);
     }

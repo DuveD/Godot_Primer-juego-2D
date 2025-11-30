@@ -1,4 +1,5 @@
 using Godot;
+using Primerjuego2D.nucleo.configuracion;
 using Primerjuego2D.nucleo.localizacion;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
@@ -31,17 +32,13 @@ public partial class MenuPrincipal : Control
         PopupMenu popupMenu = this.MenuButtonLenguaje.GetPopup();
         popupMenu.IdPressed += MenuButtonLenguajeIdPressed;
 
-        Idioma idioma = GestorIdioma.GetIdiomaActual();
-        switch (idioma)
-        {
-            default:
-            case Idioma.Castellano:
-                MenuButtonLenguajeIdPressed(ID_OPCION_CASTELLANO);
-                break;
-            case Idioma.Ingles:
-                MenuButtonLenguajeIdPressed(ID_OPCION_INGLES);
-                break;
-        }
+        Idioma idioma = GestorIdioma.ObtenerIdiomaDeSistema();
+        if (idioma.Codigo == Idioma.ES.Codigo)
+            MenuButtonLenguajeIdPressed(ID_OPCION_CASTELLANO);
+        else if (idioma.Codigo == Idioma.EN.Codigo)
+            MenuButtonLenguajeIdPressed(ID_OPCION_INGLES);
+        else
+            MenuButtonLenguajeIdPressed(ID_OPCION_CASTELLANO);
     }
 
     private void MenuButtonLenguajeIdPressed(long id)
@@ -54,16 +51,20 @@ public partial class MenuPrincipal : Control
         // Checkeamos el ítem del id
         UtilidadesNodos.CheckItemPorId(popupMenu, id);
 
+        Idioma idioma;
         switch (id)
         {
             default:
             case ID_OPCION_CASTELLANO:
-                GestorIdioma.SetIdiomaCastellano();
+                idioma = Idioma.ES;
                 break;
             case ID_OPCION_INGLES:
-                GestorIdioma.SetIdiomaIngles();
+                idioma = Idioma.EN;
                 break;
         }
+
+        GestorIdioma.CambiarIdioma(idioma);
+        Ajustes.Idioma = idioma;
     }
 
     private void OnButtonEmpezarPartidaPressed()

@@ -23,9 +23,6 @@ public partial class Batalla : Node
     private Timer _StartTimer;
     private Timer StartTimer => _StartTimer ??= GetNode<Timer>("StartTimer");
 
-    private Timer _ScoreTimer;
-    private Timer ScoreTimer => _ScoreTimer ??= GetNode<Timer>("ScoreTimer");
-
     private BatallaHUD _BatallaHUD;
     private BatallaHUD BatallaHUD => _BatallaHUD ??= GetNode<BatallaHUD>("BatallaHUD");
 
@@ -70,7 +67,6 @@ public partial class Batalla : Node
     public async void GameOver()
     {
         this.EnemyTimer.Stop();
-        this.ScoreTimer.Stop();
 
         this.BatallaControlador.FinalizarBatalla();
 
@@ -79,7 +75,7 @@ public partial class Batalla : Node
         EmitSignal(SignalName.GameOverFinalizado);
     }
 
-    private void OnScoreTimerTimeout()
+    public void SumarPuntuacion()
     {
         this.Score++;
         this.BatallaHUD.ActualizarPuntuacion(Score);
@@ -88,7 +84,6 @@ public partial class Batalla : Node
     private void OnStartTimerTimeout()
     {
         this.EnemyTimer.Start();
-        this.ScoreTimer.Start();
     }
 
     private void OnEnemyTimerTimeout()

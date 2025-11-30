@@ -1,10 +1,12 @@
-[gd_scene load_steps=7 format=3 uid="uid://c5upcb2qwjqbe"]
+[gd_scene load_steps=9 format=3 uid="uid://c5upcb2qwjqbe"]
 
 [ext_resource type="PackedScene" uid="uid://cmwoy08j3qtdy" path="res://escenas/entidades/jugador/Jugador.tscn" id="1_6xjdp"]
-[ext_resource type="Script" path="res://escenas/batalla/Batalla.cs" id="1_jxdra"]
+[ext_resource type="Script" uid="uid://b2ttu6lilr5x8" path="res://escenas/batalla/Batalla.cs" id="1_jxdra"]
 [ext_resource type="PackedScene" uid="uid://b77k6jhiy8djq" path="res://escenas/entidades/enemigo/Enemigo.tscn" id="2_7rrnp"]
 [ext_resource type="PackedScene" uid="uid://bkvjycp3edtfo" path="res://escenas/batalla/BatallaHUD.tscn" id="4_ef4qm"]
 [ext_resource type="PackedScene" uid="uid://qrdflnq7hp0f" path="res://escenas/batalla/BatallaControlador.tscn" id="5_kuqqq"]
+[ext_resource type="Script" uid="uid://b4ipj0a72tkyu" path="res://escenas/batalla/SpawnMonedas.cs" id="6_w3cb5"]
+[ext_resource type="PackedScene" uid="uid://c1ptij2whe824" path="res://escenas/objetos/moneda/Moneda.tscn" id="7_t4q4m"]
 
 [sub_resource type="Curve2D" id="Curve2D_w0at3"]
 _data = {
@@ -23,8 +25,6 @@ position = Vector2(-161, 113)
 [node name="EnemyTimer" type="Timer" parent="."]
 wait_time = 0.5
 
-[node name="ScoreTimer" type="Timer" parent="."]
-
 [node name="StartTimer" type="Timer" parent="."]
 wait_time = 2.0
 one_shot = true
@@ -41,11 +41,26 @@ curve = SubResource("Curve2D_w0at3")
 
 [node name="BatallaControlador" parent="." instance=ExtResource("5_kuqqq")]
 
+[node name="SpawnMonedas" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = 30.0
+offset_right = -30.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("6_w3cb5")
+MonedaScene = ExtResource("7_t4q4m")
+
+[connection signal="GameOverFinalizado" from="." to="SpawnMonedas" method="DestruirMonedas"]
 [connection signal="MuerteJugador" from="Jugador" to="." method="GameOver"]
 [connection signal="timeout" from="EnemyTimer" to="." method="OnEnemyTimerTimeout"]
-[connection signal="timeout" from="ScoreTimer" to="." method="OnScoreTimerTimeout"]
 [connection signal="timeout" from="StartTimer" to="." method="OnStartTimerTimeout"]
 [connection signal="timeout" from="StartTimer" to="BatallaHUD" method="MostrarMensajeIniciarBatalla"]
 [connection signal="BatallaFinalizada" from="BatallaControlador" to="BatallaHUD" method="ShowGameOver"]
 [connection signal="BatallaIniciada" from="BatallaControlador" to="BatallaHUD" method="ShowStartMessage"]
 [connection signal="PauseBattle" from="BatallaControlador" to="BatallaHUD" method="OnPauseBattle"]
+[connection signal="MonedaRecogida" from="SpawnMonedas" to="." method="SumarPuntuacion"]

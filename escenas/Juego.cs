@@ -10,11 +10,11 @@ namespace Primerjuego2D.escenas;
 public partial class Juego : Control
 {
     [Export]
-    public Control ContenedorEscena { get; set; }
-
-    [Export]
     public CamaraPrincipal _Camara { get; set; }    // Nodo de la escena
     public static CamaraPrincipal Camara { get; private set; }
+
+    private Control _ContenedorEscena;
+    private Control ContenedorEscena => _ContenedorEscena ??= GetNode<Control>("ContenedorEscena");
 
     public override void _Ready()
     {
@@ -25,6 +25,8 @@ public partial class Juego : Control
         AjustaViewPortYCamara();
 
         CargarMenuPrincipal();
+
+        Global.GestorAudio.ReproducirMusica("House In a Forest Loop.ogg");
     }
 
     private void AjustaViewPortYCamara()

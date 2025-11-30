@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d4jc7gkuct8gb"
-path="res://.godot/imported/icon.webp-7d384a8d3392e9cad8350a9fdde6a1f5.ctex"
+uid="uid://85ugxays0w5s"
+path="res://.godot/imported/star-coin.png-98043eae2f2620a80bef2511f66d152d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://recursos/imagenes/icon.webp"
-dest_files=["res://.godot/imported/icon.webp-7d384a8d3392e9cad8350a9fdde6a1f5.ctex"]
+source_file="res://recursos/imagenes/star-coin.png"
+dest_files=["res://.godot/imported/star-coin.png-98043eae2f2620a80bef2511f66d152d.ctex"]
 
 [params]
 

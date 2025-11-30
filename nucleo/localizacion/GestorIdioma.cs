@@ -3,63 +3,73 @@ using Godot;
 
 namespace Primerjuego2D.nucleo.localizacion;
 
-public class GestorIdioma
+public static class GestorIdioma
 {
-    public static readonly Dictionary<Idioma, string> IdiomasLocales = new()
-    {
-        { Idioma.Castellano, "es" },
-        { Idioma.Ingles, "en" }
-    };
-
-    /// <summary>
-    /// Establece el idioma de la aplicación.
-    /// </summary>
-    public static void SetIdioma(Idioma idioma)
-    {
-        string locale;
-
-        switch (idioma)
+    public static readonly Dictionary<string, Idioma> IdiomasDisponibles = new()
         {
-            default:
-            case Idioma.Castellano:
-                locale = "es";
-                break;
-            case Idioma.Ingles:
-                locale = "en";
-                break;
-        }
+            { Idioma.ES.Codigo, Idioma.ES },
+            { Idioma.EN.Codigo, Idioma.EN }
+        };
 
-        TranslationServer.SetLocale(locale);
+    private static readonly Idioma IdiomaPorDefecto = Idioma.ES;
+
+    /// <summary>
+    /// Cambia el idioma de la aplicación al objeto Idioma proporcionado.
+    /// </summary>
+    public static void CambiarIdioma(Idioma idioma)
+    {
+        if (idioma == null)
+            idioma = IdiomaPorDefecto;
+
+        TranslationServer.SetLocale(idioma.Codigo);
     }
 
     /// <summary>
-    /// Establece el idioma a castellano.
+    /// Obtiene el locale del sistema.
     /// </summary>
-    public static void SetIdiomaCastellano()
+    public static string ObtenerLocaleSistema()
     {
-        SetIdioma(Idioma.Castellano);
+        return TranslationServer.GetLocale();
     }
 
     /// <summary>
-    /// Establece el idioma a inglés.
+    /// Obtiene el código de idioma corto del sistema ("es", "en", etc.).
     /// </summary>
-    public static void SetIdiomaIngles()
+    public static string ObtenerCodigoIdiomaDeSistema()
     {
-        SetIdioma(Idioma.Ingles);
+        string localeSistema = ObtenerLocaleSistema();
+        return ObtenerCodigoIdiomaDeLocale(localeSistema);
     }
 
-    public static Idioma GetIdiomaActual()
+    /// <summary>
+    /// Obtiene el código de idioma corto del sistema ("es", "en", etc.).
+    /// </summary>
+    public static Idioma ObtenerIdiomaDeSistema()
     {
-        string locale = TranslationServer.GetLocale();
+        string codigoidiomaSistema = ObtenerCodigoIdiomaDeSistema();
+        return ObtenerIdiomaDeCodigo(codigoidiomaSistema);
+    }
 
-        foreach (var kvp in IdiomasLocales)
-        {
-            if (kvp.Value == locale)
-            {
-                return kvp.Key;
-            }
-        }
+    /// <summary>
+    /// Convierte un locale ISO ("es_ES") en código corto ("es").
+    /// </summary>
+    public static string ObtenerCodigoIdiomaDeLocale(string locale)
+    {
+        if (string.IsNullOrEmpty(locale))
+            return IdiomaPorDefecto.Codigo;
 
-        return Idioma.Castellano; // Valor por defecto
+        int guion = locale.IndexOf('_');
+        return guion > 0 ? locale.Substring(0, guion).ToLower() : locale.ToLower();
+    }
+
+    /// <summary>
+    /// Devuelve el objeto Idioma correspondiente a un código.
+    /// </summary>
+    public static Idioma ObtenerIdiomaDeCodigo(string codigoIdioma)
+    {
+        if (string.IsNullOrEmpty(codigoIdioma))
+            codigoIdioma = IdiomaPorDefecto.Codigo;
+
+        return IdiomasDisponibles[codigoIdioma];
     }
 }

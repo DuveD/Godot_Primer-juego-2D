@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://cakgl1bhgbmfq"]
+
+[ext_resource type="Script" uid="uid://dp721n7hxw3x1" path="res://escenas/sistema/GestorAudio.cs" id="1_v4wtt"]
+
+[node name="GestorAudio" type="Node"]
+script = ExtResource("1_v4wtt")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="."]
+
+[node name="EffectsContainer" type="Node" parent="."]

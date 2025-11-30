@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Godot;
 using Primerjuego2D.escenas.entidades.enemigo;
 using Primerjuego2D.nucleo.constantes;
@@ -6,28 +7,26 @@ using Primerjuego2D.nucleo.utilidades.log;
 
 namespace Primerjuego2D.escenas.entidades.jugador;
 
-public partial class Jugador : Area2D
+public partial class Jugador : CharacterBody2D
 {
     public const string ANIMATION_UP = "up";
 
     public const string ANIMATION_WALK = "walk";
 
     [Export]
-    public int Speed { get; set; } = 400; // Velocidad de movimiento del jugador (pixels/sec).
+    public int Velocidad { get; set; } = 400; // Velocidad de movimiento del jugador (pixels/sec).
 
     public bool Muerto { get; private set; } = false;
-
 
     // Señal "MuerteJugador" para indicar colisión con el jugador.
     [Signal]
     public delegate void MuerteJugadorEventHandler();
 
     private CollisionShape2D _CollisionShape2D;
-    private CollisionShape2D CollisionShape2D => _CollisionShape2D ??= GetNode<CollisionShape2D>("CollisionShape2D");
+    private CollisionShape2D CollisionShape2D => _CollisionShape2D ??= GetNode<CollisionShape2D>("HitBox/HitBoxCollisionShape2D");
 
     private AnimatedSprite2D _AnimatedSprite2D;
     private AnimatedSprite2D AnimatedSprite2D => _AnimatedSprite2D ??= GetNode<AnimatedSprite2D>("AnimatedSprite2D");
-
 
     private Vector2 TamanoPantalla => UtilidadesPantalla.ObtenerTamanoPantalla(this);
 
@@ -56,7 +55,7 @@ public partial class Jugador : Area2D
         // Idicamos la animación según si está en movimiento o parado.
         if (velocity.Length() > 0)
         {
-            velocity = velocity.Normalized() * Speed;
+            velocity = velocity.Normalized() * Velocidad;
             this.AnimatedSprite2D.Play();
         }
         else
@@ -186,7 +185,7 @@ public partial class Jugador : Area2D
         await AnimacionMuerte();
     }
 
-    private async System.Threading.Tasks.Task AnimacionMuerte()
+    private async Task AnimacionMuerte()
     {
         // Provocamos un shacek de la cámara.
         Juego.Camara?.AddTrauma(0.3f);
