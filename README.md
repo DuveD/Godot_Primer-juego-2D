@@ -15,15 +15,30 @@ He ampliado el proyecto con características extra para aprender más sobre Godo
 
 ## ⚡ Características añadidas
 
-- Movimiento en 8 direcciones con "animación" correspondiente.
-- Fondo con partículas.
-- Menú principal.
-- Pausa de la partida.
+### v1.3.0
+
 - Monedas con animación vinculadas a la puntuación.
-- Gestión de la localización e idiomas Español e Inglés.
 - Gestor de audio avanzado con pool de reproductores para sonidos.
 - Diferentes niveles de audio para música y efectos.
 - Gestión de ajustes persistido en fichero 'ajustes.ini'.
+
+### v1.2.0
+
+- Sistema de Logger con niveles Trace, Info, Warning y Error.
+- Menú principal.
+- Fondo con partículas.
+- Proyecto actualizado a Godot 4.5.1.
+- Efecto Shake al ser golpeado por un enemigo.
+
+### v1.1.0
+
+- Gestión de la localización e idiomas Español e Inglés.
+- Pausa de la partida.
+
+### v1.0.0
+
+- Movimiento en 8 direcciones con "animación" correspondiente.
+- Juego base implementado.
 
 ## 📖 Referencias
 
