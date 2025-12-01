@@ -1,10 +1,14 @@
-[gd_scene load_steps=11 format=3 uid="uid://h6xujbx1ear1"]
+[gd_scene load_steps=12 format=3 uid="uid://h6xujbx1ear1"]
 
 [ext_resource type="Script" uid="uid://07yjwb7jevd5" path="res://escenas/menuPrincipal/MenuPrincipal.cs" id="1_4116w"]
 [ext_resource type="Theme" uid="uid://dfuasivovo3du" path="res://recursos/temas/menuPrincipal/MenuPrincipalBotonSecundario.tres" id="3_eq5mx"]
 [ext_resource type="Theme" uid="uid://bpuuj2ixgd5t6" path="res://recursos/temas/menuPrincipal/MenuPrincipalBotonPrimario.tres" id="3_f4jcg"]
+[ext_resource type="Script" uid="uid://cicfsslle8hmx" path="res://escenas/menuPrincipal/ButtonEmpezarPartida.cs" id="5_rs0f5"]
 [ext_resource type="Texture2D" uid="uid://b7ot3b2kkcphi" path="res://recursos/imagenes/banderas/flag_spain.png" id="6_xxxid"]
 [ext_resource type="Texture2D" uid="uid://bpiwulkracpb5" path="res://recursos/imagenes/banderas/flag_uk.png" id="7_q8bqa"]
+
+[sub_resource type="SystemFont" id="SystemFont_6mw57"]
+subpixel_positioning = 0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6ip4d"]
 content_margin_left = 30.0
@@ -24,9 +28,6 @@ PanelContainer/styles/panel = SubResource("StyleBoxFlat_6ip4d")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6ip4d"]
 
-[sub_resource type="SystemFont" id="SystemFont_6mw57"]
-subpixel_positioning = 0
-
 [node name="MenuPrincipal" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -35,6 +36,25 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_4116w")
+
+[node name="MenuButtonLenguaje" type="MenuButton" parent="."]
+layout_direction = 1
+layout_mode = 1
+offset_right = 218.0
+offset_bottom = 31.0
+theme_override_fonts/font = SubResource("SystemFont_6mw57")
+text = "BatallaHUD.boton.lenguaje"
+alignment = 0
+switch_on_hover = true
+item_count = 2
+popup/item_0/text = "BatallaHUD.boton.castellano"
+popup/item_0/icon = ExtResource("6_xxxid")
+popup/item_0/checkable = 2
+popup/item_0/id = 0
+popup/item_1/text = "BatallaHUD.boton.ingles"
+popup/item_1/icon = ExtResource("7_q8bqa")
+popup/item_1/checkable = 2
+popup/item_1/id = 1
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
@@ -67,38 +87,24 @@ theme_override_constants/separation = 18
 
 [node name="ButtonEmpezarPartida" type="Button" parent="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_bottom = NodePath("../ButtonCargarPartida")
 theme = ExtResource("3_f4jcg")
 text = "MenuPrincipal.boton.empezarPartida"
+script = ExtResource("5_rs0f5")
 
 [node name="ButtonCargarPartida" type="Button" parent="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_right = NodePath("../ButtonEmpezarPartida")
+focus_neighbor_bottom = NodePath("../ButtonSalir")
 theme = ExtResource("3_eq5mx")
 text = "MenuPrincipal.boton.cargarPartida"
 
 [node name="ButtonSalir" type="Button" parent="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../ButtonCargarPartida")
 theme = ExtResource("3_eq5mx")
 text = "MenuPrincipal.boton.salir"
 
-[node name="MenuButtonLenguaje" type="MenuButton" parent="."]
-layout_direction = 1
-layout_mode = 1
-offset_right = 203.0
-offset_bottom = 31.0
-theme_override_fonts/font = SubResource("SystemFont_6mw57")
-text = "BatallaHUD.boton.lenguaje"
-alignment = 0
-switch_on_hover = true
-item_count = 2
-popup/item_0/text = "BatallaHUD.boton.castellano"
-popup/item_0/icon = ExtResource("6_xxxid")
-popup/item_0/checkable = 2
-popup/item_0/id = 0
-popup/item_1/text = "BatallaHUD.boton.ingles"
-popup/item_1/icon = ExtResource("7_q8bqa")
-popup/item_1/checkable = 2
-popup/item_1/id = 1
-
-[connection signal="pressed" from="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonEmpezarPartida" to="." method="OnButtonEmpezarPartidaPressed"]
+[connection signal="PressedAnimationEnd" from="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonEmpezarPartida" to="." method="OnButtonEmpezarPartidaPressed"]
 [connection signal="pressed" from="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonCargarPartida" to="." method="OnButtonCargarPartidaPressed"]
 [connection signal="pressed" from="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonSalir" to="." method="OnButtonSalirPressed"]

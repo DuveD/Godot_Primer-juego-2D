@@ -32,8 +32,8 @@ public partial class Batalla : Node
     private Marker2D _StartPosition;
     private Marker2D StartPosition => _StartPosition ??= GetNode<Marker2D>("StartPosition");
 
-    private PathFollow2D _MobSpawnLocation;
-    private PathFollow2D MobSpawnLocation => _MobSpawnLocation ??= GetNode<PathFollow2D>("EnemyPath/EnemySpawnLocation");
+    private PathFollow2D _EnemySpawnLocation;
+    private PathFollow2D EnemySpawnLocation => _EnemySpawnLocation ??= GetNode<PathFollow2D>("EnemyPath/EnemySpawnLocation");
 
     private BatallaControlador _BatallaControlador;
     private BatallaControlador BatallaControlador => _BatallaControlador ??= GetNode<BatallaControlador>("BatallaControlador");
@@ -92,13 +92,13 @@ public partial class Batalla : Node
         Enemigo enemigo = EnemyScene.Instantiate<Enemigo>();
 
         // Elegimos una localización aleatória del path 2D de los enemigos.
-        this.MobSpawnLocation.ProgressRatio = Randomizador.GetRandomFloat();
+        this.EnemySpawnLocation.ProgressRatio = Randomizador.GetRandomFloat();
 
         // Set the mob's position to a random location.
-        enemigo.Position = this.MobSpawnLocation.Position;
+        enemigo.Position = this.EnemySpawnLocation.Position;
 
         // Informamos la dirección del sprite enemigo. Perpendicular a la dirección del path 2D de los enemigos. 
-        float direction = this.MobSpawnLocation.RotationDegrees + 90;
+        float direction = this.EnemySpawnLocation.RotationDegrees + 90;
 
         // Randomizamos la dirección, de -45 a 45.
         direction += (float)Randomizador.GetRandomInt(-45, 45);

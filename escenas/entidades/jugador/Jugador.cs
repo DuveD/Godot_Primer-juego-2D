@@ -77,16 +77,16 @@ public partial class Jugador : CharacterBody2D
     {
         var velocity = Vector2.Zero; // El vector de movimiento del jugador.
 
-        if (Input.IsActionPressed(ConstantesAcciones.MOVE_RIGHT))
+        if (Input.IsActionPressed(ConstantesAcciones.RIGHT))
             velocity.X += 1;
 
-        if (Input.IsActionPressed(ConstantesAcciones.MOVE_LEFT))
+        if (Input.IsActionPressed(ConstantesAcciones.LEFT))
             velocity.X -= 1;
 
-        if (Input.IsActionPressed(ConstantesAcciones.MOVE_DOWN))
+        if (Input.IsActionPressed(ConstantesAcciones.DOWN))
             velocity.Y += 1;
 
-        if (Input.IsActionPressed(ConstantesAcciones.MOVE_UP))
+        if (Input.IsActionPressed(ConstantesAcciones.UP))
             velocity.Y -= 1;
 
         return velocity;

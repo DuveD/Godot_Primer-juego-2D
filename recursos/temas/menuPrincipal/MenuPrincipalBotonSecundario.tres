@@ -1,14 +1,13 @@
 [gd_resource type="Theme" load_steps=5 format=3 uid="uid://dfuasivovo3du"]
 
 [ext_resource type="StyleBox" uid="uid://b4le4eiv00uhl" path="res://recursos/temas/menuPrincipal/MenuPrincipalBotonSecundario_hover.tres" id="1_nwela"]
+[ext_resource type="StyleBox" uid="uid://bj3avjl3ew8sc" path="res://recursos/temas/menuPrincipal/MenuPrincipalBotonSecundario_focus.tres" id="1_veech"]
 [ext_resource type="StyleBox" uid="uid://5xxm4sj1he4b" path="res://recursos/temas/menuPrincipal/MenuPrincipalBotonSecundario_normal.tres" id="2_nwela"]
 [ext_resource type="StyleBox" uid="uid://dx0lki262qktc" path="res://recursos/temas/menuPrincipal/MenuPrincipalBotonSecundario_pressed.tres" id="3_nwela"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rm7y6"]
-
 [resource]
 Button/font_sizes/font_size = 18
-Button/styles/focus = SubResource("StyleBoxEmpty_rm7y6")
+Button/styles/focus = ExtResource("1_veech")
 Button/styles/hover = ExtResource("1_nwela")
 Button/styles/normal = ExtResource("2_nwela")
 Button/styles/pressed = ExtResource("3_nwela")

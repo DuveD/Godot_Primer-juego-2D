@@ -28,7 +28,7 @@ public partial class BatallaControlador : Node
 
     public override void _Input(InputEvent @event)
     {
-        if (@event.IsActionPressed(ConstantesAcciones.PAUSAR_JUEGO))
+        if (@event.IsActionPressed(ConstantesAcciones.ESCAPE))
         {
             OnPauseButtonPressed();
         }

@@ -136,4 +136,23 @@ public static class UtilidadesNodos
         foreach (Node child in node.GetChildren())
             child.QueueFree();
     }
+
+    public static T ObtenerNodoPorNombre<T>(Node nodoPadre, string nombre) where T : Node
+    {
+        if (nodoPadre.Name == nombre && nodoPadre is T match)
+        {
+            return match;
+        }
+        else if (nodoPadre.GetChildren().Count > 0)
+        {
+            foreach (Node child in nodoPadre.GetChildren())
+            {
+                var result = ObtenerNodoPorNombre<T>(child, nombre);
+                if (result != null)
+                    return result;
+            }
+        }
+
+        return null;
+    }
 }

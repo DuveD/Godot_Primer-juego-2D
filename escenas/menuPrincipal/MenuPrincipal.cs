@@ -1,5 +1,6 @@
 using Godot;
 using Primerjuego2D.nucleo.configuracion;
+using Primerjuego2D.nucleo.constantes;
 using Primerjuego2D.nucleo.localizacion;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
@@ -14,17 +15,22 @@ public partial class MenuPrincipal : Control
     [Signal]
     public delegate void BotonEmpezarPartidaPulsadoEventHandler();
 
-    ColorRect _Fondo;
+    private ColorRect _Fondo;
     private ColorRect Fondo => _Fondo ??= GetNode<ColorRect>("Fondo");
 
     private MenuButton _MenuButtonLenguaje;
     private MenuButton MenuButtonLenguaje => _MenuButtonLenguaje ??= GetNode<MenuButton>("MenuButtonLenguaje");
+
+    private Button _ButtonEmpezarPartida;
+    private Button ButtonEmpezarPartida => _ButtonEmpezarPartida ??= UtilidadesNodos.ObtenerNodoPorNombre<Button>(this, "ButtonEmpezarPartida");
 
     public override void _Ready()
     {
         LoggerJuego.Trace(this.Name + " Ready.");
 
         InicializarMenuButtonLenguaje();
+
+        ButtonEmpezarPartida.GrabFocus();
     }
 
     private void InicializarMenuButtonLenguaje()
