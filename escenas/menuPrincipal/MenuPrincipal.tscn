@@ -5,7 +5,7 @@
 [ext_resource type="Theme" uid="uid://bpuuj2ixgd5t6" path="res://recursos/temas/menuPrincipal/MenuPrincipalBotonPrimario.tres" id="3_f4jcg"]
 [ext_resource type="Script" uid="uid://cicfsslle8hmx" path="res://escenas/menuPrincipal/ButtonEmpezarPartida.cs" id="5_rs0f5"]
 [ext_resource type="Texture2D" uid="uid://b7ot3b2kkcphi" path="res://recursos/imagenes/banderas/flag_spain.png" id="6_xxxid"]
-[ext_resource type="Script" uid="uid://cowqast5hb1in" path="res://escenas/menuPrincipal/ButtonCargarPartida.cs" id="7_mxkrh"]
+[ext_resource type="Script" uid="uid://bd05siqa7jip2" path="res://escenas/menuPrincipal/ButtonAjustes.cs" id="7_mxkrh"]
 [ext_resource type="Texture2D" uid="uid://bpiwulkracpb5" path="res://recursos/imagenes/banderas/flag_uk.png" id="7_q8bqa"]
 [ext_resource type="Script" uid="uid://dafkl1d6lxkis" path="res://escenas/menuPrincipal/ButtonSalir.cs" id="8_oupjs"]
 
@@ -42,8 +42,11 @@ script = ExtResource("1_4116w")
 [node name="MenuButtonLenguaje" type="MenuButton" parent="."]
 layout_direction = 1
 layout_mode = 1
+offset_top = 4.0
 offset_right = 218.0
-offset_bottom = 31.0
+offset_bottom = 35.0
+focus_neighbor_bottom = NodePath("../CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonEmpezarPartida")
+focus_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_6mw57")
 text = "BatallaHUD.boton.lenguaje"
 alignment = 0
@@ -89,14 +92,15 @@ theme_override_constants/separation = 18
 
 [node name="ButtonEmpezarPartida" type="Button" parent="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
-focus_neighbor_bottom = NodePath("../ButtonCargarPartida")
+focus_neighbor_top = NodePath("../../../../../MenuButtonLenguaje")
+focus_neighbor_bottom = NodePath("../ButtonAjustes")
 theme = ExtResource("3_f4jcg")
 text = "MenuPrincipal.boton.empezarPartida"
 script = ExtResource("5_rs0f5")
 
-[node name="ButtonCargarPartida" type="Button" parent="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
+[node name="ButtonAjustes" type="Button" parent="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
-focus_neighbor_right = NodePath("../ButtonEmpezarPartida")
+focus_neighbor_top = NodePath("../ButtonEmpezarPartida")
 focus_neighbor_bottom = NodePath("../ButtonSalir")
 theme = ExtResource("3_eq5mx")
 text = "MenuPrincipal.boton.ajustes"
@@ -104,11 +108,11 @@ script = ExtResource("7_mxkrh")
 
 [node name="ButtonSalir" type="Button" parent="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../ButtonCargarPartida")
+focus_neighbor_top = NodePath("../ButtonAjustes")
 theme = ExtResource("3_eq5mx")
 text = "MenuPrincipal.boton.salir"
 script = ExtResource("8_oupjs")
 
 [connection signal="PressedAnimationEnd" from="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonEmpezarPartida" to="." method="OnButtonEmpezarPartidaPressedAnimationEnd"]
-[connection signal="pressed" from="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonCargarPartida" to="." method="OnButtonCargarPartidaPressed"]
+[connection signal="pressed" from="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonAjustes" to="." method="OnButtonAjustesPressed"]
 [connection signal="pressed" from="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonSalir" to="." method="OnButtonSalirPressed"]

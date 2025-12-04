@@ -1,14 +1,18 @@
 using Godot;
+using Primerjuego2D.nucleo.modelos;
 
 namespace Primerjuego2D.escenas.menuPrincipal;
 
-public partial class ButtonEmpezarPartida : Button
+public partial class ButtonEmpezarPartida : BotonMenuPrincipal
 {
 	[Signal]
 	public delegate void PressedAnimationEndEventHandler();
 
-	[Export] public int NumeroParpadeos = 4;
-	[Export] public float IntervaloEntreParpadeos = 0.10f;
+	[Export]
+	public int NumeroParpadeos = 4;
+
+	[Export]
+	public float IntervaloEntreParpadeos = 0.10f;
 
 	private Tween _tween;
 	private bool _blinking = false;
@@ -21,22 +25,13 @@ public partial class ButtonEmpezarPartida : Button
 	public override void _Ready()
 	{
 		this.Pressed += StartBlink;
-		this.MouseEntered += OnMouseEntered;
 
 		_focusStyle = GetThemeStylebox("focus")?.Duplicate() as StyleBox;
 		_hoverStyle = GetThemeStylebox("hover")?.Duplicate() as StyleBox;
 		_normalStyle = GetThemeStylebox("normal")?.Duplicate() as StyleBox;
 		_pressedStyle = GetThemeStylebox("pressed")?.Duplicate() as StyleBox;
-	}
 
-	public void OnFocusedEntered()
-	{
-		Global.GestorAudio.ReproducirSonido("kick.mp3");
-	}
-
-	public void OnMouseEntered()
-	{
-		Global.GestorAudio.ReproducirSonido("kick.mp3");
+		base._Ready();
 	}
 
 	private void StartBlink()

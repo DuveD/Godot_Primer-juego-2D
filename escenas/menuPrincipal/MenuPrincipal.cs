@@ -5,16 +5,20 @@ using Godot;
 using Primerjuego2D.nucleo.configuracion;
 using Primerjuego2D.nucleo.constantes;
 using Primerjuego2D.nucleo.localizacion;
+using Primerjuego2D.nucleo.modelos;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
+using static Primerjuego2D.nucleo.utilidades.log.LoggerJuego;
 
 namespace Primerjuego2D.escenas.menuPrincipal;
 
+[AtributoNivelLog(NivelLog.Info)]
 public partial class MenuPrincipal : Control
 {
     private bool _navegacionPorTeclado = true;
 
     public const long ID_OPCION_CASTELLANO = 0;
+
     public const long ID_OPCION_INGLES = 1;
 
     [Signal]
@@ -27,7 +31,6 @@ public partial class MenuPrincipal : Control
     private MenuButton MenuButtonLenguaje => _MenuButtonLenguaje ??= GetNode<MenuButton>("MenuButtonLenguaje");
 
     private List<Button> _BotonesMenu;
-
     private List<Button> BotonesMenu => _BotonesMenu ??= UtilidadesNodos.ObtenerNodosDeTipo<Button>(this);
 
     private ButtonEmpezarPartida _ButtonEmpezarPartida;
@@ -41,8 +44,7 @@ public partial class MenuPrincipal : Control
 
         InicializarMenuButtonLenguaje();
 
-        this.ButtonEmpezarPartida.GrabFocus();
-        this.ButtonEmpezarPartida.FocusEntered += () => this.ButtonEmpezarPartida.OnFocusedEntered();
+        this.ButtonEmpezarPartida.GrabFocusSilencioso();
         _ultimoBotonConFocus = this.ButtonEmpezarPartida;
 
         foreach (var boton in BotonesMenu)
@@ -73,7 +75,20 @@ public partial class MenuPrincipal : Control
         _navegacionPorTeclado = true;
         foreach (var boton in BotonesMenu)
             boton.FocusMode = FocusModeEnum.All;
-        _ultimoBotonConFocus?.GrabFocus();
+
+        GrabFocusUltimoBotonConFocus();
+    }
+
+    private void GrabFocusUltimoBotonConFocus()
+    {
+        if (this._ultimoBotonConFocus is BotonMenuPrincipal botonMenuPrincipal)
+        {
+            botonMenuPrincipal.GrabFocusSilencioso();
+        }
+        else
+        {
+            this._ultimoBotonConFocus.GrabFocus();
+        }
     }
 
     private void DesactivarNavegacionTeclado()
@@ -130,9 +145,9 @@ public partial class MenuPrincipal : Control
         EmitSignal(SignalName.BotonEmpezarPartidaPulsado);
     }
 
-    private void OnButtonCargarPartidaPressed()
+    private void OnButtonAjustesPressed()
     {
-        LoggerJuego.Trace("Botón 'ButtonCargarPartida' pulsado.");
+        LoggerJuego.Trace("Botón 'ButtonAjustes' pulsado.");
 
         Global.GestorAudio.ReproducirSonido("digital_click.mp3");
     }
