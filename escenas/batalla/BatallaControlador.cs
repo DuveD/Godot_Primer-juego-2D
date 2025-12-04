@@ -35,7 +35,6 @@ public partial class BatallaControlador : Node
 
     private void OnPauseButtonPressed()
     {
-
         if (!this.BatallaEnCurso)
             return;
 
@@ -57,6 +56,7 @@ public partial class BatallaControlador : Node
             return;
 
         BatallaEnCurso = true;
+
         LoggerJuego.Info("Batalla iniciada.");
         EmitSignal(SignalName.BatallaIniciada);
     }

@@ -155,4 +155,27 @@ public static class UtilidadesNodos
 
         return null;
     }
+
+    public static List<T> ObtenerNodosDeTipo<T>(Node nodoPadre, bool? visible = null) where T : Node
+    {
+        var resultado = new List<T>();
+
+        if (nodoPadre == null)
+            return resultado;
+
+        if (nodoPadre is T nodoDelTipo)
+        {
+            if (visible == null || (nodoDelTipo is CanvasItem ci && ci.Visible == visible))
+            {
+                resultado.Add(nodoDelTipo);
+            }
+        }
+
+        foreach (Node hijo in nodoPadre.GetChildren())
+        {
+            resultado.AddRange(ObtenerNodosDeTipo<T>(hijo, visible));
+        }
+
+        return resultado;
+    }
 }

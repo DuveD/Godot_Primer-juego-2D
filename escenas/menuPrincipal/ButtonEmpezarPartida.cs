@@ -21,6 +21,7 @@ public partial class ButtonEmpezarPartida : Button
 	public override void _Ready()
 	{
 		this.Pressed += StartBlink;
+		this.MouseEntered += OnMouseEntered;
 
 		_focusStyle = GetThemeStylebox("focus")?.Duplicate() as StyleBox;
 		_hoverStyle = GetThemeStylebox("hover")?.Duplicate() as StyleBox;
@@ -29,6 +30,11 @@ public partial class ButtonEmpezarPartida : Button
 	}
 
 	public void OnFocusedEntered()
+	{
+		Global.GestorAudio.ReproducirSonido("kick.mp3");
+	}
+
+	public void OnMouseEntered()
 	{
 		Global.GestorAudio.ReproducirSonido("kick.mp3");
 	}

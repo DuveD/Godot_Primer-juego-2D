@@ -99,7 +99,7 @@ layout_mode = 2
 focus_neighbor_right = NodePath("../ButtonEmpezarPartida")
 focus_neighbor_bottom = NodePath("../ButtonSalir")
 theme = ExtResource("3_eq5mx")
-text = "MenuPrincipal.boton.cargarPartida"
+text = "MenuPrincipal.boton.ajustes"
 script = ExtResource("7_mxkrh")
 
 [node name="ButtonSalir" type="Button" parent="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]

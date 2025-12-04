@@ -15,9 +15,14 @@ He ampliado el proyecto con características extra para aprender más sobre Godo
 
 ## ⚡ Características añadidas
 
+### v1.4.0
+
+- Cambio de feedback de uso de los botones del menú principal según se use teclado o ratón.
+- Añadido control para no spawnear monedas cerca del jugador.
+
 ### v1.3.0
 
-- Monedas con animación vinculadas a la puntuación.
+- Añadido spawn de monedas con animación vinculadas a la puntuación.
 - Gestor de audio avanzado con pool de reproductores para sonidos.
 - Diferentes niveles de audio para música y efectos.
 - Gestión de ajustes persistido en fichero 'ajustes.ini'.
@@ -60,6 +65,6 @@ He ampliado el proyecto con características extra para aprender más sobre Godo
 ## ⚖️ Aviso de uso
 
 Este proyecto se ha realizado **únicamente con fines educativos** y de aprendizaje.  
-No pretende comercializar ni redistribuir los contenidos originales de Godot ni de los autores de los recursos utilizados .
+No pretende comercializar ni redistribuir los contenidos originales de Godot ni de los autores de los recursos utilizados.
 
 El contenido original de este proyecto está bajo el copyright de los autores de los diferentes recursos.

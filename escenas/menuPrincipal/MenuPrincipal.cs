@@ -1,6 +1,9 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 using Primerjuego2D.nucleo.configuracion;
+using Primerjuego2D.nucleo.constantes;
 using Primerjuego2D.nucleo.localizacion;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
@@ -9,6 +12,8 @@ namespace Primerjuego2D.escenas.menuPrincipal;
 
 public partial class MenuPrincipal : Control
 {
+    private bool _navegacionPorTeclado = true;
+
     public const long ID_OPCION_CASTELLANO = 0;
     public const long ID_OPCION_INGLES = 1;
 
@@ -21,8 +26,14 @@ public partial class MenuPrincipal : Control
     private MenuButton _MenuButtonLenguaje;
     private MenuButton MenuButtonLenguaje => _MenuButtonLenguaje ??= GetNode<MenuButton>("MenuButtonLenguaje");
 
+    private List<Button> _BotonesMenu;
+
+    private List<Button> BotonesMenu => _BotonesMenu ??= UtilidadesNodos.ObtenerNodosDeTipo<Button>(this);
+
     private ButtonEmpezarPartida _ButtonEmpezarPartida;
-    private ButtonEmpezarPartida ButtonEmpezarPartida => _ButtonEmpezarPartida ??= UtilidadesNodos.ObtenerNodoPorNombre<ButtonEmpezarPartida>(this, "ButtonEmpezarPartida");
+    private ButtonEmpezarPartida ButtonEmpezarPartida => _ButtonEmpezarPartida ??= BotonesMenu.OfType<ButtonEmpezarPartida>().FirstOrDefault();
+
+    private Button _ultimoBotonConFocus = null;
 
     public override void _Ready()
     {
@@ -30,8 +41,46 @@ public partial class MenuPrincipal : Control
 
         InicializarMenuButtonLenguaje();
 
-        ButtonEmpezarPartida.GrabFocus();
+        this.ButtonEmpezarPartida.GrabFocus();
         this.ButtonEmpezarPartida.FocusEntered += () => this.ButtonEmpezarPartida.OnFocusedEntered();
+        _ultimoBotonConFocus = this.ButtonEmpezarPartida;
+
+        foreach (var boton in BotonesMenu)
+            boton.FocusEntered += () => _ultimoBotonConFocus = boton;
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        if (@event is InputEventKey keyEvent && keyEvent.Pressed)
+        {
+            if (!_navegacionPorTeclado &&
+                UtilidadesControles.IsActionPressed(@event, ConstantesAcciones.UP, ConstantesAcciones.RIGHT, ConstantesAcciones.DOWN, ConstantesAcciones.LEFT))
+            {
+                LoggerJuego.Trace("Activamos la navegación por teclado.");
+                ActivarNavegacionTeclado();
+            }
+            return;
+        }
+
+        if (@event is InputEventMouse && _navegacionPorTeclado)
+        {
+            LoggerJuego.Trace("Desactivamos la navegación por teclado.");
+            DesactivarNavegacionTeclado();
+        }
+    }
+    private void ActivarNavegacionTeclado()
+    {
+        _navegacionPorTeclado = true;
+        foreach (var boton in BotonesMenu)
+            boton.FocusMode = FocusModeEnum.All;
+        _ultimoBotonConFocus?.GrabFocus();
+    }
+
+    private void DesactivarNavegacionTeclado()
+    {
+        _navegacionPorTeclado = false;
+        foreach (var boton in BotonesMenu)
+            boton.FocusMode = FocusModeEnum.None;
     }
 
     private void InicializarMenuButtonLenguaje()
@@ -97,4 +146,6 @@ public partial class MenuPrincipal : Control
 
         this.GetTree().Quit();
     }
+
+
 }

@@ -8,5 +8,6 @@ BatallaHUD.boton.castellano,Castellano,Spanish
 BatallaHUD.boton.ingles,Inglés,English
 BatallaHUD.mensaje.pausa,Juego Pausado,Game Paused
 MenuPrincipal.boton.empezarPartida,Inicio,Start
+MenuPrincipal.boton.ajustes,Ajustes,Settings
 MenuPrincipal.boton.cargarPartida,Cargar Partida,Load Game
 MenuPrincipal.boton.salir,Salir,Quit
