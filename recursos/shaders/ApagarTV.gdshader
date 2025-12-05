@@ -2,22 +2,22 @@ shader_type canvas_item;
 
 uniform float progress : hint_range(0.0, 1.0);
 
-// Altura (en UV) de la cortina negra.
+// Color de la zona visible (blanco)
+uniform vec4 inner_color : source_color = vec4(0.9, 0.9, 0.85, 1.0); // #FFFFFF
+
+// Color de la cortina (negro)
+uniform vec4 outer_color : source_color = vec4(0.0, 0.0, 0.0, 1.0); // #000000
+
 void fragment() {
-    // UV de 0 a 1
     float y = UV.y;
 
-    // Centro vertical (0.5)
-    // El negro avanza desde arriba y abajo hacia este punto.
+    // Border avanza desde 0 a 0.5 (top/bottom hacia centro)
     float border = mix(0.0, 0.5, progress);
 
-    // Si estamos entre border y (1 - border), mostramos la pantalla normal (blanca en este caso)
-    // Si estamos fuera, es negro.
     float isInside = step(border, y) * step(y, 1.0 - border);
 
-    // Color base (efecto blanco).
-    float bright = 1.0 - progress;
+    // Mezcla entre negro y blanco según la posición
+    vec4 final_color = mix(outer_color, inner_color, isInside);
 
-    // Si isInside=1 → se mantiene el color. Si =0 → negro.
-    COLOR = vec4(vec3(bright * isInside), 1.0);
+    COLOR = final_color;
 }

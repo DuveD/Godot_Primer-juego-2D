@@ -22,11 +22,17 @@ public partial class Jugador : CharacterBody2D
     [Signal]
     public delegate void MuerteJugadorEventHandler();
 
+    [Signal]
+    public delegate void AnimacionMuerteJugadorTerminadaEventHandler();
+
     private CollisionShape2D _CollisionShape2D;
     private CollisionShape2D CollisionShape2D => _CollisionShape2D ??= GetNode<CollisionShape2D>("HitBox/HitBoxCollisionShape2D");
 
     private AnimatedSprite2D _AnimatedSprite2D;
     private AnimatedSprite2D AnimatedSprite2D => _AnimatedSprite2D ??= GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+
+    private CpuParticles2D _ExplosionMuerte;
+    private CpuParticles2D ExplosionMuerte => _ExplosionMuerte ??= GetNode<CpuParticles2D>("ExplosionMuerte");
 
     private Vector2 TamanoPantalla => UtilidadesPantalla.ObtenerTamanoPantalla(this);
 
@@ -196,12 +202,18 @@ public partial class Jugador : CharacterBody2D
         this.AnimatedSprite2D.Stop();
         this.AnimatedSprite2D.Modulate = new Color(ConstantesColores.ROJO_PASTEL);
 
-        await UtilidadesNodos.EsperarSegundos(this, 2.0);
+        await UtilidadesNodos.EsperarSegundos(this, 0.5);
 
         // Escondemos el sprite del jugador.
-        Hide();
-
+        AnimatedSprite2D.Hide();
         // Restauramos el color original del sprite.
         this.AnimatedSprite2D.Modulate = new Color(1, 1, 1);
+
+        ExplosionMuerte.Show();
+        ExplosionMuerte.Emitting = true;
+
+        await UtilidadesNodos.EsperarSegundos(this, 2.0);
+
+        EmitSignal(SignalName.AnimacionMuerteJugadorTerminada);
     }
 }

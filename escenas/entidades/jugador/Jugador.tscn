@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cmwoy08j3qtdy"]
+[gd_scene load_steps=9 format=3 uid="uid://cmwoy08j3qtdy"]
 
 [ext_resource type="Texture2D" uid="uid://dmcu4nsau6pwg" path="res://recursos/imagenes/jugador/playerGrey_up1.png" id="1_q37t8"]
 [ext_resource type="Script" uid="uid://dh8ks5vgkrt60" path="res://escenas/entidades/jugador/Jugador.cs" id="1_rxq4h"]
@@ -35,6 +35,10 @@ animations = [{
 radius = 24.0
 height = 48.0
 
+[sub_resource type="Gradient" id="Gradient_kavja"]
+offsets = PackedFloat32Array(0, 0.6980519, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.94509804, 0.94509804, 0.91764706, 1, 1, 1, 1, 0)
+
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 2
 collision_mask = 0
@@ -54,5 +58,22 @@ collision_mask = 100
 
 [node name="HitBoxCollisionShape2D" type="CollisionShape2D" parent="HitBox"]
 shape = SubResource("CapsuleShape2D_nbws6")
+
+[node name="ExplosionMuerte" type="CPUParticles2D" parent="."]
+visible = false
+position = Vector2(0, -4)
+emitting = false
+amount = 40
+lifetime = 1.5
+one_shot = true
+explosiveness = 1.0
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 80.0
+initial_velocity_max = 150.0
+scale_amount_min = 10.0
+scale_amount_max = 10.0
+color_ramp = SubResource("Gradient_kavja")
 
 [connection signal="body_entered" from="HitBox" to="." method="OnBodyEntered"]

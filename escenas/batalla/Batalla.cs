@@ -64,7 +64,7 @@ public partial class Batalla : Node
         this.BatallaControlador.IniciarBatalla();
     }
 
-    public async void GameOver()
+    public async void InicioGameOver()
     {
         Global.GestorAudio.PausarMusica(2f);
 
@@ -73,7 +73,10 @@ public partial class Batalla : Node
         this.BatallaControlador.FinalizarBatalla();
 
         await UtilidadesNodos.EsperarSegundos(this, 2.0);
+    }
 
+    public async void FinGameOver()
+    {
         EmitSignal(SignalName.GameOverFinalizado);
     }
 

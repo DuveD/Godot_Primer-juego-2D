@@ -43,6 +43,8 @@ offset_bottom = 20.0
 grow_vertical = 2
 
 [node name="GpuParticles2D" type="GPUParticles2D" parent="ControlParticulas"]
+modulate = Color(0.94509804, 0.94509804, 0.91764706, 1)
+self_modulate = Color(0.94509804, 0.94509804, 0.91764706, 1)
 amount = 500
 lifetime = 6.0
 preprocess = 20.0

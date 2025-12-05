@@ -57,7 +57,8 @@ MonedaScene = ExtResource("7_t4q4m")
 Jugador = NodePath("../Jugador")
 
 [connection signal="GameOverFinalizado" from="." to="SpawnMonedas" method="DestruirMonedas"]
-[connection signal="MuerteJugador" from="Jugador" to="." method="GameOver"]
+[connection signal="AnimacionMuerteJugadorTerminada" from="Jugador" to="." method="FinGameOver"]
+[connection signal="MuerteJugador" from="Jugador" to="." method="InicioGameOver"]
 [connection signal="timeout" from="EnemyTimer" to="." method="OnEnemyTimerTimeout"]
 [connection signal="timeout" from="StartTimer" to="." method="OnStartTimerTimeout"]
 [connection signal="timeout" from="StartTimer" to="BatallaHUD" method="MostrarMensajeIniciarBatalla"]
