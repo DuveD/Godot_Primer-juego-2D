@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://do1xqqv7m5xh6"]
+
+[ext_resource type="Script" uid="uid://k0g6nc7pw8sj" path="res://escenas/miscelaneo/controles/ControlSlider.cs" id="1_2ab2f"]
+
+[node name="ControlSlider" type="VBoxContainer"]
+script = ExtResource("1_2ab2f")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "Label Control Slider"
+
+[node name="Spacer" type="Control" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SpinBox" type="SpinBox" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="HSlider" type="HSlider" parent="."]
+layout_mode = 2

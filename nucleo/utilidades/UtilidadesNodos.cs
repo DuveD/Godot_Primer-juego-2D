@@ -137,6 +137,9 @@ public static class UtilidadesNodos
             child.QueueFree();
     }
 
+    /// <summary>
+    /// Obtiene un nodo hijo por su nombre.
+    /// </summary>
     public static T ObtenerNodoPorNombre<T>(Node nodoPadre, string nombre) where T : Node
     {
         if (nodoPadre.Name == nombre && nodoPadre is T match)
@@ -156,6 +159,38 @@ public static class UtilidadesNodos
         return null;
     }
 
+
+    /// <summary>
+    /// Obtiene el primer nodo hijo del tipo indicado.
+    /// </summary>
+    public static T ObtenerNodoDeTipo<T>(Node nodoPadre, bool? visible = null) where T : Node
+    {
+        T resultado = null;
+
+        if (nodoPadre == null)
+            return resultado;
+
+        if (nodoPadre is T nodoDelTipo)
+        {
+            if (visible == null || (nodoDelTipo is CanvasItem ci && ci.Visible == visible))
+            {
+                resultado = nodoDelTipo;
+            }
+        }
+
+        foreach (Node hijo in nodoPadre.GetChildren())
+        {
+            resultado = ObtenerNodoDeTipo<T>(hijo, visible);
+            if (resultado != null)
+                break;
+        }
+
+        return resultado;
+    }
+
+    /// <summary>
+    /// Obtiene todos los nodos hijos del tipo indicado.
+    /// </summary>
     public static List<T> ObtenerNodosDeTipo<T>(Node nodoPadre, bool? visible = null) where T : Node
     {
         var resultado = new List<T>();

@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://doyxp6l6eg05"]
+
+[ext_resource type="Script" uid="uid://c1gh2kjhprws6" path="res://escenas/miscelaneo/controles/ControlSeleccion.cs" id="1_57jek"]
+
+[node name="ControlLenguaje" type="HBoxContainer"]
+script = ExtResource("1_57jek")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Label Control Selección"
+
+[node name="Spacer" type="Control" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OptionButton" type="OptionButton" parent="."]
+layout_mode = 2
+
+[node name="Spacer2" type="Control" parent="."]
+layout_mode = 2
