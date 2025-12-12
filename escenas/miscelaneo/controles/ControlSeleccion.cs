@@ -1,7 +1,10 @@
-using Godot;
-using Primerjuego2D.nucleo.utilidades;
 using System;
 using System.Collections.Generic;
+using Godot;
+using Primerjuego2D.nucleo.utilidades;
+using Primerjuego2D.nucleo.utilidades.log;
+
+namespace Primerjuego2D.escenas.miscelaneo.controles;
 
 public partial class ControlSeleccion : HBoxContainer
 {
@@ -16,7 +19,6 @@ public partial class ControlSeleccion : HBoxContainer
 	}
 
 	private Variant _valor;
-
 	[Export]
 	public Variant Valor
 	{
@@ -24,17 +26,20 @@ public partial class ControlSeleccion : HBoxContainer
 		set
 		{
 			_valor = value;
+			PutValueOnControl(value);
 		}
 	}
 
-	private Label _label;
-	private Label Label => _label ??= UtilidadesNodos.ObtenerNodoDeTipo<Label>(this);
+	private Label _Label;
+	private Label Label => _Label ??= UtilidadesNodos.ObtenerNodoDeTipo<Label>(this);
 
 	private OptionButton _OptionButton;
 	private OptionButton OptionButton => _OptionButton ??= UtilidadesNodos.ObtenerNodoDeTipo<OptionButton>(this);
 
 	public override void _Ready()
 	{
+		LoggerJuego.Trace(this.Name + " Ready.");
+
 		this.OptionButton.ItemSelected += OnOptionButtonItemSelected;
 	}
 
@@ -53,14 +58,13 @@ public partial class ControlSeleccion : HBoxContainer
 		OptionButton.SetItemMetadata(index, valor);
 	}
 
-	public void SetValor(Variant valor)
+	private void PutValueOnControl(Variant valor)
 	{
 		for (int i = 0; i < OptionButton.GetItemCount(); i++)
 		{
-			if (OptionButton.GetItemMetadata(i).Equals(valor))
+			if (OptionButton.GetItemMetadata(i).EqualsByType(valor))
 			{
 				OptionButton.Select(i);
-				_valor = valor;
 				return;
 			}
 		}
@@ -69,7 +73,11 @@ public partial class ControlSeleccion : HBoxContainer
 
 	private void OnOptionButtonItemSelected(long index)
 	{
-		_valor = OptionButton.GetItemMetadata((int)index);
-		EmitSignal(SignalName.ValorCambiado, _valor);
+		var valorSeleleccionado = OptionButton.GetItemMetadata((int)index);
+		if (!Equals(_valor, valorSeleleccionado))
+		{
+			_valor = valorSeleleccionado;
+			EmitSignal(SignalName.ValorCambiado, _valor);
+		}
 	}
 }

@@ -1,6 +1,8 @@
 using Godot;
-using System;
 using Primerjuego2D.nucleo.utilidades;
+using Primerjuego2D.nucleo.utilidades.log;
+
+namespace Primerjuego2D.escenas.miscelaneo.controles;
 
 public partial class ControlSlider : VBoxContainer
 {
@@ -13,9 +15,7 @@ public partial class ControlSlider : VBoxContainer
 		get => Label.Text;
 		set => Label.Text = value;
 	}
-
 	private double _valor;
-
 	[Export]
 	public double Valor
 	{
@@ -23,8 +23,7 @@ public partial class ControlSlider : VBoxContainer
 		set
 		{
 			_valor = value;
-			SpinBox.Value = value;
-			SliderVolumen.Value = value;
+			PutValueOnControl(value);
 		}
 	}
 
@@ -39,15 +38,20 @@ public partial class ControlSlider : VBoxContainer
 
 	public override void _Ready()
 	{
+		LoggerJuego.Trace(this.Name + " Ready.");
+
 		// Configuración del rango del SpinBox
+
 		SpinBox.MinValue = 0;
 		SpinBox.MaxValue = 100;
 		SpinBox.Step = 1;
 
 		// Inicialmente sincronizamos ambos valores
+
 		SpinBox.Value = SliderVolumen.Value;
 
 		// Conectamos eventos
+
 		SpinBox.ValueChanged += OnSpinBoxValueChanged;
 		SliderVolumen.ValueChanged += OnSliderVolumenValueChanged;
 	}
@@ -55,10 +59,14 @@ public partial class ControlSlider : VBoxContainer
 	private void OnSpinBoxValueChanged(double value)
 	{
 		// Evitamos bucle infinito
+
 		if (SliderVolumen.Value != value)
 		{
-			SliderVolumen.Value = value;
-			EmitSignal(SignalName.ValorCambiado);
+			if (!Equals(_valor, value))
+			{
+				SliderVolumen.Value = value;
+				EmitSignal(SignalName.ValorCambiado, value);
+			}
 		}
 	}
 
@@ -66,8 +74,17 @@ public partial class ControlSlider : VBoxContainer
 	{
 		if (SpinBox.Value != value)
 		{
-			SpinBox.Value = value;
-			EmitSignal(SignalName.ValorCambiado, value);
+			if (!Equals(_valor, value))
+			{
+				SpinBox.Value = value;
+				EmitSignal(SignalName.ValorCambiado, value);
+			}
 		}
+	}
+
+	private void PutValueOnControl(double value)
+	{
+		SpinBox.Value = value;
+		SliderVolumen.Value = value;
 	}
 }

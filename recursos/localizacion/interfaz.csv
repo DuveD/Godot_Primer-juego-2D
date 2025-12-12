@@ -8,12 +8,15 @@ MenuPrincipal.boton.empezarPartida,Inicio,Start
 MenuPrincipal.boton.ajustes,Ajustes,Settings
 MenuPrincipal.boton.cargarPartida,Cargar Partida,Load Game
 MenuPrincipal.boton.salir,Salir,Quit
-MenuPrincipal.seccion.sonido,Sonido,Sound
-MenuPrincipal.seccion.interfaz,Interfaz,Interface
-MenuPrincipal.seccion.desarrollo,Desarrollo,Developement
+MenuPrincipal.seccion.sonido,Sonido 🔊,Sound 🔊
+MenuPrincipal.seccion.interfaz,Interfaz 📺,Interface 📺
+MenuPrincipal.seccion.desarrollo,Desarrollo 🚀,Developement 🚀
 MenuPrincipal.ajustes.volumenGeneral,Sonido general,General sound
 MenuPrincipal.ajustes.volumenMusica,Musica,Music
 MenuPrincipal.ajustes.volumenEfectos,Efectos,Effects
 MenuPrincipal.ajustes.lenguaje,Lenguaje,Language
-Idioma.es.nombre,Español,Spanish
-Idioma.en.nombre,Inglés,English
+MenuPrincipal.ajustes.nivelLog,Nivel de log,Log level
+MenuPrincipal.ajustes.atras,Volver,Back
+MenuPrincipal.ajustes.guardar,Guardar,Save
+General.dioma.es,Español 🇪🇸,Spanish 🇪🇸
+General.dioma.en,Inglés 🇬🇧,English 🇬🇧

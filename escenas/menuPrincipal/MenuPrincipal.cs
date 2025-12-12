@@ -29,11 +29,11 @@ public partial class MenuPrincipal : Control
     private ColorRect _Fondo;
     private ColorRect Fondo => _Fondo ??= GetNode<ColorRect>("Fondo");
 
-    private MenuButton _MenuButtonLenguaje;
-    private MenuButton MenuButtonLenguaje => _MenuButtonLenguaje ??= GetNode<MenuButton>("MenuButtonLenguaje");
-
     private CenterContainer _ContenedorBotonesPrincipal;
     private CenterContainer ContenedorBotonesPrincipal => _ContenedorBotonesPrincipal ??= GetNode<CenterContainer>("ContenedorBotonesPrincipal");
+
+    private CenterContainer _ContenedorMenuAjustes;
+    private CenterContainer ContenedorMenuAjustes => _ContenedorMenuAjustes ??= GetNode<CenterContainer>("ContenedorMenuAjustes");
 
     private List<Button> _BotonesMenu;
     private List<Button> BotonesMenu => _BotonesMenu ??= UtilidadesNodos.ObtenerNodosDeTipo<Button>(this.ContenedorBotonesPrincipal);
@@ -53,8 +53,6 @@ public partial class MenuPrincipal : Control
     {
         LoggerJuego.Trace(this.Name + " Ready.");
 
-        InicializarMenuButtonLenguaje();
-
         ConfigurarBotonesMenu();
     }
 
@@ -66,7 +64,7 @@ public partial class MenuPrincipal : Control
         foreach (var boton in BotonesMenu)
         {
             boton.FocusEntered += () => _ultimoBotonConFocus = boton;
-            boton.Pressed += () => DesactivarMenu();
+            boton.Pressed += DesactivarMenu;
         }
     }
 
@@ -155,46 +153,6 @@ public partial class MenuPrincipal : Control
             boton.FocusMode = FocusModeEnum.None;
     }
 
-    private void InicializarMenuButtonLenguaje()
-    {
-        PopupMenu popupMenu = this.MenuButtonLenguaje.GetPopup();
-        popupMenu.IdPressed += MenuButtonLenguajeIdPressed;
-
-        Idioma idioma = GestorIdioma.ObtenerIdiomaDeSistema();
-        if (idioma.Codigo == Idioma.ES.Codigo)
-            UtilidadesNodos.CheckItemPorId(popupMenu, ID_OPCION_CASTELLANO);
-        else if (idioma.Codigo == Idioma.EN.Codigo)
-            UtilidadesNodos.CheckItemPorId(popupMenu, ID_OPCION_INGLES);
-        else
-            UtilidadesNodos.CheckItemPorId(popupMenu, ID_OPCION_CASTELLANO);
-    }
-
-    private void MenuButtonLenguajeIdPressed(long id)
-    {
-        LoggerJuego.Trace("Opción de 'MenuButtonLenguaje' pulsado.");
-
-        // Obtenemos el PopupMenu del MenuButton
-        var popupMenu = this.MenuButtonLenguaje.GetPopup();
-
-        // Checkeamos el ítem del id
-        UtilidadesNodos.CheckItemPorId(popupMenu, id);
-
-        Idioma idioma;
-        switch (id)
-        {
-            default:
-            case ID_OPCION_CASTELLANO:
-                idioma = Idioma.ES;
-                break;
-            case ID_OPCION_INGLES:
-                idioma = Idioma.EN;
-                break;
-        }
-
-        GestorIdioma.CambiarIdioma(idioma);
-        Ajustes.Idioma = idioma;
-    }
-
     private void OnButtonEmpezarPartidaPressedAnimationEnd()
     {
         LoggerJuego.Trace("Botón 'ButtonEmpezarPartida' pulsado.");
@@ -207,6 +165,9 @@ public partial class MenuPrincipal : Control
         LoggerJuego.Trace("Botón 'ButtonAjustes' pulsado.");
 
         Global.GestorAudio.ReproducirSonido("digital_click.mp3");
+
+        this.ContenedorBotonesPrincipal.Visible = false;
+        this.ContenedorMenuAjustes.Visible = true;
     }
 
     private async void OnButtonSalirPressed()
@@ -223,5 +184,17 @@ public partial class MenuPrincipal : Control
         await Task.Delay(300);
 
         this.GetTree().Quit();
+    }
+
+    public void OnButtonAjustesAtrasPressed()
+    {
+        LoggerJuego.Trace("Botón Ajustes 'Atrás' pulsado.");
+
+        Global.GestorAudio.ReproducirSonido("digital_click.mp3");
+
+        this.ContenedorMenuAjustes.Visible = false;
+        this.ContenedorBotonesPrincipal.Visible = true;
+
+        ActivarMenu();
     }
 }

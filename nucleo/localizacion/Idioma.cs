@@ -14,7 +14,7 @@ public sealed class Idioma
         TagNombre = tagNombre;
     }
 
-    public static readonly Idioma ES = new("es", "Español", "Idioma.es.nombre");
+    public static readonly Idioma ES = new("es", "Español", "General.dioma.es");
 
-    public static readonly Idioma EN = new("en", "Inglés", "Idioma.en.nombre");
+    public static readonly Idioma EN = new("en", "Inglés", "General.dioma.en");
 }
