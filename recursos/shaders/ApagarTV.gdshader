@@ -8,7 +8,8 @@ uniform vec4 inner_color : source_color = vec4(0.9, 0.9, 0.85, 1.0); // #FFFFFF
 // Color de la cortina (negro)
 uniform vec4 outer_color : source_color = vec4(0.0, 0.0, 0.0, 1.0); // #000000
 
-void fragment() {
+void fragment()
+{
     float y = UV.y;
 
     // Border avanza desde 0 a 0.5 (top/bottom hacia centro)

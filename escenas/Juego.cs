@@ -46,7 +46,7 @@ public partial class Juego : Control
 		string rutaMenuprincipal = UtilidadesNodos.ObtenerRutaEscena<MenuPrincipal>();
 		MenuPrincipal menuPrincipal = (MenuPrincipal)CambiarPantalla(rutaMenuprincipal);
 
-		menuPrincipal.BotonEmpezarPartidaPulsado += CargarBatalla;
+		menuPrincipal.ContenedorMenuPrincipal.BotonEmpezarPartidaPulsado += CargarBatalla;
 	}
 
 	public void CargarBatalla()

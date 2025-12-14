@@ -2,32 +2,45 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
-using Primerjuego2D.escenas;
+using Primerjuego2D.escenas.miscelaneo.controles;
 using Primerjuego2D.nucleo.configuracion;
 using Primerjuego2D.nucleo.localizacion;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
 using static Primerjuego2D.nucleo.utilidades.log.LoggerJuego;
 
+namespace Primerjuego2D.escenas.menuPrincipal;
+
 public partial class ContenedorMenuAjustes : CenterContainer
 {
-	private Primerjuego2D.escenas.miscelaneo.controles.ControlSlider _ControlVolumenGeneral;
-	private Primerjuego2D.escenas.miscelaneo.controles.ControlSlider ControlVolumenGeneral => _ControlVolumenGeneral ??= UtilidadesNodos.ObtenerNodoPorNombre<Primerjuego2D.escenas.miscelaneo.controles.ControlSlider>(this, "ControlVolumenGeneral");
+	private ControlSlider _ControlVolumenGeneral;
+	public ControlSlider ControlVolumenGeneral => _ControlVolumenGeneral ??= UtilidadesNodos.ObtenerNodoPorNombre<ControlSlider>(this, "ControlVolumenGeneral");
 
-	private Primerjuego2D.escenas.miscelaneo.controles.ControlSlider _ControlVolumenMusica;
-	private Primerjuego2D.escenas.miscelaneo.controles.ControlSlider ControlVolumenMusica => _ControlVolumenMusica ??= UtilidadesNodos.ObtenerNodoPorNombre<Primerjuego2D.escenas.miscelaneo.controles.ControlSlider>(this, "ControlVolumenMusica");
+	private ControlSlider _ControlVolumenMusica;
+	private ControlSlider ControlVolumenMusica => _ControlVolumenMusica ??= UtilidadesNodos.ObtenerNodoPorNombre<ControlSlider>(this, "ControlVolumenMusica");
 
-	private Primerjuego2D.escenas.miscelaneo.controles.ControlSlider _ControlVolumenSonido;
-	private Primerjuego2D.escenas.miscelaneo.controles.ControlSlider ControlVolumenSonido => _ControlVolumenSonido ??= UtilidadesNodos.ObtenerNodoPorNombre<Primerjuego2D.escenas.miscelaneo.controles.ControlSlider>(this, "ControlVolumenSonido");
+	private ControlSlider _ControlVolumenSonido;
+	private ControlSlider ControlVolumenSonido => _ControlVolumenSonido ??= UtilidadesNodos.ObtenerNodoPorNombre<ControlSlider>(this, "ControlVolumenSonido");
 
-	private Primerjuego2D.escenas.miscelaneo.controles.ControlSeleccion _ControlLenguaje;
-	private Primerjuego2D.escenas.miscelaneo.controles.ControlSeleccion ControlLenguaje => _ControlLenguaje ??= UtilidadesNodos.ObtenerNodoPorNombre<Primerjuego2D.escenas.miscelaneo.controles.ControlSeleccion>(this, "ControlLenguaje");
+	private ControlSeleccion _ControlLenguaje;
+	private ControlSeleccion ControlLenguaje => _ControlLenguaje ??= UtilidadesNodos.ObtenerNodoPorNombre<ControlSeleccion>(this, "ControlLenguaje");
 
-	private Primerjuego2D.escenas.miscelaneo.controles.ControlSeleccion _ControlNivelLog;
-	private Primerjuego2D.escenas.miscelaneo.controles.ControlSeleccion ControlNivelLog => _ControlNivelLog ??= UtilidadesNodos.ObtenerNodoPorNombre<Primerjuego2D.escenas.miscelaneo.controles.ControlSeleccion>(this, "ControlNivelLog");
+	private ControlSeleccion _ControlNivelLog;
+	private ControlSeleccion ControlNivelLog => _ControlNivelLog ??= UtilidadesNodos.ObtenerNodoPorNombre<ControlSeleccion>(this, "ControlNivelLog");
+
+	private Button _ButtonAtras;
+	private Button ButtonAtras => _ButtonAtras ??= UtilidadesNodos.ObtenerNodoPorNombre<Button>(this, "ButtonAtras");
+
+	private MenuPrincipal _MenuPrincipal;
+	private MenuPrincipal MenuPrincipal => _MenuPrincipal ??= this.GetParent<MenuPrincipal>();
+
+	private List<Control> ElementosMenuAjustes;
+
 	public override void _Ready()
 	{
 		LoggerJuego.Trace(this.Name + " Ready.");
+
+		ConfigurarFocusElementos();
 
 		CargarOpcionesLenguaje();
 		CargarOpcionesNivelLog();
@@ -43,6 +56,36 @@ public partial class ContenedorMenuAjustes : CenterContainer
 		ControlVolumenSonido.ValorCambiado += OnControlVolumenSonidosValorCambiado;
 		ControlLenguaje.ValorCambiado += OnControlLenguajeValorCambiado;
 		ControlNivelLog.ValorCambiado += OnControlNivelLogValorCambiado;
+	}
+
+	private void ConfigurarFocusElementos()
+	{
+		LoggerJuego.Trace("Configuramos el focus de los elementos del menú ajustes.");
+
+		ElementosMenuAjustes = [.. UtilidadesNodos.ObtenerNodosDeTipo<Button>(this)];
+		ElementosMenuAjustes.AddRange(UtilidadesNodos.ObtenerNodosDeTipo<SpinBox>(this));
+		ElementosMenuAjustes.AddRange(UtilidadesNodos.ObtenerNodosDeTipo<HSlider>(this));
+
+		foreach (var elementoMenu in ElementosMenuAjustes)
+		{
+			elementoMenu.FocusEntered += () => this.MenuPrincipal.UltimoElementoConFocus = elementoMenu;
+		}
+	}
+
+	public void ActivarNavegacionTeclado()
+	{
+		LoggerJuego.Trace("Activamos la navegación por teclado.");
+
+		foreach (var elementoMenu in ElementosMenuAjustes)
+			elementoMenu.FocusMode = FocusModeEnum.All;
+	}
+
+	public void DesactivarNavegacionTeclado()
+	{
+		LoggerJuego.Trace("Desactivamos la navegación por teclado.");
+
+		foreach (var elementoMenu in ElementosMenuAjustes)
+			elementoMenu.FocusMode = FocusModeEnum.None;
 	}
 
 	private void CargarOpcionesLenguaje()
@@ -66,8 +109,6 @@ public partial class ContenedorMenuAjustes : CenterContainer
 	public void OnButtonGuardarPressed()
 	{
 		LoggerJuego.Trace("Botón Ajustes 'Guardar' pulsado.");
-
-		Global.GestorAudio.ReproducirSonido("digital_click.mp3");
 
 		Ajustes.GuardarAjustes();
 	}

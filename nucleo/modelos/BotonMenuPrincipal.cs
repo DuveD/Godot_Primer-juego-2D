@@ -6,7 +6,7 @@ namespace Primerjuego2D.nucleo.modelos;
 
 public partial class BotonMenuPrincipal : Button
 {
-    public bool ReproducirSonido { get; set; } = true;
+    private bool _reproducirSonido = true;
 
     public override void _Ready()
     {
@@ -16,7 +16,7 @@ public partial class BotonMenuPrincipal : Button
 
     public void OnFocusedEntered()
     {
-        if (this.ReproducirSonido)
+        if (this._reproducirSonido)
             Global.GestorAudio.ReproducirSonido("kick.mp3");
     }
 
@@ -27,8 +27,8 @@ public partial class BotonMenuPrincipal : Button
 
     public void GrabFocusSilencioso()
     {
-        this.ReproducirSonido = false;
+        this._reproducirSonido = false;
         this.GrabFocus();
-        this.ReproducirSonido = true;
+        this._reproducirSonido = true;
     }
 }

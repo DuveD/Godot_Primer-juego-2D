@@ -1,94 +1,55 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System;
+using System.ComponentModel.Design;
 using Godot;
-using Primerjuego2D.nucleo.configuracion;
 using Primerjuego2D.nucleo.constantes;
-using Primerjuego2D.nucleo.localizacion;
 using Primerjuego2D.nucleo.modelos;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
-using static Primerjuego2D.nucleo.utilidades.log.LoggerJuego;
 
 namespace Primerjuego2D.escenas.menuPrincipal;
 
-[AtributoNivelLog(NivelLog.Info)]
 public partial class MenuPrincipal : Control
 {
-    private bool _menuDesactivado = false;
+    private bool _opcionPulsada = false;
 
     private bool _navegacionPorTeclado = true;
-
-    public const long ID_OPCION_CASTELLANO = 0;
-
-    public const long ID_OPCION_INGLES = 1;
-
-    [Signal]
-    public delegate void BotonEmpezarPartidaPulsadoEventHandler();
 
     private ColorRect _Fondo;
     private ColorRect Fondo => _Fondo ??= GetNode<ColorRect>("Fondo");
 
-    private CenterContainer _ContenedorBotonesPrincipal;
-    private CenterContainer ContenedorBotonesPrincipal => _ContenedorBotonesPrincipal ??= GetNode<CenterContainer>("ContenedorBotonesPrincipal");
+    private ContenedorMenuPrincipal _ContenedorBotonesPrincipal;
+    public ContenedorMenuPrincipal ContenedorMenuPrincipal => _ContenedorBotonesPrincipal ??= GetNode<ContenedorMenuPrincipal>("ContenedorMenuPrincipal");
 
-    private CenterContainer _ContenedorMenuAjustes;
-    private CenterContainer ContenedorMenuAjustes => _ContenedorMenuAjustes ??= GetNode<CenterContainer>("ContenedorMenuAjustes");
+    private ContenedorMenuAjustes _ContenedorMenuAjustes;
+    public ContenedorMenuAjustes ContenedorMenuAjustes => _ContenedorMenuAjustes ??= GetNode<ContenedorMenuAjustes>("ContenedorMenuAjustes");
 
-    private List<Button> _BotonesMenu;
-    private List<Button> BotonesMenu => _BotonesMenu ??= UtilidadesNodos.ObtenerNodosDeTipo<Button>(this.ContenedorBotonesPrincipal);
-
-    private ButtonEmpezarPartida _ButtonEmpezarPartida;
-    private ButtonEmpezarPartida ButtonEmpezarPartida => _ButtonEmpezarPartida ??= BotonesMenu.OfType<ButtonEmpezarPartida>().FirstOrDefault();
-
-    private CanvasLayer _CrtLayer;
-    private CanvasLayer CrtLayer => _CrtLayer ??= GetNode<CanvasLayer>("CRTShutdown");
-
-    private AnimationPlayer _AnimPlayer;
-    private AnimationPlayer AnimPlayer => _AnimPlayer ??= CrtLayer.GetNode<AnimationPlayer>("AnimationPlayer");
-
-    private Button _ultimoBotonConFocus = null;
+    public Control _UltimoElementoConFocus;
+    public Control UltimoElementoConFocus
+    {
+        get => _UltimoElementoConFocus;
+        set
+        {
+            _UltimoElementoConFocus = value;
+            LoggerJuego.Trace("Último elemento con focus actualizado a: " + value.Name);
+        }
+    }
 
     public override void _Ready()
     {
         LoggerJuego.Trace(this.Name + " Ready.");
 
-        ConfigurarBotonesMenu();
+        GrabFocusPrimerElemento();
     }
 
-    private void ConfigurarBotonesMenu()
+    private void GrabFocusPrimerElemento()
     {
-        this.ButtonEmpezarPartida.GrabFocusSilencioso();
-        _ultimoBotonConFocus = this.ButtonEmpezarPartida;
-
-        foreach (var boton in BotonesMenu)
+        if (this.ContenedorMenuPrincipal.Visible)
         {
-            boton.FocusEntered += () => _ultimoBotonConFocus = boton;
-            boton.Pressed += DesactivarMenu;
+            this.ContenedorMenuPrincipal.ButtonEmpezarPartida.GrabFocusSilencioso();
         }
-    }
-
-    private void ActivarMenu()
-    {
-        LoggerJuego.Trace("Activamos el menú.");
-
-        _menuDesactivado = false;
-        foreach (var boton in BotonesMenu)
+        else
         {
-            boton.MouseFilter = MouseFilterEnum.Pass; // Aceptamos clicks
-            boton.FocusMode = FocusModeEnum.All;      // Aceptamos teclado
-        }
-    }
-
-    private void DesactivarMenu()
-    {
-        LoggerJuego.Trace("Desactivamos el menú.");
-
-        _menuDesactivado = true;
-        foreach (var boton in BotonesMenu)
-        {
-            boton.MouseFilter = MouseFilterEnum.Ignore; // Ignora clicks
-            boton.FocusMode = FocusModeEnum.None;       // Ignora teclado
+            this.ContenedorMenuAjustes.ControlVolumenGeneral.GrabFocusSilencioso();
         }
     }
 
@@ -99,7 +60,7 @@ public partial class MenuPrincipal : Control
 
     private void CambioMetodoImput(InputEvent @event)
     {
-        if (_menuDesactivado)
+        if (_opcionPulsada)
         {
             LoggerJuego.Trace("EL menú está desactivado.");
             // Ignora cualquier input
@@ -128,73 +89,70 @@ public partial class MenuPrincipal : Control
     private void ActivarNavegacionTeclado()
     {
         _navegacionPorTeclado = true;
-        foreach (var boton in BotonesMenu)
-            boton.FocusMode = FocusModeEnum.All;
+
+        this.ContenedorMenuPrincipal.ActivarNavegacionTeclado();
+        this.ContenedorMenuAjustes.ActivarNavegacionTeclado();
 
         GrabFocusUltimoBotonConFocus();
-    }
-
-    private void GrabFocusUltimoBotonConFocus()
-    {
-        if (this._ultimoBotonConFocus is BotonMenuPrincipal botonMenuPrincipal)
-        {
-            botonMenuPrincipal.GrabFocusSilencioso();
-        }
-        else
-        {
-            this._ultimoBotonConFocus.GrabFocus();
-        }
     }
 
     private void DesactivarNavegacionTeclado()
     {
         _navegacionPorTeclado = false;
-        foreach (var boton in BotonesMenu)
-            boton.FocusMode = FocusModeEnum.None;
+
+        this.ContenedorMenuPrincipal.DesactivarNavegacionTeclado();
+        this.ContenedorMenuAjustes.DesactivarNavegacionTeclado();
     }
 
-    private void OnButtonEmpezarPartidaPressedAnimationEnd()
+    private void GrabFocusUltimoBotonConFocus()
     {
-        LoggerJuego.Trace("Botón 'ButtonEmpezarPartida' pulsado.");
-
-        EmitSignal(SignalName.BotonEmpezarPartidaPulsado);
+        if (this.UltimoElementoConFocus is BotonMenuPrincipal botonMenuPrincipal)
+        {
+            botonMenuPrincipal.GrabFocusSilencioso();
+        }
+        else
+        {
+            this.UltimoElementoConFocus.GrabFocus();
+        }
     }
 
-    private void OnButtonAjustesPressed()
+    private void MostrarContenedorMenuAjustes()
     {
         LoggerJuego.Trace("Botón 'ButtonAjustes' pulsado.");
 
         Global.GestorAudio.ReproducirSonido("digital_click.mp3");
 
-        this.ContenedorBotonesPrincipal.Visible = false;
+        this.ContenedorMenuPrincipal.Visible = false;
         this.ContenedorMenuAjustes.Visible = true;
+
+        if (_navegacionPorTeclado)
+        {
+            GrabFocusPrimerElemento();
+        }
+        else
+        {
+            this.UltimoElementoConFocus = this.ContenedorMenuAjustes.ControlVolumenGeneral.SliderVolumen;
+        }
     }
 
-    private async void OnButtonSalirPressed()
-    {
-        LoggerJuego.Trace("Botón 'ButtonSalir' pulsado.");
-
-        Global.GestorAudio.ReproducirSonido("digital_click.mp3");
-        Global.GestorAudio.PausarMusica(0.5f);
-
-        CrtLayer.Visible = true;
-        AnimPlayer.Play("ApagarTV");
-
-        await ToSignal(AnimPlayer, "animation_finished");
-        await Task.Delay(300);
-
-        this.GetTree().Quit();
-    }
-
-    public void OnButtonAjustesAtrasPressed()
+    public void MostrarContenedorMenuprincipal()
     {
         LoggerJuego.Trace("Botón Ajustes 'Atrás' pulsado.");
 
         Global.GestorAudio.ReproducirSonido("digital_click.mp3");
 
         this.ContenedorMenuAjustes.Visible = false;
-        this.ContenedorBotonesPrincipal.Visible = true;
+        this.ContenedorMenuPrincipal.Visible = true;
 
-        ActivarMenu();
+        this.ContenedorMenuPrincipal.ActivarFocusBotones();
+
+        if (_navegacionPorTeclado)
+        {
+            this.ContenedorMenuPrincipal.ButtonAjustes.GrabFocusSilencioso();
+        }
+        else
+        {
+            this.UltimoElementoConFocus = this.ContenedorMenuPrincipal.ButtonAjustes;
+        }
     }
 }

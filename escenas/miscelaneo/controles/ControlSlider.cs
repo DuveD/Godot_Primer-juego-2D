@@ -1,3 +1,4 @@
+using System;
 using Godot;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
@@ -6,6 +7,8 @@ namespace Primerjuego2D.escenas.miscelaneo.controles;
 
 public partial class ControlSlider : VBoxContainer
 {
+	private bool _reproducirSonido = true;
+
 	[Signal]
 	public delegate void ValorCambiadoEventHandler(double valor);
 
@@ -28,13 +31,13 @@ public partial class ControlSlider : VBoxContainer
 	}
 
 	private Label _label;
-	private Label Label => _label ??= UtilidadesNodos.ObtenerNodoDeTipo<Label>(this);
+	public Label Label => _label ??= UtilidadesNodos.ObtenerNodoDeTipo<Label>(this);
 
 	private SpinBox _SpinBox;
-	private SpinBox SpinBox => _SpinBox ??= UtilidadesNodos.ObtenerNodoDeTipo<SpinBox>(this);
+	public SpinBox SpinBox => _SpinBox ??= UtilidadesNodos.ObtenerNodoDeTipo<SpinBox>(this);
 
 	private HSlider _SliderVolumen;
-	private HSlider SliderVolumen => _SliderVolumen ??= UtilidadesNodos.ObtenerNodoDeTipo<HSlider>(this);
+	public HSlider SliderVolumen => _SliderVolumen ??= UtilidadesNodos.ObtenerNodoDeTipo<HSlider>(this);
 
 	public override void _Ready()
 	{
@@ -42,18 +45,44 @@ public partial class ControlSlider : VBoxContainer
 
 		// Configuración del rango del SpinBox
 
-		SpinBox.MinValue = 0;
-		SpinBox.MaxValue = 100;
-		SpinBox.Step = 1;
+		this.SpinBox.MinValue = 0;
+		this.SpinBox.MaxValue = 100;
+		this.SpinBox.Step = 1;
+
+		this.SliderVolumen.MinValue = 0;
+		this.SliderVolumen.MaxValue = 100;
+		this.SliderVolumen.Step = 1;
 
 		// Inicialmente sincronizamos ambos valores
 
-		SpinBox.Value = SliderVolumen.Value;
+		this.SpinBox.Value = SliderVolumen.Value;
 
 		// Conectamos eventos
 
-		SpinBox.ValueChanged += OnSpinBoxValueChanged;
-		SliderVolumen.ValueChanged += OnSliderVolumenValueChanged;
+		this.SpinBox.ValueChanged += OnSpinBoxValueChanged;
+		this.SliderVolumen.ValueChanged += OnSliderVolumenValueChanged;
+
+		this.SpinBox.MouseEntered += OnMouseEntered;
+		this.SliderVolumen.FocusEntered += OnFocusedEntered;
+		this.SliderVolumen.MouseEntered += OnMouseEntered;
+	}
+
+	public void OnFocusedEntered()
+	{
+		if (this._reproducirSonido)
+			Global.GestorAudio.ReproducirSonido("kick.mp3");
+	}
+
+	private void OnMouseEntered()
+	{
+		Global.GestorAudio.ReproducirSonido("kick.mp3");
+	}
+
+	public void GrabFocusSilencioso()
+	{
+		this._reproducirSonido = false;
+		this.SliderVolumen.GrabFocus();
+		this._reproducirSonido = true;
 	}
 
 	private void OnSpinBoxValueChanged(double value)

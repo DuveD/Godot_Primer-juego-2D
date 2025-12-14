@@ -19,6 +19,7 @@ size_flags_horizontal = 3
 
 [node name="SpinBox" type="SpinBox" parent="HBoxContainer"]
 layout_mode = 2
+focus_mode = 1
 
 [node name="HSlider" type="HSlider" parent="."]
 layout_mode = 2

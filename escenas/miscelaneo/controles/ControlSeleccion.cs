@@ -8,6 +8,8 @@ namespace Primerjuego2D.escenas.miscelaneo.controles;
 
 public partial class ControlSeleccion : HBoxContainer
 {
+	private bool _reproducirSonido = true;
+
 	[Signal]
 	public delegate void ValorCambiadoEventHandler(Variant valor);
 
@@ -31,16 +33,37 @@ public partial class ControlSeleccion : HBoxContainer
 	}
 
 	private Label _Label;
-	private Label Label => _Label ??= UtilidadesNodos.ObtenerNodoDeTipo<Label>(this);
+	public Label Label => _Label ??= UtilidadesNodos.ObtenerNodoDeTipo<Label>(this);
 
 	private OptionButton _OptionButton;
-	private OptionButton OptionButton => _OptionButton ??= UtilidadesNodos.ObtenerNodoDeTipo<OptionButton>(this);
+	public OptionButton OptionButton => _OptionButton ??= UtilidadesNodos.ObtenerNodoDeTipo<OptionButton>(this);
 
 	public override void _Ready()
 	{
 		LoggerJuego.Trace(this.Name + " Ready.");
 
 		this.OptionButton.ItemSelected += OnOptionButtonItemSelected;
+
+		this.OptionButton.FocusEntered += OnFocusedEntered;
+		this.OptionButton.MouseEntered += OnMouseEntered;
+	}
+
+	public void OnFocusedEntered()
+	{
+		if (this._reproducirSonido)
+			Global.GestorAudio.ReproducirSonido("kick.mp3");
+	}
+
+	private void OnMouseEntered()
+	{
+		Global.GestorAudio.ReproducirSonido("kick.mp3");
+	}
+
+	public void GrabFocusSilencioso()
+	{
+		this._reproducirSonido = false;
+		this.OptionButton.GrabFocus();
+		this._reproducirSonido = true;
 	}
 
 	public void AgregarOpciones(Dictionary<Variant, string> opciones)

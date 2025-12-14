@@ -1,6 +1,7 @@
-[gd_scene load_steps=19 format=3 uid="uid://h6xujbx1ear1"]
+[gd_scene load_steps=22 format=3 uid="uid://h6xujbx1ear1"]
 
 [ext_resource type="Script" uid="uid://07yjwb7jevd5" path="res://escenas/menuPrincipal/MenuPrincipal.cs" id="1_4116w"]
+[ext_resource type="Script" uid="uid://bfskvcaobgqej" path="res://escenas/menuPrincipal/ContenedorMenuPrincipal.cs" id="2_iaj7c"]
 [ext_resource type="Theme" uid="uid://dfuasivovo3du" path="res://recursos/temas/menuPrincipal/MenuPrincipalBotonSecundario.tres" id="3_eq5mx"]
 [ext_resource type="Theme" uid="uid://bpuuj2ixgd5t6" path="res://recursos/temas/menuPrincipal/MenuPrincipalBotonPrimario.tres" id="3_f4jcg"]
 [ext_resource type="Script" uid="uid://cicfsslle8hmx" path="res://escenas/menuPrincipal/ButtonEmpezarPartida.cs" id="5_rs0f5"]
@@ -9,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://do1xqqv7m5xh6" path="res://escenas/miscelaneo/controles/ControlSlider.tscn" id="9_cmdin"]
 [ext_resource type="Script" uid="uid://dp8u6kpmw15ps" path="res://escenas/menuPrincipal/ContenedorMenuAjustes.cs" id="9_iaj7c"]
 [ext_resource type="Shader" uid="uid://c07xghhalj6cu" path="res://recursos/shaders/ApagarTV.gdshader" id="9_shader"]
+[ext_resource type="Script" uid="uid://c3tgy8asw5eyn" path="res://escenas/menuPrincipal/ButtonAtras.cs" id="11_0hdc8"]
 [ext_resource type="PackedScene" uid="uid://doyxp6l6eg05" path="res://escenas/miscelaneo/controles/ControlSeleccion.tscn" id="11_vstw6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6ip4d"]
@@ -28,6 +30,8 @@ PanelContainer/styles/panel = SubResource("StyleBoxFlat_6ip4d")
 [sub_resource type="Theme" id="Theme_oupjs"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6ip4d"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vstw6"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_oupjs"]
 shader = ExtResource("9_shader")
@@ -81,7 +85,8 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_4116w")
 
-[node name="ContenedorBotonesPrincipal" type="CenterContainer" parent="."]
+[node name="ContenedorMenuPrincipal" type="CenterContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -94,30 +99,31 @@ offset_right = 203.5
 offset_bottom = 117.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("2_iaj7c")
 
-[node name="PanelContainerMargin" type="PanelContainer" parent="ContenedorBotonesPrincipal"]
+[node name="PanelContainerMargin" type="PanelContainer" parent="ContenedorMenuPrincipal"]
 layout_mode = 2
 theme = SubResource("Theme_6ip4d")
 
-[node name="PanelContainerButtonSize" type="PanelContainer" parent="ContenedorBotonesPrincipal/PanelContainerMargin"]
+[node name="PanelContainerButtonSize" type="PanelContainer" parent="ContenedorMenuPrincipal/PanelContainerMargin"]
 clip_contents = true
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme = SubResource("Theme_oupjs")
 theme_override_styles/panel = SubResource("StyleBoxEmpty_6ip4d")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ContenedorBotonesPrincipal/PanelContainerMargin/PanelContainerButtonSize"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ContenedorMenuPrincipal/PanelContainerMargin/PanelContainerButtonSize"]
 layout_mode = 2
 theme_override_constants/separation = 18
 
-[node name="ButtonEmpezarPartida" type="Button" parent="ContenedorBotonesPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
+[node name="ButtonEmpezarPartida" type="Button" parent="ContenedorMenuPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../ButtonAjustes")
 theme = ExtResource("3_f4jcg")
 text = "MenuPrincipal.boton.empezarPartida"
 script = ExtResource("5_rs0f5")
 
-[node name="ButtonAjustes" type="Button" parent="ContenedorBotonesPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
+[node name="ButtonAjustes" type="Button" parent="ContenedorMenuPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../ButtonEmpezarPartida")
 focus_neighbor_bottom = NodePath("../ButtonSalir")
@@ -125,7 +131,7 @@ theme = ExtResource("3_eq5mx")
 text = "MenuPrincipal.boton.ajustes"
 script = ExtResource("7_mxkrh")
 
-[node name="ButtonSalir" type="Button" parent="ContenedorBotonesPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
+[node name="ButtonSalir" type="Button" parent="ContenedorMenuPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../ButtonAjustes")
 theme = ExtResource("3_eq5mx")
@@ -133,7 +139,6 @@ text = "MenuPrincipal.boton.salir"
 script = ExtResource("8_oupjs")
 
 [node name="ContenedorMenuAjustes" type="CenterContainer" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -172,23 +177,39 @@ vertical_alignment = 1
 
 [node name="ControlVolumenGeneral" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer" instance=ExtResource("9_cmdin")]
 layout_mode = 2
-focus_neighbor_bottom = NodePath("../ControlVolumenMusica")
 focus_mode = 2
 TextoLabel = "MenuPrincipal.ajustes.volumenGeneral"
 
+[node name="SpinBox" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenGeneral/HBoxContainer" index="2"]
+focus_behavior_recursive = 2
+
+[node name="HSlider" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenGeneral" index="1"]
+focus_neighbor_top = NodePath(".")
+focus_neighbor_bottom = NodePath("../../ControlVolumenMusica/HSlider")
+
 [node name="ControlVolumenMusica" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer" instance=ExtResource("9_cmdin")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../ControlVolumenGeneral")
-focus_neighbor_bottom = NodePath("../ControlVolumenSonido")
 focus_mode = 2
 TextoLabel = "MenuPrincipal.ajustes.volumenMusica"
 
+[node name="SpinBox" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenMusica/HBoxContainer" index="2"]
+focus_behavior_recursive = 2
+
+[node name="HSlider" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenMusica" index="1"]
+focus_neighbor_top = NodePath("../../ControlVolumenGeneral/HSlider")
+focus_neighbor_bottom = NodePath("../../ControlVolumenSonido/HSlider")
+
 [node name="ControlVolumenSonido" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer" instance=ExtResource("9_cmdin")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../ControlVolumenMusica")
-focus_neighbor_bottom = NodePath("../ControlLenguaje")
 focus_mode = 2
 TextoLabel = "MenuPrincipal.ajustes.volumenEfectos"
+
+[node name="SpinBox" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenSonido/HBoxContainer" index="2"]
+focus_behavior_recursive = 2
+
+[node name="HSlider" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenSonido" index="1"]
+focus_neighbor_top = NodePath("../../ControlVolumenMusica/HSlider")
+focus_neighbor_bottom = NodePath("../../ControlLenguaje/OptionButton")
 
 [node name="LabelSeccionInterfaz" type="Label" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
@@ -199,10 +220,12 @@ vertical_alignment = 1
 
 [node name="ControlLenguaje" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer" instance=ExtResource("11_vstw6")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../ControlVolumenSonido")
-focus_neighbor_bottom = NodePath("../ControlNivelLog")
 focus_mode = 2
 TextoLabel = "MenuPrincipal.ajustes.lenguaje"
+
+[node name="OptionButton" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlLenguaje" index="2"]
+focus_neighbor_top = NodePath("../../ControlVolumenSonido/HSlider")
+focus_neighbor_bottom = NodePath("../../ControlNivelLog/OptionButton")
 
 [node name="LabelSeccionDesarrollo" type="Label" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
@@ -213,10 +236,12 @@ vertical_alignment = 1
 
 [node name="ControlNivelLog" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer" instance=ExtResource("11_vstw6")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../ControlLenguaje")
-focus_neighbor_bottom = NodePath("../HBoxContainer/ButtonGuardar")
 focus_mode = 2
 TextoLabel = "MenuPrincipal.ajustes.nivelLog"
+
+[node name="OptionButton" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlNivelLog" index="2"]
+focus_neighbor_top = NodePath("../../ControlLenguaje/OptionButton")
+focus_neighbor_bottom = NodePath("../../HBoxContainer/ButtonAtras")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
@@ -225,9 +250,10 @@ layout_mode = 2
 clip_contents = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-focus_neighbor_top = NodePath("../../ControlNivelLog")
-focus_neighbor_right = NodePath("../ButtonGuardar")
+focus_neighbor_top = NodePath("../../ControlNivelLog/OptionButton")
+theme_override_styles/focus = SubResource("StyleBoxFlat_vstw6")
 text = "MenuPrincipal.ajustes.atras"
+script = ExtResource("11_0hdc8")
 
 [node name="Spacer" type="Control" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -258,8 +284,14 @@ libraries = {
 &"": SubResource("AnimationLibrary_iaj7c")
 }
 
-[connection signal="PressedAnimationEnd" from="ContenedorBotonesPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonEmpezarPartida" to="." method="OnButtonEmpezarPartidaPressedAnimationEnd"]
-[connection signal="pressed" from="ContenedorBotonesPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonAjustes" to="." method="OnButtonAjustesPressed"]
-[connection signal="pressed" from="ContenedorBotonesPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonSalir" to="." method="OnButtonSalirPressed"]
-[connection signal="pressed" from="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/HBoxContainer/ButtonAtras" to="." method="OnButtonAjustesAtrasPressed"]
+[connection signal="PressedAnimationEnd" from="ContenedorMenuPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonEmpezarPartida" to="ContenedorMenuPrincipal" method="OnButtonEmpezarPartidaPressedAnimationEnd"]
+[connection signal="pressed" from="ContenedorMenuPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonAjustes" to="." method="MostrarContenedorMenuAjustes"]
+[connection signal="pressed" from="ContenedorMenuPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonSalir" to="ContenedorMenuPrincipal" method="OnButtonSalirPressed"]
+[connection signal="pressed" from="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/HBoxContainer/ButtonAtras" to="." method="MostrarContenedorMenuprincipal"]
 [connection signal="pressed" from="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/HBoxContainer/ButtonGuardar" to="ContenedorMenuAjustes" method="OnButtonGuardarPressed"]
+
+[editable path="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenGeneral"]
+[editable path="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenMusica"]
+[editable path="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenSonido"]
+[editable path="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlLenguaje"]
+[editable path="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlNivelLog"]
