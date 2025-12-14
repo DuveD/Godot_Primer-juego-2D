@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://h6xujbx1ear1"]
+[gd_scene load_steps=24 format=3 uid="uid://h6xujbx1ear1"]
 
 [ext_resource type="Script" uid="uid://07yjwb7jevd5" path="res://escenas/menuPrincipal/MenuPrincipal.cs" id="1_4116w"]
 [ext_resource type="Script" uid="uid://bfskvcaobgqej" path="res://escenas/menuPrincipal/ContenedorMenuPrincipal.cs" id="2_iaj7c"]
@@ -12,6 +12,7 @@
 [ext_resource type="Shader" uid="uid://c07xghhalj6cu" path="res://recursos/shaders/ApagarTV.gdshader" id="9_shader"]
 [ext_resource type="Script" uid="uid://c3tgy8asw5eyn" path="res://escenas/menuPrincipal/ButtonAtras.cs" id="11_0hdc8"]
 [ext_resource type="PackedScene" uid="uid://doyxp6l6eg05" path="res://escenas/miscelaneo/controles/ControlSeleccion.tscn" id="11_vstw6"]
+[ext_resource type="Script" uid="uid://bnmi58u167qie" path="res://nucleo/modelos/ButtonPersonalizado.cs" id="12_0hdc8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6ip4d"]
 content_margin_left = 30.0
@@ -32,6 +33,8 @@ PanelContainer/styles/panel = SubResource("StyleBoxFlat_6ip4d")
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6ip4d"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vstw6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0hdc8"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_oupjs"]
 shader = ExtResource("9_shader")
@@ -122,6 +125,8 @@ focus_neighbor_bottom = NodePath("../ButtonAjustes")
 theme = ExtResource("3_f4jcg")
 text = "MenuPrincipal.boton.empezarPartida"
 script = ExtResource("5_rs0f5")
+NombreSonidoOnFocusEntered = "kick.mp3"
+NombreSonidoOnMouseEntered = "kick.mp3"
 
 [node name="ButtonAjustes" type="Button" parent="ContenedorMenuPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
@@ -130,6 +135,8 @@ focus_neighbor_bottom = NodePath("../ButtonSalir")
 theme = ExtResource("3_eq5mx")
 text = "MenuPrincipal.boton.ajustes"
 script = ExtResource("7_mxkrh")
+NombreSonidoOnFocusEntered = "kick.mp3"
+NombreSonidoOnMouseEntered = "kick.mp3"
 
 [node name="ButtonSalir" type="Button" parent="ContenedorMenuPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
@@ -137,6 +144,8 @@ focus_neighbor_top = NodePath("../ButtonAjustes")
 theme = ExtResource("3_eq5mx")
 text = "MenuPrincipal.boton.salir"
 script = ExtResource("8_oupjs")
+NombreSonidoOnFocusEntered = "kick.mp3"
+NombreSonidoOnMouseEntered = "kick.mp3"
 
 [node name="ContenedorMenuAjustes" type="CenterContainer" parent="."]
 layout_mode = 1
@@ -251,22 +260,29 @@ clip_contents = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 focus_neighbor_top = NodePath("../../ControlNivelLog/OptionButton")
+focus_neighbor_right = NodePath("../ButtonGuardar")
 theme_override_styles/focus = SubResource("StyleBoxFlat_vstw6")
 text = "MenuPrincipal.ajustes.atras"
 script = ExtResource("11_0hdc8")
+NombreSonidoOnFocusEntered = "kick.mp3"
+NombreSonidoOnMouseEntered = "kick.mp3"
 
 [node name="Spacer" type="Control" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="ButtonGuardar" type="Button" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/HBoxContainer"]
-visible = false
 clip_contents = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 focus_neighbor_left = NodePath("../ButtonAtras")
-focus_neighbor_top = NodePath("../../ControlNivelLog")
+focus_neighbor_top = NodePath("../../ControlNivelLog/OptionButton")
+theme_override_styles/focus = SubResource("StyleBoxFlat_0hdc8")
+disabled = true
 text = "MenuPrincipal.ajustes.guardar"
+script = ExtResource("12_0hdc8")
+NombreSonidoOnFocusEntered = "kick.mp3"
+NombreSonidoOnMouseEntered = "kick.mp3"
 
 [node name="CRTShutdown" type="CanvasLayer" parent="."]
 layer = 50

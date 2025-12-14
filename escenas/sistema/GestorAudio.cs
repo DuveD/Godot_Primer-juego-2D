@@ -44,32 +44,35 @@ public partial class GestorAudio : Node
 
 	private bool _fadeEnProceso = false;
 
+	private float _VolumenGeneral;
 	public float VolumenGeneral
 	{
-		get => Ajustes.VolumenGeneral;
+		get => _VolumenGeneral;
 		set
 		{
-			Ajustes.VolumenGeneral = Mathf.Clamp(value, 0f, 1f);
+			_VolumenGeneral = Mathf.Clamp(value, 0f, 1f);
 			ActualizarVolumenGlobal();
 		}
 	}
 
+	public float _VolumenMusica;
 	public float VolumenMusica
 	{
-		get => Ajustes.VolumenMusica;
+		get => _VolumenMusica;
 		set
 		{
-			Ajustes.VolumenMusica = Mathf.Clamp(value, 0f, 1f);
+			_VolumenMusica = Mathf.Clamp(value, 0f, 1f);
 			ActualizarVolumenMusica();
 		}
 	}
 
+	public float _VolumenSonidos;
 	public float VolumenSonidos
 	{
-		get => Ajustes.VolumenSonidos;
+		get => _VolumenSonidos;
 		set
 		{
-			Ajustes.VolumenSonidos = Mathf.Clamp(value, 0f, 1f);
+			_VolumenSonidos = Mathf.Clamp(value, 0f, 1f);
 			ActualizarVolumenSfx();
 		}
 	}
@@ -82,6 +85,10 @@ public partial class GestorAudio : Node
 
 		InicializarSfxPool();
 		CargarRecursosAudio();
+
+		this._VolumenGeneral = Ajustes.VolumenGeneral;
+		this._VolumenMusica = Ajustes.VolumenMusica;
+		this._VolumenSonidos = Ajustes.VolumenSonidos;
 
 		// Inicializar volúmenes según ajustes
 		ActualizarVolumenGlobal();

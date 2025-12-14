@@ -213,4 +213,9 @@ public static class UtilidadesNodos
 
         return resultado;
     }
+
+    public static void PulsarBoton(Button boton)
+    {
+        boton?.EmitSignal(BaseButton.SignalName.Pressed);
+    }
 }

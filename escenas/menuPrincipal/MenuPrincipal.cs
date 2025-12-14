@@ -1,8 +1,10 @@
 using System;
 using System.ComponentModel.Design;
 using Godot;
+using Primerjuego2D.escenas.miscelaneo.controles;
 using Primerjuego2D.nucleo.constantes;
 using Primerjuego2D.nucleo.modelos;
+using Primerjuego2D.nucleo.modelos.interfaces;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
 
@@ -49,7 +51,7 @@ public partial class MenuPrincipal : Control
         }
         else
         {
-            this.ContenedorMenuAjustes.ControlVolumenGeneral.GrabFocusSilencioso();
+            this.ContenedorMenuAjustes.ControlVolumenGeneral.SliderVolumen.GrabFocusSilencioso();
         }
     }
 
@@ -106,9 +108,9 @@ public partial class MenuPrincipal : Control
 
     private void GrabFocusUltimoBotonConFocus()
     {
-        if (this.UltimoElementoConFocus is BotonMenuPrincipal botonMenuPrincipal)
+        if (this.UltimoElementoConFocus is IFocusSilencioso elementoConFocusSilencioso)
         {
-            botonMenuPrincipal.GrabFocusSilencioso();
+            elementoConFocusSilencioso.GrabFocusSilencioso();
         }
         else
         {

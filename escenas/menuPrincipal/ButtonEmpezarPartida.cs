@@ -3,7 +3,7 @@ using Primerjuego2D.nucleo.modelos;
 
 namespace Primerjuego2D.escenas.menuPrincipal;
 
-public partial class ButtonEmpezarPartida : BotonMenuPrincipal
+public partial class ButtonEmpezarPartida : ButtonPersonalizado
 {
 	[Signal]
 	public delegate void PressedAnimationEndEventHandler();

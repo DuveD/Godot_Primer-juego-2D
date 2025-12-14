@@ -75,11 +75,11 @@ public static class Ajustes
 
     // ================= CARGA Y GUARDADO =================
 
-    private static bool _guardarAjustesAlGuardarPropiedad = true;
+    public static bool GuardarAjustesAlGuardarPropiedad = true;
 
     private static void InicializarValoresPorDefecto()
     {
-        _guardarAjustesAlGuardarPropiedad = false;
+        GuardarAjustesAlGuardarPropiedad = false;
 
         VolumenGeneral = 1.0f;
         VolumenMusica = 1.0f;
@@ -89,7 +89,7 @@ public static class Ajustes
         NivelLog = NivelLog.Trace;
         EscribirLogEnFichero = false;
 
-        _guardarAjustesAlGuardarPropiedad = true;
+        GuardarAjustesAlGuardarPropiedad = true;
     }
 
     public static void CargarAjustes()
@@ -112,7 +112,7 @@ public static class Ajustes
     public static void GuardarPropiedad<[MustBeVariant] T>(string seccion, string clave, T valor)
     {
         GestorAjustes.GuardarValor(seccion, clave, valor);
-        if (_guardarAjustesAlGuardarPropiedad)
+        if (GuardarAjustesAlGuardarPropiedad)
             GuardarAjustes();
     }
 

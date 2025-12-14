@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://doyxp6l6eg05"]
+[gd_scene load_steps=3 format=3 uid="uid://doyxp6l6eg05"]
 
 [ext_resource type="Script" uid="uid://c1gh2kjhprws6" path="res://escenas/miscelaneo/controles/ControlSeleccion.cs" id="1_57jek"]
+[ext_resource type="Script" uid="uid://bye5llna1c4m4" path="res://nucleo/modelos/OptionButtonPersonalizado.cs" id="2_eqi7e"]
 
 [node name="ControlLenguaje" type="HBoxContainer"]
 script = ExtResource("1_57jek")
@@ -15,6 +16,9 @@ size_flags_horizontal = 3
 
 [node name="OptionButton" type="OptionButton" parent="."]
 layout_mode = 2
+script = ExtResource("2_eqi7e")
+NombreSonidoOnFocusEntered = "kick.mp3"
+NombreSonidoOnMouseEntered = "kick.mp3"
 
 [node name="Spacer2" type="Control" parent="."]
 layout_mode = 2
