@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://7g0gxay0741n"]
+
+[ext_resource type="Script" uid="uid://b8kfinytbny8d" path="res://escenas/modelos/controles/HSliderPersonalizado.cs" id="1_0gylo"]
+
+[node name="HSliderPersonalizado" type="HSlider"]
+script = ExtResource("1_0gylo")

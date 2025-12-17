@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Godot;
 using Primerjuego2D.nucleo.configuracion;
 using Primerjuego2D.nucleo.utilidades.log;
@@ -41,32 +42,37 @@ public partial class GestorAudio : Node
 
 	private bool _crossfadeEnProceso = false;
 
+	private bool _fadeEnProceso = false;
+
+	private float _VolumenGeneral;
 	public float VolumenGeneral
 	{
-		get => Ajustes.VolumenGeneral;
+		get => _VolumenGeneral;
 		set
 		{
-			Ajustes.VolumenGeneral = Mathf.Clamp(value, 0f, 1f);
+			_VolumenGeneral = Mathf.Clamp(value, 0f, 1f);
 			ActualizarVolumenGlobal();
 		}
 	}
 
+	public float _VolumenMusica;
 	public float VolumenMusica
 	{
-		get => Ajustes.VolumenMusica;
+		get => _VolumenMusica;
 		set
 		{
-			Ajustes.VolumenMusica = Mathf.Clamp(value, 0f, 1f);
+			_VolumenMusica = Mathf.Clamp(value, 0f, 1f);
 			ActualizarVolumenMusica();
 		}
 	}
 
+	public float _VolumenSonidos;
 	public float VolumenSonidos
 	{
-		get => Ajustes.VolumenSonidos;
+		get => _VolumenSonidos;
 		set
 		{
-			Ajustes.VolumenSonidos = Mathf.Clamp(value, 0f, 1f);
+			_VolumenSonidos = Mathf.Clamp(value, 0f, 1f);
 			ActualizarVolumenSfx();
 		}
 	}
@@ -79,6 +85,10 @@ public partial class GestorAudio : Node
 
 		InicializarSfxPool();
 		CargarRecursosAudio();
+
+		this._VolumenGeneral = Ajustes.VolumenGeneral / 100.0f;
+		this._VolumenMusica = Ajustes.VolumenMusica / 100.0f;
+		this._VolumenSonidos = Ajustes.VolumenSonidos / 100.0f;
 
 		// Inicializar volúmenes según ajustes
 		ActualizarVolumenGlobal();
@@ -133,6 +143,12 @@ public partial class GestorAudio : Node
 					_cacheMusica[nombreArchivoMusica] = musica;
 			}
 		}
+	}
+
+	private string ObtenerNombreCancionActual()
+	{
+		if (AudioStreamPlayer.Stream == null) return "<ninguna>";
+		return _cacheMusica.FirstOrDefault(kv => kv.Value == AudioStreamPlayer.Stream).Key ?? "<desconocida>";
 	}
 
 	private void CargarRecursosSonidos()
@@ -239,31 +255,118 @@ public partial class GestorAudio : Node
 		LoggerJuego.Trace($"Reproduciendo sonido '{nombreSonido}'.");
 	}
 
-	public void ReproducirMusica(string nombreMusica)
+	public async void ReproducirMusica(string nombreCancion, float duracionFade = 0f)
 	{
-		if (!_cacheMusica.TryGetValue(nombreMusica, out var cancion))
+		// Comprobamos que la canción exista.
+		if (!_cacheMusica.TryGetValue(nombreCancion, out var cancion))
 		{
-			LoggerJuego.Error($"Música no encontrada: '{nombreMusica}'");
+			LoggerJuego.Error($"Música no encontrada: '{nombreCancion}'");
 			return;
 		}
 
-		if (AudioStreamPlayer.Stream == cancion && AudioStreamPlayer.Playing)
-			return;
+		// Esperamos a que termine un crossfade o un fade en proceso.
+		while (_fadeEnProceso || _crossfadeEnProceso)
+			await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
 
+		bool reanudando = false;
+
+		// Comprobamos si es la misma canción.
+		if (AudioStreamPlayer.Stream == cancion)
+		{
+			if (AudioStreamPlayer.Playing)
+			{
+				LoggerJuego.Trace($"La canción '{nombreCancion}' ya se está reproduciendo.");
+				return;
+			}
+
+			reanudando = _posicionPausa > 0f;
+		}
+
+		float posicionInicial = reanudando ? _posicionPausa : 0f;
+
+		// 4Asignamos la canción al player principal.
 		AudioStreamPlayer.Stream = cancion;
-		AudioStreamPlayer.Play(_posicionPausa);
+
+		// Reproducidmos desde la posición adecuada.
+		AudioStreamPlayer.Play(posicionInicial);
+
+		float volumenObjetivo = LinearToDb(VolumenMusica * VolumenGeneral);
 		_posicionPausa = 0f;
 
-		LoggerJuego.Trace($"Reproduciendo música '{nombreMusica}'.");
+		// Hacemos fade-in opcional si se ha informado.
+		if (!reanudando || duracionFade <= 0f)
+		{
+			AudioStreamPlayer.VolumeDb = volumenObjetivo;
+
+			LoggerJuego.Trace($"Reproduciendo música '{nombreCancion}' sin fade.");
+		}
+		else
+		{
+			LoggerJuego.Trace($"Reanudando música '{nombreCancion}' con fade-in.");
+
+			AudioStreamPlayer.VolumeDb = -80f;
+
+			float tiempo = 0f;
+			while (tiempo < duracionFade)
+			{
+				float t = tiempo / duracionFade;
+				AudioStreamPlayer.VolumeDb = Mathf.Lerp(-80f, volumenObjetivo, t);
+
+				await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
+				tiempo += (float)GetPhysicsProcessDeltaTime();
+			}
+
+			// Dejamos el volumen final normalizado.
+			AudioStreamPlayer.VolumeDb = volumenObjetivo;
+
+			LoggerJuego.Trace($"Música '{nombreCancion}' renaudada con fade-in.");
+		}
 	}
 
-	public void PauseMusic()
+	public bool MusicaReproduciendo()
 	{
-		_posicionPausa = AudioStreamPlayer.GetPlaybackPosition();
-		AudioStreamPlayer.Stop();
+		return AudioStreamPlayer.Playing;
 	}
 
-	public void StopMusic()
+
+	public async void PausarMusica(float duracionFade = 0f)
+	{
+		if (_fadeEnProceso) return; // Evitamos solapamiento
+
+		_fadeEnProceso = true;
+
+		if (duracionFade <= 0f)
+		{
+			_posicionPausa = AudioStreamPlayer.GetPlaybackPosition();
+			AudioStreamPlayer.Stop();
+			_fadeEnProceso = false;
+		}
+		else
+		{
+			LoggerJuego.Trace($"Iniciando fade-out para la canción '{ObtenerNombreCancionActual()}'.");
+
+			float inicioVolDb = AudioStreamPlayer.VolumeDb;
+			float tiempo = 0f;
+
+			while (tiempo < duracionFade)
+			{
+				float t = tiempo / duracionFade;
+				AudioStreamPlayer.VolumeDb = Mathf.Lerp(inicioVolDb, -80f, t);
+
+				await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
+				tiempo += (float)GetPhysicsProcessDeltaTime();
+			}
+
+			AudioStreamPlayer.VolumeDb = -80f;
+			_posicionPausa = AudioStreamPlayer.GetPlaybackPosition();
+			AudioStreamPlayer.Stop();
+			_fadeEnProceso = false;
+
+			LoggerJuego.Trace($"Fade-out terminado para la canción '{ObtenerNombreCancionActual()}'.");
+		}
+	}
+
+	public void PararMusica()
 	{
 		_posicionPausa = 0f;
 		AudioStreamPlayer.Stop();
@@ -280,10 +383,13 @@ public partial class GestorAudio : Node
 		}
 	}
 
-	private async System.Threading.Tasks.Task EjecutarCrossfade(float duracion)
+	private async Task EjecutarCrossfade(float duracion)
 	{
 		if (_crossfadeEnProceso)
+		{
+			LoggerJuego.Warn($"Ya hay un cross-fade en proceso.");
 			return;
+		}
 
 		_crossfadeEnProceso = true;
 
@@ -292,9 +398,11 @@ public partial class GestorAudio : Node
 			string cancionNombre = _colaCrossfade.Dequeue();
 			if (!_cacheMusica.TryGetValue(cancionNombre, out var cancion))
 			{
-				LoggerJuego.Error($"Música no encontrada: {cancionNombre}");
+				LoggerJuego.Error($"Música no encontrada: {cancionNombre}.");
 				continue;
 			}
+
+			LoggerJuego.Trace($"Iniciando cross-ffade para: {cancionNombre}.");
 
 			AudioStreamPlayer2.Stream = cancion;
 			AudioStreamPlayer2.VolumeDb = -80;
@@ -312,11 +420,16 @@ public partial class GestorAudio : Node
 				tiempo += delta;
 			}
 
+			// Dejamos el volumen final normalizado.
+			AudioStreamPlayer2.VolumeDb = LinearToDb(VolumenMusica * VolumenGeneral);
+
 			AudioStreamPlayer.Stop();
 			AudioStreamPlayer.Stream = cancion;
 			AudioStreamPlayer.VolumeDb = 0;
 
 			(_AudioStreamPlayer2, _AudioStreamPlayer) = (_AudioStreamPlayer, _AudioStreamPlayer2);
+
+			LoggerJuego.Trace($"Cross-ffade terminado para: {cancionNombre}.");
 		}
 
 		_crossfadeEnProceso = false;

@@ -1,10 +1,18 @@
-[gd_scene load_steps=11 format=3 uid="uid://h6xujbx1ear1"]
+[gd_scene load_steps=24 format=3 uid="uid://h6xujbx1ear1"]
 
 [ext_resource type="Script" uid="uid://07yjwb7jevd5" path="res://escenas/menuPrincipal/MenuPrincipal.cs" id="1_4116w"]
+[ext_resource type="Script" uid="uid://bfskvcaobgqej" path="res://escenas/menuPrincipal/ContenedorMenuPrincipal.cs" id="2_iaj7c"]
 [ext_resource type="Theme" uid="uid://dfuasivovo3du" path="res://recursos/temas/menuPrincipal/MenuPrincipalBotonSecundario.tres" id="3_eq5mx"]
 [ext_resource type="Theme" uid="uid://bpuuj2ixgd5t6" path="res://recursos/temas/menuPrincipal/MenuPrincipalBotonPrimario.tres" id="3_f4jcg"]
-[ext_resource type="Texture2D" uid="uid://b7ot3b2kkcphi" path="res://recursos/imagenes/banderas/flag_spain.png" id="6_xxxid"]
-[ext_resource type="Texture2D" uid="uid://bpiwulkracpb5" path="res://recursos/imagenes/banderas/flag_uk.png" id="7_q8bqa"]
+[ext_resource type="Script" uid="uid://cicfsslle8hmx" path="res://escenas/menuPrincipal/ButtonEmpezarPartida.cs" id="5_rs0f5"]
+[ext_resource type="Script" uid="uid://bd05siqa7jip2" path="res://escenas/menuPrincipal/ButtonAjustes.cs" id="7_mxkrh"]
+[ext_resource type="Script" uid="uid://dafkl1d6lxkis" path="res://escenas/menuPrincipal/ButtonSalir.cs" id="8_oupjs"]
+[ext_resource type="PackedScene" uid="uid://do1xqqv7m5xh6" path="res://escenas/modelos/controles/ControlSlider.tscn" id="9_cmdin"]
+[ext_resource type="Script" uid="uid://dp8u6kpmw15ps" path="res://escenas/menuPrincipal/ContenedorMenuAjustes.cs" id="9_iaj7c"]
+[ext_resource type="Shader" uid="uid://c07xghhalj6cu" path="res://recursos/shaders/ApagarTV.gdshader" id="9_shader"]
+[ext_resource type="Script" uid="uid://c3tgy8asw5eyn" path="res://escenas/menuPrincipal/ButtonAtras.cs" id="11_0hdc8"]
+[ext_resource type="PackedScene" uid="uid://doyxp6l6eg05" path="res://escenas/modelos/controles/ControlSeleccion.tscn" id="11_vstw6"]
+[ext_resource type="PackedScene" uid="uid://5ng42tilghqk" path="res://escenas/modelos/controles/ButtonPersonalizado.tscn" id="12_van17"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6ip4d"]
 content_margin_left = 30.0
@@ -24,8 +32,52 @@ PanelContainer/styles/panel = SubResource("StyleBoxFlat_6ip4d")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6ip4d"]
 
-[sub_resource type="SystemFont" id="SystemFont_6mw57"]
-subpixel_positioning = 0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vstw6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0hdc8"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oupjs"]
+shader = ExtResource("9_shader")
+shader_parameter/progress = 0.0
+shader_parameter/inner_color = Color(0.9, 0.9, 0.85, 1)
+shader_parameter/outer_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Animation" id="Animation_oupjs"]
+resource_name = "ApagarTV"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ColorRect:material:shader_parameter/progress")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+
+[sub_resource type="Animation" id="Animation_cmdin"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ColorRect:material:shader_parameter/progress")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_iaj7c"]
+_data = {
+&"ApagarTV": SubResource("Animation_oupjs"),
+&"RESET": SubResource("Animation_cmdin")
+}
 
 [node name="MenuPrincipal" type="Control"]
 layout_mode = 3
@@ -36,7 +88,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_4116w")
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="ContenedorMenuPrincipal" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -49,56 +101,214 @@ offset_right = 203.5
 offset_bottom = 117.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("2_iaj7c")
 
-[node name="PanelContainerMargin" type="PanelContainer" parent="CenterContainer"]
+[node name="PanelContainerMargin" type="PanelContainer" parent="ContenedorMenuPrincipal"]
 layout_mode = 2
 theme = SubResource("Theme_6ip4d")
 
-[node name="PanelContainerButtonSize" type="PanelContainer" parent="CenterContainer/PanelContainerMargin"]
+[node name="PanelContainerButtonSize" type="PanelContainer" parent="ContenedorMenuPrincipal/PanelContainerMargin"]
 clip_contents = true
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme = SubResource("Theme_oupjs")
 theme_override_styles/panel = SubResource("StyleBoxEmpty_6ip4d")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/PanelContainerMargin/PanelContainerButtonSize"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ContenedorMenuPrincipal/PanelContainerMargin/PanelContainerButtonSize"]
 layout_mode = 2
 theme_override_constants/separation = 18
 
-[node name="ButtonEmpezarPartida" type="Button" parent="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
+[node name="ButtonEmpezarPartida" type="Button" parent="ContenedorMenuPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_bottom = NodePath("../ButtonAjustes")
 theme = ExtResource("3_f4jcg")
 text = "MenuPrincipal.boton.empezarPartida"
+script = ExtResource("5_rs0f5")
+NombreSonidoOnFocusEntered = "kick.mp3"
+NombreSonidoOnMouseEntered = "kick.mp3"
 
-[node name="ButtonCargarPartida" type="Button" parent="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
+[node name="ButtonAjustes" type="Button" parent="ContenedorMenuPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../ButtonEmpezarPartida")
+focus_neighbor_bottom = NodePath("../ButtonSalir")
 theme = ExtResource("3_eq5mx")
-text = "MenuPrincipal.boton.cargarPartida"
+text = "MenuPrincipal.boton.ajustes"
+script = ExtResource("7_mxkrh")
+NombreSonidoOnFocusEntered = "kick.mp3"
+NombreSonidoOnMouseEntered = "kick.mp3"
 
-[node name="ButtonSalir" type="Button" parent="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
+[node name="ButtonSalir" type="Button" parent="ContenedorMenuPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../ButtonAjustes")
 theme = ExtResource("3_eq5mx")
 text = "MenuPrincipal.boton.salir"
+script = ExtResource("8_oupjs")
+NombreSonidoOnFocusEntered = "kick.mp3"
+NombreSonidoOnMouseEntered = "kick.mp3"
 
-[node name="MenuButtonLenguaje" type="MenuButton" parent="."]
-layout_direction = 1
+[node name="ContenedorMenuAjustes" type="CenterContainer" parent="."]
+visible = false
 layout_mode = 1
-offset_right = 203.0
-offset_bottom = 31.0
-theme_override_fonts/font = SubResource("SystemFont_6mw57")
-text = "BatallaHUD.boton.lenguaje"
-alignment = 0
-switch_on_hover = true
-item_count = 2
-popup/item_0/text = "BatallaHUD.boton.castellano"
-popup/item_0/icon = ExtResource("6_xxxid")
-popup/item_0/checkable = 2
-popup/item_0/id = 0
-popup/item_1/text = "BatallaHUD.boton.ingles"
-popup/item_1/icon = ExtResource("7_q8bqa")
-popup/item_1/checkable = 2
-popup/item_1/id = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -203.5
+offset_top = -117.0
+offset_right = 203.5
+offset_bottom = 117.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("9_iaj7c")
 
-[connection signal="pressed" from="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonEmpezarPartida" to="." method="OnButtonEmpezarPartidaPressed"]
-[connection signal="pressed" from="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonCargarPartida" to="." method="OnButtonCargarPartidaPressed"]
-[connection signal="pressed" from="CenterContainer/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonSalir" to="." method="OnButtonSalirPressed"]
+[node name="PanelContainerMargin" type="PanelContainer" parent="ContenedorMenuAjustes"]
+layout_mode = 2
+theme = SubResource("Theme_6ip4d")
+
+[node name="PanelContainerButtonSize" type="PanelContainer" parent="ContenedorMenuAjustes/PanelContainerMargin"]
+clip_contents = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme = SubResource("Theme_oupjs")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_6ip4d")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="LabelSeccionSonido" type="Label" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "MenuPrincipal.seccion.sonido"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ControlVolumenGeneral" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer" instance=ExtResource("9_cmdin")]
+layout_mode = 2
+focus_mode = 2
+TextoLabel = "MenuPrincipal.ajustes.volumenGeneral"
+
+[node name="SpinBox" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenGeneral/HBoxContainer" index="2"]
+focus_behavior_recursive = 2
+
+[node name="HSlider" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenGeneral" index="1"]
+focus_neighbor_bottom = NodePath("../../ControlVolumenMusica/HSlider")
+
+[node name="ControlVolumenMusica" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer" instance=ExtResource("9_cmdin")]
+layout_mode = 2
+focus_mode = 2
+TextoLabel = "MenuPrincipal.ajustes.volumenMusica"
+
+[node name="SpinBox" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenMusica/HBoxContainer" index="2"]
+focus_behavior_recursive = 2
+
+[node name="HSlider" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenMusica" index="1"]
+focus_neighbor_top = NodePath("../../ControlVolumenGeneral/HSlider")
+focus_neighbor_bottom = NodePath("../../ControlVolumenSonido/HSlider")
+
+[node name="ControlVolumenSonido" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer" instance=ExtResource("9_cmdin")]
+layout_mode = 2
+focus_mode = 2
+TextoLabel = "MenuPrincipal.ajustes.volumenEfectos"
+
+[node name="SpinBox" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenSonido/HBoxContainer" index="2"]
+focus_behavior_recursive = 2
+
+[node name="HSlider" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenSonido" index="1"]
+focus_neighbor_top = NodePath("../../ControlVolumenMusica/HSlider")
+focus_neighbor_bottom = NodePath("../../ControlLenguaje/OptionButton")
+
+[node name="LabelSeccionInterfaz" type="Label" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "MenuPrincipal.seccion.interfaz"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ControlLenguaje" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer" instance=ExtResource("11_vstw6")]
+layout_mode = 2
+focus_mode = 2
+TextoLabel = "MenuPrincipal.ajustes.lenguaje"
+
+[node name="OptionButton" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlLenguaje" index="2"]
+focus_neighbor_top = NodePath("../../ControlVolumenSonido/HSlider")
+focus_neighbor_bottom = NodePath("../../ControlNivelLog/OptionButton")
+
+[node name="LabelSeccionDesarrollo" type="Label" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "MenuPrincipal.seccion.desarrollo"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ControlNivelLog" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer" instance=ExtResource("11_vstw6")]
+layout_mode = 2
+focus_mode = 2
+TextoLabel = "MenuPrincipal.ajustes.nivelLog"
+
+[node name="OptionButton" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlNivelLog" index="2"]
+focus_neighbor_left = NodePath("../../HBoxContainer/ButtonAtras")
+focus_neighbor_top = NodePath("../../ControlLenguaje/OptionButton")
+focus_neighbor_bottom = NodePath("../../HBoxContainer/ButtonAtras")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
+layout_mode = 2
+
+[node name="ButtonAtras" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/HBoxContainer" instance=ExtResource("12_van17")]
+clip_contents = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+focus_neighbor_top = NodePath("../../ControlNivelLog/OptionButton")
+focus_neighbor_right = NodePath("../../ControlNivelLog/OptionButton")
+theme_override_styles/focus = SubResource("StyleBoxFlat_vstw6")
+text = "MenuPrincipal.ajustes.atras"
+script = ExtResource("11_0hdc8")
+NombreSonidoOnFocusEntered = "kick.mp3"
+NombreSonidoOnMouseEntered = "kick.mp3"
+
+[node name="Spacer" type="Control" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonGuardar" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/HBoxContainer" instance=ExtResource("12_van17")]
+visible = false
+clip_contents = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+focus_neighbor_left = NodePath("../ButtonAtras")
+focus_neighbor_top = NodePath("../../ControlNivelLog/OptionButton")
+focus_mode = 0
+theme_override_styles/focus = SubResource("StyleBoxFlat_0hdc8")
+disabled = true
+text = "MenuPrincipal.ajustes.guardar"
+NombreSonidoOnFocusEntered = "kick.mp3"
+NombreSonidoOnMouseEntered = "kick.mp3"
+
+[node name="CRTShutdown" type="CanvasLayer" parent="."]
+layer = 50
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="CRTShutdown"]
+material = SubResource("ShaderMaterial_oupjs")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CRTShutdown"]
+libraries = {
+&"": SubResource("AnimationLibrary_iaj7c")
+}
+
+[connection signal="PressedAnimationEnd" from="ContenedorMenuPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonEmpezarPartida" to="ContenedorMenuPrincipal" method="OnButtonEmpezarPartidaPressedAnimationEnd"]
+[connection signal="pressed" from="ContenedorMenuPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonAjustes" to="." method="MostrarContenedorMenuAjustes"]
+[connection signal="pressed" from="ContenedorMenuPrincipal/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ButtonSalir" to="ContenedorMenuPrincipal" method="OnButtonSalirPressed"]
+[connection signal="pressed" from="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/HBoxContainer/ButtonAtras" to="." method="MostrarContenedorMenuprincipal"]
+[connection signal="pressed" from="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/HBoxContainer/ButtonGuardar" to="ContenedorMenuAjustes" method="OnButtonGuardarPressed"]
+
+[editable path="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenGeneral"]
+[editable path="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenMusica"]
+[editable path="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenSonido"]
+[editable path="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlLenguaje"]
+[editable path="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlNivelLog"]

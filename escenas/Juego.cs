@@ -9,81 +9,83 @@ namespace Primerjuego2D.escenas;
 
 public partial class Juego : Control
 {
-    [Export]
-    public CamaraPrincipal _Camara { get; set; }    // Nodo de la escena
-    public static CamaraPrincipal Camara { get; private set; }
+	[Export]
+	public CamaraPrincipal _Camara { get; set; }    // Nodo de la escena
+	public static CamaraPrincipal Camara { get; private set; }
 
-    private Control _ContenedorEscena;
-    private Control ContenedorEscena => _ContenedorEscena ??= GetNode<Control>("ContenedorEscena");
+	private Control _ContenedorEscena;
+	private Control ContenedorEscena => _ContenedorEscena ??= GetNode<Control>("ContenedorEscena");
 
-    public override void _Ready()
-    {
-        LoggerJuego.Trace(this.Name + " Ready.");
+	public override void _Ready()
+	{
+		LoggerJuego.Trace(this.Name + " Ready.");
 
-        Juego.Camara ??= _Camara;
+		Juego.Camara ??= _Camara;
 
-        AjustaViewPortYCamara();
+		AjustaViewPortYCamara();
 
-        CargarMenuPrincipal();
+		CargarMenuPrincipal();
+	}
 
-        Global.GestorAudio.ReproducirMusica("House In a Forest Loop.ogg");
-    }
+	private void AjustaViewPortYCamara()
+	{
+		// Ajustamos el tamaño del juego al tamaño de la pantalla.
+		this.Size = GetViewportRect().Size;
 
-    private void AjustaViewPortYCamara()
-    {
-        // Ajustamos el tamaño del juego al tamaño de la pantalla.
-        this.Size = GetViewportRect().Size;
+		// Ajustamos el tamaño de la cámara al tamaño del juego.
+		Juego.Camara.AjustarCamara(this.Size);
+		GetViewport().SizeChanged += () => Juego.Camara.AjustarCamara(this.Size);
+	}
 
-        // Ajustamos el tamaño de la cámara al tamaño del juego.
-        Juego.Camara.AjustarCamara(this.Size);
-        GetViewport().SizeChanged += () => Juego.Camara.AjustarCamara(this.Size);
-    }
+	public void CargarMenuPrincipal()
+	{
+		LoggerJuego.Trace("Cargando menú principal.");
 
-    public void CargarMenuPrincipal()
-    {
-        LoggerJuego.Trace("Cargando menú principal.");
+		Global.GestorAudio.ReproducirMusica("retro_wave.mp3", 4f);
 
-        string rutaMenuprincipal = UtilidadesNodos.ObtenerRutaEscena<MenuPrincipal>();
-        MenuPrincipal menuPrincipal = (MenuPrincipal)CambiarPantalla(rutaMenuprincipal);
+		string rutaMenuprincipal = UtilidadesNodos.ObtenerRutaEscena<MenuPrincipal>();
+		MenuPrincipal menuPrincipal = (MenuPrincipal)CambiarPantalla(rutaMenuprincipal);
 
-        menuPrincipal.BotonEmpezarPartidaPulsado += CargarBatalla;
-    }
+		menuPrincipal.ContenedorMenuPrincipal.BotonEmpezarPartidaPulsado += CargarBatalla;
+	}
 
-    public void CargarBatalla()
-    {
-        LoggerJuego.Trace("Cargando batalla.");
+	public void CargarBatalla()
+	{
+		LoggerJuego.Trace("Cargando batalla.");
 
-        string rutaBatalla = UtilidadesNodos.ObtenerRutaEscena<Batalla>();
-        Batalla batalla = (Batalla)CambiarPantalla(rutaBatalla);
+		Global.GestorAudio.ReproducirMusica("retro_song.mp3");
 
-        batalla.GameOverFinalizado += CargarMenuPrincipal;
-    }
+		string rutaBatalla = UtilidadesNodos.ObtenerRutaEscena<Batalla>();
+		Batalla batalla = (Batalla)CambiarPantalla(rutaBatalla);
 
-    public Node CambiarPantalla(string rutaEscena)
-    {
-        // Cargamos la escena desde la ruta proporcionada.
-        PackedScene pantalla = ResourceLoader.Load<PackedScene>(rutaEscena);
+		batalla.GameOverFinalizado += CargarMenuPrincipal;
+	}
 
-        if (pantalla == null)
-        {
-            LoggerJuego.Error($"No se pudo cargar la escena en la ruta: {rutaEscena}");
-            return null;
-        }
+	public Node CambiarPantalla(string rutaEscena)
+	{
+		// Cargamos la escena desde la ruta proporcionada.
+		PackedScene pantalla = ResourceLoader.Load<PackedScene>(rutaEscena);
 
-        // Instanciamos la escena cargada.
-        Node instanciaEscena = pantalla.Instantiate();
-        if (instanciaEscena == null)
-        {
-            LoggerJuego.Error($"No se pudo instanciar la escena desde la ruta: {rutaEscena}");
-            return null;
-        }
+		if (pantalla == null)
+		{
+			LoggerJuego.Error($"No se pudo cargar la escena en la ruta: {rutaEscena}");
+			return null;
+		}
 
-        // Limpiamos el contenedor de escenas actual.
-        UtilidadesNodos.BorrarHijos(this.ContenedorEscena);
+		// Instanciamos la escena cargada.
+		Node instanciaEscena = pantalla.Instantiate();
+		if (instanciaEscena == null)
+		{
+			LoggerJuego.Error($"No se pudo instanciar la escena desde la ruta: {rutaEscena}");
+			return null;
+		}
 
-        // Añadimos la nueva escena al contenedor.
-        this.ContenedorEscena.AddChild(instanciaEscena);
+		// Limpiamos el contenedor de escenas actual.
+		UtilidadesNodos.BorrarHijos(this.ContenedorEscena);
 
-        return instanciaEscena;
-    }
+		// Añadimos la nueva escena al contenedor.
+		this.ContenedorEscena.AddChild(instanciaEscena);
+
+		return instanciaEscena;
+	}
 }

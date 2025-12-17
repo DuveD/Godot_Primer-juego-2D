@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://5ng42tilghqk"]
+
+[ext_resource type="Script" uid="uid://bnmi58u167qie" path="res://escenas/modelos/controles/ButtonPersonalizado.cs" id="1_w1ltr"]
+
+[node name="ButtonPersonalizado" type="Button"]
+offset_top = 8.0
+offset_right = 8.0
+offset_bottom = 16.0
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath(".")
+focus_previous = NodePath(".")
+script = ExtResource("1_w1ltr")

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dp721n7hxw3x1" path="res://escenas/sistema/GestorAudio.cs" id="1_v4wtt"]
 
 [node name="GestorAudio" type="Node"]
+process_mode = 3
 script = ExtResource("1_v4wtt")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]

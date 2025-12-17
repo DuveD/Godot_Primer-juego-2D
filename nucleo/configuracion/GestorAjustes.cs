@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Godot;
 using Primerjuego2D.nucleo.utilidades.log;
 
@@ -12,21 +13,28 @@ public static class GestorAjustes
     private static ConfigFile Archivo { get; } = new ConfigFile();
 
     // ---------------- Carga y guardado ----------------
-    public static void Cargar(string rutaArchivo)
+    public static void Cargar(string rutaArchivoAjustes)
     {
-        if (!FileAccess.FileExists(rutaArchivo))
+        if (!File.Exists(rutaArchivoAjustes))
+        {
+            LoggerJuego.EscribirLog("ERROR", $"No existe el archivo de ajustes: {rutaArchivoAjustes}", null, "red");
             return;
+        }
 
-        var err = Archivo.Load(rutaArchivo);
+        var err = Archivo.Load(rutaArchivoAjustes);
         if (err != Error.Ok)
-            LoggerJuego.EscribirLog("ERROR", $"No se pudo cargar el archivo de ajustes: {rutaArchivo}", null, "red");
+            LoggerJuego.EscribirLog("ERROR", $"No se pudo cargar el archivo de ajustes: {err}", null, "red");
     }
 
-    public static void Guardar(string rutaArchivo)
+    public static void Guardar(string rutaCarpetaAjustes, string nombreArchivoAjustes)
     {
-        var err = Archivo.Save(rutaArchivo);
+        if (!Directory.Exists(rutaCarpetaAjustes))
+            Directory.CreateDirectory(rutaCarpetaAjustes);
+
+        string rutaArchivoAjustes = $"{rutaCarpetaAjustes}/{nombreArchivoAjustes}";
+        var err = Archivo.Save(rutaArchivoAjustes);
         if (err != Error.Ok)
-            LoggerJuego.EscribirLog("ERROR", $"No se pudo guardar el archivo de ajustes: {rutaArchivo}", null, "red");
+            LoggerJuego.EscribirLog("ERROR", $"No se pudo guardar el archivo de ajustes: {err}", null, "red");
     }
 
     // ---------------- Métodos genéricos ----------------

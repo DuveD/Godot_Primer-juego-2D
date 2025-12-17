@@ -22,11 +22,17 @@ public partial class Jugador : CharacterBody2D
     [Signal]
     public delegate void MuerteJugadorEventHandler();
 
+    [Signal]
+    public delegate void AnimacionMuerteJugadorTerminadaEventHandler();
+
     private CollisionShape2D _CollisionShape2D;
     private CollisionShape2D CollisionShape2D => _CollisionShape2D ??= GetNode<CollisionShape2D>("HitBox/HitBoxCollisionShape2D");
 
     private AnimatedSprite2D _AnimatedSprite2D;
     private AnimatedSprite2D AnimatedSprite2D => _AnimatedSprite2D ??= GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+
+    private CpuParticles2D _ExplosionMuerte;
+    private CpuParticles2D ExplosionMuerte => _ExplosionMuerte ??= GetNode<CpuParticles2D>("ExplosionMuerte");
 
     private Vector2 TamanoPantalla => UtilidadesPantalla.ObtenerTamanoPantalla(this);
 
@@ -77,16 +83,16 @@ public partial class Jugador : CharacterBody2D
     {
         var velocity = Vector2.Zero; // El vector de movimiento del jugador.
 
-        if (Input.IsActionPressed(ConstantesAcciones.MOVE_RIGHT))
+        if (Input.IsActionPressed(ConstantesAcciones.RIGHT))
             velocity.X += 1;
 
-        if (Input.IsActionPressed(ConstantesAcciones.MOVE_LEFT))
+        if (Input.IsActionPressed(ConstantesAcciones.LEFT))
             velocity.X -= 1;
 
-        if (Input.IsActionPressed(ConstantesAcciones.MOVE_DOWN))
+        if (Input.IsActionPressed(ConstantesAcciones.DOWN))
             velocity.Y += 1;
 
-        if (Input.IsActionPressed(ConstantesAcciones.MOVE_UP))
+        if (Input.IsActionPressed(ConstantesAcciones.UP))
             velocity.Y -= 1;
 
         return velocity;
@@ -181,6 +187,8 @@ public partial class Jugador : CharacterBody2D
         // Emitimos la señal de que hemos sido golpeados y esperamos dos segundos.
         EmitSignal(SignalName.MuerteJugador);
 
+        Global.GestorAudio.ReproducirSonido("game_over_arcade.mp3");
+
         // Iniciamos la animación de muerte del jugador.
         await AnimacionMuerte();
     }
@@ -194,12 +202,18 @@ public partial class Jugador : CharacterBody2D
         this.AnimatedSprite2D.Stop();
         this.AnimatedSprite2D.Modulate = new Color(ConstantesColores.ROJO_PASTEL);
 
-        await UtilidadesNodos.EsperarSegundos(this, 2.0);
+        await UtilidadesNodos.EsperarSegundos(this, 0.5);
 
         // Escondemos el sprite del jugador.
-        Hide();
-
+        AnimatedSprite2D.Hide();
         // Restauramos el color original del sprite.
         this.AnimatedSprite2D.Modulate = new Color(1, 1, 1);
+
+        ExplosionMuerte.Show();
+        ExplosionMuerte.Emitting = true;
+
+        await UtilidadesNodos.EsperarSegundos(this, 2.0);
+
+        EmitSignal(SignalName.AnimacionMuerteJugadorTerminada);
     }
 }

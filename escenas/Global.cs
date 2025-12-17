@@ -1,3 +1,4 @@
+using System;
 using Godot;
 using Primerjuego2D.escenas.sistema;
 using Primerjuego2D.nucleo.configuracion;

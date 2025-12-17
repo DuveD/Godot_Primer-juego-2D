@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dl7gushmrxufd"]
+
+[ext_resource type="Script" uid="uid://bye5llna1c4m4" path="res://escenas/modelos/controles/OptionButtonPersonalizado.cs" id="1_uwwh6"]
+
+[node name="OptionButtonPersonalizado" type="OptionButton"]
+script = ExtResource("1_uwwh6")

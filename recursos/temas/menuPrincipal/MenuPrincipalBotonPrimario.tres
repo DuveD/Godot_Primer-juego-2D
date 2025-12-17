@@ -1,14 +1,13 @@
 [gd_resource type="Theme" load_steps=5 format=3 uid="uid://bpuuj2ixgd5t6"]
 
 [ext_resource type="StyleBox" uid="uid://c6flh2cbp72gh" path="res://recursos/temas/menuPrincipal/MenuPrincipalBotonPrimario_hover.tres" id="1_3m1p7"]
-[ext_resource type="StyleBox" uid="uid://wxfnn7gd8bvn" path="res://recursos/temas/menuPrincipal/MenuPrincipalBotonPrimario_normal.tres" id="2_lm30b"]
+[ext_resource type="StyleBox" uid="uid://24yw4gga3ntr" path="res://recursos/temas/menuPrincipal/MenuPrincipalBotonPrimario_focus.tres" id="1_lm30b"]
 [ext_resource type="StyleBox" uid="uid://ka0hpg4b8g0y" path="res://recursos/temas/menuPrincipal/MenuPrincipalBotonPrimario_pressed.tres" id="3_hwyu8"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rm7y6"]
+[ext_resource type="StyleBox" uid="uid://5xxm4sj1he4b" path="res://recursos/temas/menuPrincipal/MenuPrincipalBotonSecundario_normal.tres" id="3_lm30b"]
 
 [resource]
 Button/font_sizes/font_size = 18
-Button/styles/focus = SubResource("StyleBoxEmpty_rm7y6")
+Button/styles/focus = ExtResource("1_lm30b")
 Button/styles/hover = ExtResource("1_3m1p7")
-Button/styles/normal = ExtResource("2_lm30b")
+Button/styles/normal = ExtResource("3_lm30b")
 Button/styles/pressed = ExtResource("3_hwyu8")

@@ -41,7 +41,7 @@ curve = SubResource("Curve2D_w0at3")
 
 [node name="BatallaControlador" parent="." instance=ExtResource("5_kuqqq")]
 
-[node name="SpawnMonedas" type="Control" parent="."]
+[node name="SpawnMonedas" type="Control" parent="." node_paths=PackedStringArray("Jugador")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -54,9 +54,11 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("6_w3cb5")
 MonedaScene = ExtResource("7_t4q4m")
+Jugador = NodePath("../Jugador")
 
 [connection signal="GameOverFinalizado" from="." to="SpawnMonedas" method="DestruirMonedas"]
-[connection signal="MuerteJugador" from="Jugador" to="." method="GameOver"]
+[connection signal="AnimacionMuerteJugadorTerminada" from="Jugador" to="." method="FinGameOver"]
+[connection signal="MuerteJugador" from="Jugador" to="." method="InicioGameOver"]
 [connection signal="timeout" from="EnemyTimer" to="." method="OnEnemyTimerTimeout"]
 [connection signal="timeout" from="StartTimer" to="." method="OnStartTimerTimeout"]
 [connection signal="timeout" from="StartTimer" to="BatallaHUD" method="MostrarMensajeIniciarBatalla"]

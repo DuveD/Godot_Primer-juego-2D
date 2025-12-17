@@ -1,5 +1,4 @@
 using Godot;
-using Primerjuego2D.nucleo.configuracion;
 using Primerjuego2D.nucleo.constantes;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
@@ -28,7 +27,7 @@ public partial class BatallaControlador : Node
 
     public override void _Input(InputEvent @event)
     {
-        if (@event.IsActionPressed(ConstantesAcciones.PAUSAR_JUEGO))
+        if (@event.IsActionPressed(ConstantesAcciones.ESCAPE))
         {
             OnPauseButtonPressed();
         }
@@ -36,7 +35,6 @@ public partial class BatallaControlador : Node
 
     private void OnPauseButtonPressed()
     {
-
         if (!this.BatallaEnCurso)
             return;
 
@@ -58,6 +56,7 @@ public partial class BatallaControlador : Node
             return;
 
         BatallaEnCurso = true;
+
         LoggerJuego.Info("Batalla iniciada.");
         EmitSignal(SignalName.BatallaIniciada);
     }

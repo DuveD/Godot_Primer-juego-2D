@@ -28,6 +28,8 @@ public static class LoggerJuego
 
     private static readonly string PathLog;
 
+    public static NivelLog NivelLogJuego { get; set; } = Ajustes.NivelLog;
+
     static LoggerJuego()
     {
         string pathCarpetaLogs = Ajustes.RutaLogs;
@@ -83,7 +85,7 @@ public static class LoggerJuego
         var atributoLogLevel = tipoLlamador.GetCustomAttributes(typeof(AtributoNivelLog), inherit: true)
                    .FirstOrDefault() as AtributoNivelLog;
 
-        return atributoLogLevel?.NivelLog ?? Ajustes.NivelLog; // si no tiene atributo, usa NivelLog global
+        return atributoLogLevel?.NivelLog ?? NivelLogJuego; // si no tiene atributo, usa NivelLog global
     }
 
     private static string ObtenerContexto()

@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://doyxp6l6eg05"]
+
+[ext_resource type="Script" uid="uid://c1gh2kjhprws6" path="res://escenas/modelos/controles/ControlSeleccion.cs" id="1_57jek"]
+[ext_resource type="Script" uid="uid://bye5llna1c4m4" path="res://escenas/modelos/controles/OptionButtonPersonalizado.cs" id="2_eqi7e"]
+
+[node name="ControlLenguaje" type="HBoxContainer"]
+script = ExtResource("1_57jek")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Label Control Selección"
+
+[node name="Spacer" type="Control" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OptionButton" type="OptionButton" parent="."]
+layout_mode = 2
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath(".")
+focus_previous = NodePath(".")
+script = ExtResource("2_eqi7e")
+NombreSonidoOnFocusEntered = "kick.mp3"
+NombreSonidoOnMouseEntered = "kick.mp3"
+
+[node name="Spacer2" type="Control" parent="."]
+layout_mode = 2

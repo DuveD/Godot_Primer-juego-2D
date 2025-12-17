@@ -23,21 +23,21 @@ public static class Ajustes
     public static string RutaArchivoAjustes { get; } = $"{RutaJuego}/{NombreArchivoAjustes}";
 
     // ================= SONIDO =================
-    public static float VolumenGeneral
+    public static int VolumenGeneral
     {
-        get => GestorAjustes.ObtenerValor(SECCION_SONIDO, "volumen_general", 1.0f);
+        get => GestorAjustes.ObtenerValor(SECCION_SONIDO, "volumen_general", 100);
         set => GuardarPropiedad(SECCION_SONIDO, "volumen_general", value);
     }
 
-    public static float VolumenMusica
+    public static int VolumenMusica
     {
-        get => GestorAjustes.ObtenerValor(SECCION_SONIDO, "volumen_musica", 1.0f);
+        get => GestorAjustes.ObtenerValor(SECCION_SONIDO, "volumen_musica", 100);
         set => GuardarPropiedad(SECCION_SONIDO, "volumen_musica", value);
     }
 
-    public static float VolumenSonidos
+    public static int VolumenSonidos
     {
-        get => GestorAjustes.ObtenerValor(SECCION_SONIDO, "volumen_sonidos", 1.0f);
+        get => GestorAjustes.ObtenerValor(SECCION_SONIDO, "volumen_sonidos", 100);
         set => GuardarPropiedad(SECCION_SONIDO, "volumen_sonidos", value);
     }
 
@@ -75,21 +75,21 @@ public static class Ajustes
 
     // ================= CARGA Y GUARDADO =================
 
-    private static bool _guardarAjustesAlGuardarPropiedad = true;
+    public static bool GuardarAjustesAlGuardarPropiedad = true;
 
     private static void InicializarValoresPorDefecto()
     {
-        _guardarAjustesAlGuardarPropiedad = false;
+        GuardarAjustesAlGuardarPropiedad = false;
 
-        VolumenGeneral = 1.0f;
-        VolumenMusica = 1.0f;
-        VolumenSonidos = 1.0f;
+        VolumenGeneral = 100;
+        VolumenMusica = 100;
+        VolumenSonidos = 100;
 
         Idioma = Idioma.ES;
         NivelLog = NivelLog.Trace;
         EscribirLogEnFichero = false;
 
-        _guardarAjustesAlGuardarPropiedad = true;
+        GuardarAjustesAlGuardarPropiedad = true;
     }
 
     public static void CargarAjustes()
@@ -98,7 +98,7 @@ public static class Ajustes
         {
             InicializarValoresPorDefecto();
 
-            GestorAjustes.Guardar(RutaArchivoAjustes);
+            GestorAjustes.Guardar(RutaJuego, NombreArchivoAjustes);
 
             LoggerJuego.Info($"Creado archivo '{NombreArchivoAjustes}' con la configuración por defecto.");
         }
@@ -112,14 +112,14 @@ public static class Ajustes
     public static void GuardarPropiedad<[MustBeVariant] T>(string seccion, string clave, T valor)
     {
         GestorAjustes.GuardarValor(seccion, clave, valor);
-        if (_guardarAjustesAlGuardarPropiedad)
+        if (GuardarAjustesAlGuardarPropiedad)
             GuardarAjustes();
     }
 
 
     public static void GuardarAjustes()
     {
-        GestorAjustes.Guardar(RutaArchivoAjustes);
+        GestorAjustes.Guardar(RutaJuego, NombreArchivoAjustes);
         LoggerJuego.Info("Ajustes guardados.");
     }
 }

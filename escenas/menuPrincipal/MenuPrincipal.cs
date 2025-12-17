@@ -1,6 +1,6 @@
 using Godot;
-using Primerjuego2D.nucleo.configuracion;
-using Primerjuego2D.nucleo.localizacion;
+using Primerjuego2D.nucleo.constantes;
+using Primerjuego2D.nucleo.modelos.interfaces;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
 
@@ -8,79 +8,149 @@ namespace Primerjuego2D.escenas.menuPrincipal;
 
 public partial class MenuPrincipal : Control
 {
-    public const long ID_OPCION_CASTELLANO = 0;
-    public const long ID_OPCION_INGLES = 1;
+    private bool _opcionPulsada = false;
 
-    [Signal]
-    public delegate void BotonEmpezarPartidaPulsadoEventHandler();
+    private bool _navegacionPorTeclado = true;
 
-    ColorRect _Fondo;
+    private ColorRect _Fondo;
     private ColorRect Fondo => _Fondo ??= GetNode<ColorRect>("Fondo");
 
-    private MenuButton _MenuButtonLenguaje;
-    private MenuButton MenuButtonLenguaje => _MenuButtonLenguaje ??= GetNode<MenuButton>("MenuButtonLenguaje");
+    private ContenedorMenuPrincipal _ContenedorBotonesPrincipal;
+    public ContenedorMenuPrincipal ContenedorMenuPrincipal => _ContenedorBotonesPrincipal ??= GetNode<ContenedorMenuPrincipal>("ContenedorMenuPrincipal");
+
+    private ContenedorMenuAjustes _ContenedorMenuAjustes;
+    public ContenedorMenuAjustes ContenedorMenuAjustes => _ContenedorMenuAjustes ??= GetNode<ContenedorMenuAjustes>("ContenedorMenuAjustes");
+
+    public Control _UltimoElementoConFocus;
+    public Control UltimoElementoConFocus
+    {
+        get => _UltimoElementoConFocus;
+        set
+        {
+            _UltimoElementoConFocus = value;
+            LoggerJuego.Trace("Último elemento con focus actualizado a: " + value.Name);
+        }
+    }
 
     public override void _Ready()
     {
         LoggerJuego.Trace(this.Name + " Ready.");
 
-        InicializarMenuButtonLenguaje();
+        GrabFocusPrimerElemento();
     }
 
-    private void InicializarMenuButtonLenguaje()
+    private void GrabFocusPrimerElemento()
     {
-        PopupMenu popupMenu = this.MenuButtonLenguaje.GetPopup();
-        popupMenu.IdPressed += MenuButtonLenguajeIdPressed;
-
-        Idioma idioma = GestorIdioma.ObtenerIdiomaDeSistema();
-        if (idioma.Codigo == Idioma.ES.Codigo)
-            MenuButtonLenguajeIdPressed(ID_OPCION_CASTELLANO);
-        else if (idioma.Codigo == Idioma.EN.Codigo)
-            MenuButtonLenguajeIdPressed(ID_OPCION_INGLES);
-        else
-            MenuButtonLenguajeIdPressed(ID_OPCION_CASTELLANO);
-    }
-
-    private void MenuButtonLenguajeIdPressed(long id)
-    {
-        LoggerJuego.Trace("Opción de 'MenuButtonLenguaje' pulsado.");
-
-        // Obtenemos el PopupMenu del MenuButton
-        var popupMenu = this.MenuButtonLenguaje.GetPopup();
-
-        // Checkeamos el ítem del id
-        UtilidadesNodos.CheckItemPorId(popupMenu, id);
-
-        Idioma idioma;
-        switch (id)
+        if (this.ContenedorMenuPrincipal.Visible)
         {
-            default:
-            case ID_OPCION_CASTELLANO:
-                idioma = Idioma.ES;
-                break;
-            case ID_OPCION_INGLES:
-                idioma = Idioma.EN;
-                break;
+            this.ContenedorMenuPrincipal.ButtonEmpezarPartida.GrabFocusSilencioso();
+        }
+        else
+        {
+            this.ContenedorMenuAjustes.ControlVolumenGeneral.SliderVolumen.GrabFocusSilencioso();
+        }
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        CambioMetodoImput(@event);
+    }
+
+    private void CambioMetodoImput(InputEvent @event)
+    {
+        if (_opcionPulsada)
+        {
+            LoggerJuego.Trace("EL menú está desactivado.");
+            // Ignora cualquier input
+            return;
         }
 
-        GestorIdioma.CambiarIdioma(idioma);
-        Ajustes.Idioma = idioma;
+        if (@event is InputEventKey keyEvent && keyEvent.Pressed)
+        {
+            if (!_navegacionPorTeclado &&
+                UtilidadesControles.IsActionPressed(@event, ConstantesAcciones.UP, ConstantesAcciones.RIGHT, ConstantesAcciones.DOWN, ConstantesAcciones.LEFT))
+            {
+                LoggerJuego.Trace("Activamos la navegación por teclado.");
+                ActivarNavegacionTeclado();
+            }
+        }
+        else if (@event is InputEventMouse)
+        {
+            if (_navegacionPorTeclado)
+            {
+                LoggerJuego.Trace("Desactivamos la navegación por teclado.");
+                DesactivarNavegacionTeclado();
+            }
+        }
     }
 
-    private void OnButtonEmpezarPartidaPressed()
+    private void ActivarNavegacionTeclado()
     {
-        LoggerJuego.Trace("Botón 'ButtonEmpezarPartida' pulsado.");
-        EmitSignal(SignalName.BotonEmpezarPartidaPulsado);
+        _navegacionPorTeclado = true;
+
+        this.ContenedorMenuPrincipal.ActivarNavegacionTeclado();
+        this.ContenedorMenuAjustes.ActivarNavegacionTeclado();
+
+        GrabFocusUltimoBotonConFocus();
     }
 
-    private void OnButtonCargarPartidaPressed()
+    private void DesactivarNavegacionTeclado()
     {
-        LoggerJuego.Trace("Botón 'ButtonCargarPartida' pulsado.");
+        _navegacionPorTeclado = false;
+
+        this.ContenedorMenuPrincipal.DesactivarNavegacionTeclado();
+        this.ContenedorMenuAjustes.DesactivarNavegacionTeclado();
     }
 
-    private void OnButtonSalirPressed()
+    private void GrabFocusUltimoBotonConFocus()
     {
-        LoggerJuego.Trace("Botón 'ButtonSalir' pulsado.");
-        this.GetTree().Quit();
+        if (this.UltimoElementoConFocus is IFocusSilencioso elementoConFocusSilencioso)
+        {
+            elementoConFocusSilencioso.GrabFocusSilencioso();
+        }
+        else
+        {
+            this.UltimoElementoConFocus.GrabFocus();
+        }
+    }
+
+    private void MostrarContenedorMenuAjustes()
+    {
+        LoggerJuego.Trace("Botón 'ButtonAjustes' pulsado.");
+
+        Global.GestorAudio.ReproducirSonido("digital_click.mp3");
+
+        this.ContenedorMenuPrincipal.Visible = false;
+        this.ContenedorMenuAjustes.Visible = true;
+
+        if (_navegacionPorTeclado)
+        {
+            GrabFocusPrimerElemento();
+        }
+        else
+        {
+            this.UltimoElementoConFocus = this.ContenedorMenuAjustes.ControlVolumenGeneral.SliderVolumen;
+        }
+    }
+
+    public void MostrarContenedorMenuprincipal()
+    {
+        LoggerJuego.Trace("Botón Ajustes 'Atrás' pulsado.");
+
+        Global.GestorAudio.ReproducirSonido("digital_click.mp3");
+
+        this.ContenedorMenuAjustes.Visible = false;
+        this.ContenedorMenuPrincipal.Visible = true;
+
+        this.ContenedorMenuPrincipal.ActivarFocusBotones();
+
+        if (_navegacionPorTeclado)
+        {
+            this.ContenedorMenuPrincipal.ButtonAjustes.GrabFocusSilencioso();
+        }
+        else
+        {
+            this.UltimoElementoConFocus = this.ContenedorMenuPrincipal.ButtonAjustes;
+        }
     }
 }

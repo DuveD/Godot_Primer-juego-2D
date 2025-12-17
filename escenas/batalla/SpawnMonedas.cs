@@ -1,25 +1,34 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
-using Godot.Collections;
+using Primerjuego2D.escenas.entidades.jugador;
 using Primerjuego2D.escenas.objetos.moneda;
+using Primerjuego2D.nucleo.utilidades;
+using Primerjuego2D.nucleo.utilidades.log;
+
+namespace Primerjuego2D.escenas.batalla;
 
 public partial class SpawnMonedas : Control
 {
+
 	public int MonedasRecogidas;
 
 	// Señal "MonedaRecogida" para indicar que el jugador ha recogido una moneda.
 	[Signal]
 	public delegate void MonedaRecogidaEventHandler();
 
-	[Export] public PackedScene MonedaScene;
+	[Export]
+	public PackedScene MonedaScene;
+
+	[Export]
+	public int DistanciaMinima = 200;
+
+	[Export]
+	public Jugador Jugador { get; set; }
 
 	public override void _Ready()
 	{
 		this.MonedasRecogidas = 0;
-
-		Spawn();
 	}
 
 	public override void _Process(double delta)
@@ -31,20 +40,39 @@ public partial class SpawnMonedas : Control
 	public bool ExisteMoneda()
 	{
 		var monedas = GetTree().CurrentScene.GetChildren().OfType<Moneda>();
-		return monedas.Count() > 0;
+		return monedas.Any();
 	}
 
 	public void Spawn()
 	{
+		LoggerJuego.Trace("Spawneamos una nueva moneda.");
+
+		Vector2 centroJugador = Jugador?.GlobalPosition ?? Vector2.Inf;
+
+		float x = (float)GD.RandRange(GlobalPosition.X, GlobalPosition.X + Size.X);
+		float y = (float)GD.RandRange(GlobalPosition.Y, GlobalPosition.Y + Size.Y);
+
+		Vector2 nuevaPosicionMoneda = new Vector2(x, y);
+
+		if (Jugador != null)
+		{
+			while (UtilidadesMatematicas.PuntosCerca(centroJugador, nuevaPosicionMoneda, this.DistanciaMinima))
+			{
+				LoggerJuego.Info("La distancia de la nueva moneda está cerca del jugador. Generamos otro punto.");
+
+				x = (float)GD.RandRange(GlobalPosition.X, GlobalPosition.X + Size.X);
+				y = (float)GD.RandRange(GlobalPosition.Y, GlobalPosition.Y + Size.Y);
+
+				nuevaPosicionMoneda = new Vector2(x, y);
+			}
+		}
+
 		var moneda = MonedaScene.Instantiate<Moneda>();
 		moneda.Recogida += OnMonedaRecogida;
 
 		GetTree().CurrentScene.AddChild(moneda);
 
-		float x = (float)GD.RandRange(GlobalPosition.X, GlobalPosition.X + Size.X);
-		float y = (float)GD.RandRange(GlobalPosition.Y, GlobalPosition.Y + Size.Y);
-
-		moneda.Position = new Vector2(x, y);
+		moneda.Position = nuevaPosicionMoneda;
 	}
 
 	public void OnMonedaRecogida()

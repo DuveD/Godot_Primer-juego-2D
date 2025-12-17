@@ -1,16 +1,19 @@
-using Godot;
 
 namespace Primerjuego2D.nucleo.constantes;
 
 public class ConstantesAcciones
 {
-    public const string MOVE_RIGHT = "move_right";
+    public const string RIGHT = "Right";
 
-    public const string MOVE_LEFT = "move_left";
+    public const string LEFT = "Left";
 
-    public const string MOVE_UP = "move_up";
+    public const string UP = "Up";
 
-    public const string MOVE_DOWN = "move_down";
+    public const string DOWN = "Down";
 
-    public const string PAUSAR_JUEGO = "pausar_juego";
+    public const string ESCAPE = "Escape";
+
+    public const string SPACE = "Space";
+
+    public const string ENTER = "Enter";
 }
