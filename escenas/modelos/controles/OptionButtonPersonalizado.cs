@@ -1,13 +1,12 @@
 using Godot;
-using Primerjuego2D.escenas;
 using Primerjuego2D.nucleo.modelos.interfaces;
 
-namespace Primerjuego2D.nucleo.modelos;
+namespace Primerjuego2D.escenas.modelos.controles;
 
-public partial class HSliderPersonalizado : HSlider, IFocusSilencioso
+public partial class OptionButtonPersonalizado : OptionButton, IFocusSilencioso
 {
     [Export]
-    public string NombreSonidoOnFocus { get; set; }
+    public string NombreSonidoOnFocusEntered { get; set; }
     [Export]
     public string NombreSonidoOnMouseEntered { get; set; }
 
@@ -21,8 +20,8 @@ public partial class HSliderPersonalizado : HSlider, IFocusSilencioso
 
     public void OnFocusedEntered()
     {
-        if (this._reproducirSonido && !string.IsNullOrEmpty(NombreSonidoOnFocus))
-            Global.GestorAudio.ReproducirSonido(NombreSonidoOnFocus);
+        if (this._reproducirSonido && !string.IsNullOrEmpty(NombreSonidoOnFocusEntered))
+            Global.GestorAudio.ReproducirSonido(NombreSonidoOnFocusEntered);
     }
 
     public void GrabFocusSilencioso()
@@ -35,6 +34,9 @@ public partial class HSliderPersonalizado : HSlider, IFocusSilencioso
     public void OnMouseEntered()
     {
         if (!string.IsNullOrEmpty(NombreSonidoOnMouseEntered))
-            Global.GestorAudio.ReproducirSonido(NombreSonidoOnMouseEntered);
+        {
+            if (!this.Disabled)
+                Global.GestorAudio.ReproducirSonido(NombreSonidoOnMouseEntered);
+        }
     }
 }

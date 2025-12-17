@@ -52,6 +52,7 @@ folder_colors={
 "res://escenas/entidades/jugador/": "orange",
 "res://escenas/menuPrincipal/": "pink",
 "res://escenas/miscelaneo/": "purple",
+"res://escenas/modelos/": "teal",
 "res://escenas/objetos/": "yellow",
 "res://escenas/sistema/": "blue"
 }

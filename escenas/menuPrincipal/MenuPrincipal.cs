@@ -1,9 +1,5 @@
-using System;
-using System.ComponentModel.Design;
 using Godot;
-using Primerjuego2D.escenas.miscelaneo.controles;
 using Primerjuego2D.nucleo.constantes;
-using Primerjuego2D.nucleo.modelos;
 using Primerjuego2D.nucleo.modelos.interfaces;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;

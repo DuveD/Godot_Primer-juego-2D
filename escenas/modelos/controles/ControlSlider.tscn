@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://do1xqqv7m5xh6"]
 
-[ext_resource type="Script" uid="uid://k0g6nc7pw8sj" path="res://escenas/miscelaneo/controles/ControlSlider.cs" id="1_2ab2f"]
-[ext_resource type="Script" uid="uid://b8kfinytbny8d" path="res://nucleo/modelos/HSliderPersonalizado.cs" id="2_qlmr3"]
+[ext_resource type="Script" uid="uid://k0g6nc7pw8sj" path="res://escenas/modelos/controles/ControlSlider.cs" id="1_2ab2f"]
+[ext_resource type="Script" uid="uid://b8kfinytbny8d" path="res://escenas/modelos/controles/HSliderPersonalizado.cs" id="2_qlmr3"]
 
 [node name="ControlSlider" type="VBoxContainer"]
 script = ExtResource("1_2ab2f")
@@ -21,9 +21,16 @@ size_flags_horizontal = 3
 [node name="SpinBox" type="SpinBox" parent="HBoxContainer"]
 layout_mode = 2
 focus_mode = 1
+focus_behavior_recursive = 1
 
 [node name="HSlider" type="HSlider" parent="."]
 layout_mode = 2
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath(".")
+focus_previous = NodePath(".")
 script = ExtResource("2_qlmr3")
 NombreSonidoOnFocus = "kick.mp3"
 NombreSonidoOnMouseEntered = "kick.mp3"

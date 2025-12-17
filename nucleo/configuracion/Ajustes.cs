@@ -23,21 +23,21 @@ public static class Ajustes
     public static string RutaArchivoAjustes { get; } = $"{RutaJuego}/{NombreArchivoAjustes}";
 
     // ================= SONIDO =================
-    public static float VolumenGeneral
+    public static int VolumenGeneral
     {
-        get => GestorAjustes.ObtenerValor(SECCION_SONIDO, "volumen_general", 1.0f);
+        get => GestorAjustes.ObtenerValor(SECCION_SONIDO, "volumen_general", 100);
         set => GuardarPropiedad(SECCION_SONIDO, "volumen_general", value);
     }
 
-    public static float VolumenMusica
+    public static int VolumenMusica
     {
-        get => GestorAjustes.ObtenerValor(SECCION_SONIDO, "volumen_musica", 1.0f);
+        get => GestorAjustes.ObtenerValor(SECCION_SONIDO, "volumen_musica", 100);
         set => GuardarPropiedad(SECCION_SONIDO, "volumen_musica", value);
     }
 
-    public static float VolumenSonidos
+    public static int VolumenSonidos
     {
-        get => GestorAjustes.ObtenerValor(SECCION_SONIDO, "volumen_sonidos", 1.0f);
+        get => GestorAjustes.ObtenerValor(SECCION_SONIDO, "volumen_sonidos", 100);
         set => GuardarPropiedad(SECCION_SONIDO, "volumen_sonidos", value);
     }
 
@@ -81,9 +81,9 @@ public static class Ajustes
     {
         GuardarAjustesAlGuardarPropiedad = false;
 
-        VolumenGeneral = 1.0f;
-        VolumenMusica = 1.0f;
-        VolumenSonidos = 1.0f;
+        VolumenGeneral = 100;
+        VolumenMusica = 100;
+        VolumenSonidos = 100;
 
         Idioma = Idioma.ES;
         NivelLog = NivelLog.Trace;

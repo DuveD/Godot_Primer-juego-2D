@@ -4,7 +4,7 @@ using Primerjuego2D.nucleo.modelos;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
 
-namespace Primerjuego2D.escenas.miscelaneo.controles;
+namespace Primerjuego2D.escenas.modelos.controles;
 
 public partial class ControlSeleccion : HBoxContainer
 {

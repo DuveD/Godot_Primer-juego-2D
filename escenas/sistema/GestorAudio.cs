@@ -86,9 +86,9 @@ public partial class GestorAudio : Node
 		InicializarSfxPool();
 		CargarRecursosAudio();
 
-		this._VolumenGeneral = Ajustes.VolumenGeneral;
-		this._VolumenMusica = Ajustes.VolumenMusica;
-		this._VolumenSonidos = Ajustes.VolumenSonidos;
+		this._VolumenGeneral = Ajustes.VolumenGeneral / 100.0f;
+		this._VolumenMusica = Ajustes.VolumenMusica / 100.0f;
+		this._VolumenSonidos = Ajustes.VolumenSonidos / 100.0f;
 
 		// Inicializar volúmenes según ajustes
 		ActualizarVolumenGlobal();

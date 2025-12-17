@@ -2,14 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
-using Primerjuego2D.escenas.miscelaneo.controles;
 using Primerjuego2D.nucleo.configuracion;
 using Primerjuego2D.nucleo.constantes;
 using Primerjuego2D.nucleo.localizacion;
-using Primerjuego2D.nucleo.modelos;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
 using static Primerjuego2D.nucleo.utilidades.log.LoggerJuego;
+using ButtonPersonalizado = Primerjuego2D.escenas.modelos.controles.ButtonPersonalizado;
+using ControlSeleccion = Primerjuego2D.escenas.modelos.controles.ControlSeleccion;
+using ControlSlider = Primerjuego2D.escenas.modelos.controles.ControlSlider;
 
 namespace Primerjuego2D.escenas.menuPrincipal;
 
@@ -42,9 +43,9 @@ public partial class ContenedorMenuAjustes : CenterContainer
 	private List<Control> ElementosMenuAjustes;
 
 	// Ajustes actuales.
-	public double VolumenGeneral;
-	public double VolumenMusica;
-	public double VolumenSonidos;
+	public int VolumenGeneral;
+	public int VolumenMusica;
+	public int VolumenSonidos;
 	public Idioma Lenguaje;
 	public NivelLog NivelLog;
 
@@ -70,13 +71,13 @@ public partial class ContenedorMenuAjustes : CenterContainer
 		ControlNivelLog.ValorCambiado -= OnControlNivelLogValorCambiado;
 
 		VolumenGeneral = Ajustes.VolumenGeneral;
-		ControlVolumenGeneral.Valor = VolumenGeneral * 100.0;
+		ControlVolumenGeneral.Valor = VolumenGeneral;
 
 		VolumenMusica = Ajustes.VolumenMusica;
-		ControlVolumenMusica.Valor = VolumenMusica * 100.0;
+		ControlVolumenMusica.Valor = VolumenMusica;
 
 		VolumenSonidos = Ajustes.VolumenSonidos;
-		ControlVolumenSonido.Valor = VolumenSonidos * 100.0;
+		ControlVolumenSonido.Valor = VolumenSonidos;
 
 		Lenguaje = Ajustes.Idioma;
 		ControlLenguaje.Valor = Ajustes.Idioma.Codigo;
@@ -157,31 +158,63 @@ public partial class ContenedorMenuAjustes : CenterContainer
 	private void ActivarBotonGuardarSiCambio()
 	{
 		bool hayCambios =
-			!VolumenGeneral.Equals(ControlVolumenGeneral.Valor / 100.0) ||
-			!VolumenMusica.Equals(ControlVolumenMusica.Valor / 100.0) ||
-			!VolumenSonidos.Equals(ControlVolumenSonido.Valor / 100.0) ||
+			!VolumenGeneral.Equals((int)ControlVolumenGeneral.Valor) ||
+			!VolumenMusica.Equals((int)ControlVolumenMusica.Valor) ||
+			!VolumenSonidos.Equals((int)ControlVolumenSonido.Valor) ||
 			!Lenguaje.Codigo.Equals(ControlLenguaje.Valor.AsString()) ||
 			!NivelLog.Equals((NivelLog)(int)ControlNivelLog.Valor);
 
-		ButtonGuardar.Disabled = !hayCambios;
+		if (hayCambios)
+		{
+			ActivarNavegacionButtonGuardar();
+		}
+		else
+		{
+			DesactivarNavegacionButtonGuardar();
+		}
+	}
+
+	private void ActivarNavegacionButtonGuardar()
+	{
+		ButtonGuardar.Disabled = false;
+		ButtonGuardar.FocusMode = FocusModeEnum.All;
+
+		// Informamos al ControlNivelLog que su vecino de abajo es el botón Guardar
+		ControlNivelLog.OptionButton.FocusNeighborBottom = ControlNivelLog.OptionButton.GetPathTo(ButtonGuardar);
+		// Informamos al botón Atrás que su vecino a la derecha es el botón Guardar
+		ButtonAtras.FocusNeighborRight = ButtonAtras.GetPathTo(ButtonGuardar);
+	}
+
+	private void DesactivarNavegacionButtonGuardar()
+	{
+		ButtonGuardar.Disabled = true;
+		ButtonGuardar.FocusMode = FocusModeEnum.None;
+
+		// Informamos al ControlNivelLog que su vecino de abajo es el botón Atrás
+		ControlNivelLog.OptionButton.FocusNeighborBottom = ControlNivelLog.OptionButton.GetPathTo(ButtonAtras);
+		// Informamos al botón Atrás que su vecino a la derecha es el ControlNivelLog
+		ButtonAtras.FocusNeighborRight = ButtonAtras.GetPathTo(ControlNivelLog.OptionButton);
 	}
 
 	private void OnControlVolumenGeneralValorCambiado(double valor)
 	{
 		Global.GestorAudio.VolumenGeneral = (float)(valor / 100.0f);
-		ActivarBotonGuardarSiCambio();
+		//ActivarBotonGuardarSiCambio();
+		Ajustes.VolumenGeneral = (int)valor;
 	}
 
 	private void OnControlVolumenMusicaValorCambiado(double valor)
 	{
 		Global.GestorAudio.VolumenMusica = (float)(valor / 100.0f);
-		ActivarBotonGuardarSiCambio();
+		//ActivarBotonGuardarSiCambio();
+		Ajustes.VolumenMusica = (int)valor;
 	}
 
 	private void OnControlVolumenSonidosValorCambiado(double valor)
 	{
 		Global.GestorAudio.VolumenSonidos = (float)(valor / 100.0f);
-		ActivarBotonGuardarSiCambio();
+		//ActivarBotonGuardarSiCambio();
+		Ajustes.VolumenSonidos = (int)valor;
 	}
 
 	private void OnControlLenguajeValorCambiado(Variant valor)
@@ -189,25 +222,26 @@ public partial class ContenedorMenuAjustes : CenterContainer
 		string codigoIdioma = (string)valor;
 		Idioma idiomaSeleccionado = GestorIdioma.ObtenerIdiomaDeCodigo(codigoIdioma);
 		GestorIdioma.CambiarIdioma(idiomaSeleccionado);
-		ActivarBotonGuardarSiCambio();
+		//ActivarBotonGuardarSiCambio();
+		Ajustes.Idioma = idiomaSeleccionado;
 	}
 
 	private void OnControlNivelLogValorCambiado(Variant valor)
 	{
 		NivelLog nivelLogSeleccionado = (NivelLog)(int)valor;
 		LoggerJuego.NivelLogJuego = nivelLogSeleccionado;
-		ActivarBotonGuardarSiCambio();
+		//ActivarBotonGuardarSiCambio();
+		Ajustes.NivelLog = nivelLogSeleccionado;
 	}
-
 
 	public void OnButtonGuardarPressed()
 	{
 		LoggerJuego.Trace("Botón Ajustes 'Guardar' pulsado.");
 
 		Ajustes.GuardarAjustesAlGuardarPropiedad = false;
-		Ajustes.VolumenGeneral = (float)(ControlVolumenGeneral.Valor / 100.0);
-		Ajustes.VolumenMusica = (float)(ControlVolumenMusica.Valor / 100.0);
-		Ajustes.VolumenSonidos = (float)(ControlVolumenSonido.Valor / 100.0);
+		Ajustes.VolumenGeneral = (int)ControlVolumenGeneral.Valor;
+		Ajustes.VolumenMusica = (int)ControlVolumenMusica.Valor;
+		Ajustes.VolumenSonidos = (int)ControlVolumenSonido.Valor;
 		Ajustes.Idioma = GestorIdioma.ObtenerIdiomaDeCodigo((string)ControlLenguaje.Valor);
 		Ajustes.NivelLog = (NivelLog)(int)ControlNivelLog.Valor;
 
@@ -216,6 +250,8 @@ public partial class ContenedorMenuAjustes : CenterContainer
 
 		CargarValoresDeAjustes();
 
-		ButtonGuardar.Disabled = true;
+		DesactivarNavegacionButtonGuardar();
+
+		ButtonAtras.GrabFocusSilencioso();
 	}
 }

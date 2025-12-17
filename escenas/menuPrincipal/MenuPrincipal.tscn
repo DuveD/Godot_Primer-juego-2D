@@ -7,12 +7,12 @@
 [ext_resource type="Script" uid="uid://cicfsslle8hmx" path="res://escenas/menuPrincipal/ButtonEmpezarPartida.cs" id="5_rs0f5"]
 [ext_resource type="Script" uid="uid://bd05siqa7jip2" path="res://escenas/menuPrincipal/ButtonAjustes.cs" id="7_mxkrh"]
 [ext_resource type="Script" uid="uid://dafkl1d6lxkis" path="res://escenas/menuPrincipal/ButtonSalir.cs" id="8_oupjs"]
-[ext_resource type="PackedScene" uid="uid://do1xqqv7m5xh6" path="res://escenas/miscelaneo/controles/ControlSlider.tscn" id="9_cmdin"]
+[ext_resource type="PackedScene" uid="uid://do1xqqv7m5xh6" path="res://escenas/modelos/controles/ControlSlider.tscn" id="9_cmdin"]
 [ext_resource type="Script" uid="uid://dp8u6kpmw15ps" path="res://escenas/menuPrincipal/ContenedorMenuAjustes.cs" id="9_iaj7c"]
 [ext_resource type="Shader" uid="uid://c07xghhalj6cu" path="res://recursos/shaders/ApagarTV.gdshader" id="9_shader"]
 [ext_resource type="Script" uid="uid://c3tgy8asw5eyn" path="res://escenas/menuPrincipal/ButtonAtras.cs" id="11_0hdc8"]
-[ext_resource type="PackedScene" uid="uid://doyxp6l6eg05" path="res://escenas/miscelaneo/controles/ControlSeleccion.tscn" id="11_vstw6"]
-[ext_resource type="Script" uid="uid://bnmi58u167qie" path="res://nucleo/modelos/ButtonPersonalizado.cs" id="12_0hdc8"]
+[ext_resource type="PackedScene" uid="uid://doyxp6l6eg05" path="res://escenas/modelos/controles/ControlSeleccion.tscn" id="11_vstw6"]
+[ext_resource type="PackedScene" uid="uid://5ng42tilghqk" path="res://escenas/modelos/controles/ButtonPersonalizado.tscn" id="12_van17"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6ip4d"]
 content_margin_left = 30.0
@@ -89,7 +89,6 @@ grow_vertical = 2
 script = ExtResource("1_4116w")
 
 [node name="ContenedorMenuPrincipal" type="CenterContainer" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -148,6 +147,7 @@ NombreSonidoOnFocusEntered = "kick.mp3"
 NombreSonidoOnMouseEntered = "kick.mp3"
 
 [node name="ContenedorMenuAjustes" type="CenterContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -193,7 +193,6 @@ TextoLabel = "MenuPrincipal.ajustes.volumenGeneral"
 focus_behavior_recursive = 2
 
 [node name="HSlider" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlVolumenGeneral" index="1"]
-focus_neighbor_top = NodePath(".")
 focus_neighbor_bottom = NodePath("../../ControlVolumenMusica/HSlider")
 
 [node name="ControlVolumenMusica" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer" instance=ExtResource("9_cmdin")]
@@ -249,18 +248,19 @@ focus_mode = 2
 TextoLabel = "MenuPrincipal.ajustes.nivelLog"
 
 [node name="OptionButton" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/ControlNivelLog" index="2"]
+focus_neighbor_left = NodePath("../../HBoxContainer/ButtonAtras")
 focus_neighbor_top = NodePath("../../ControlLenguaje/OptionButton")
 focus_neighbor_bottom = NodePath("../../HBoxContainer/ButtonAtras")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer"]
 layout_mode = 2
 
-[node name="ButtonAtras" type="Button" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/HBoxContainer"]
+[node name="ButtonAtras" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/HBoxContainer" instance=ExtResource("12_van17")]
 clip_contents = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 focus_neighbor_top = NodePath("../../ControlNivelLog/OptionButton")
-focus_neighbor_right = NodePath("../ButtonGuardar")
+focus_neighbor_right = NodePath("../../ControlNivelLog/OptionButton")
 theme_override_styles/focus = SubResource("StyleBoxFlat_vstw6")
 text = "MenuPrincipal.ajustes.atras"
 script = ExtResource("11_0hdc8")
@@ -271,16 +271,17 @@ NombreSonidoOnMouseEntered = "kick.mp3"
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ButtonGuardar" type="Button" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/HBoxContainer"]
+[node name="ButtonGuardar" parent="ContenedorMenuAjustes/PanelContainerMargin/PanelContainerButtonSize/VBoxContainer/HBoxContainer" instance=ExtResource("12_van17")]
+visible = false
 clip_contents = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 focus_neighbor_left = NodePath("../ButtonAtras")
 focus_neighbor_top = NodePath("../../ControlNivelLog/OptionButton")
+focus_mode = 0
 theme_override_styles/focus = SubResource("StyleBoxFlat_0hdc8")
 disabled = true
 text = "MenuPrincipal.ajustes.guardar"
-script = ExtResource("12_0hdc8")
 NombreSonidoOnFocusEntered = "kick.mp3"
 NombreSonidoOnMouseEntered = "kick.mp3"
 

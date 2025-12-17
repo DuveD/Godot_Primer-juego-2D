@@ -1,9 +1,7 @@
-
 using Godot;
-using Primerjuego2D.escenas;
 using Primerjuego2D.nucleo.modelos.interfaces;
 
-namespace Primerjuego2D.nucleo.modelos;
+namespace Primerjuego2D.escenas.modelos.controles;
 
 public partial class ButtonPersonalizado : Button, IFocusSilencioso
 {

@@ -3,7 +3,7 @@ using Godot;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
 
-namespace Primerjuego2D.escenas.miscelaneo.controles;
+namespace Primerjuego2D.escenas.modelos.controles;
 
 public partial class ControlSlider : VBoxContainer
 {
@@ -17,6 +17,21 @@ public partial class ControlSlider : VBoxContainer
 		set => Label.Text = value;
 	}
 
+	[Export]
+	public bool MostrarValorNumerico
+	{
+		get => SpinBox.Visible;
+		set => SpinBox.Visible = value;
+	}
+
+	public bool _ModoEntero = true;
+	[Export]
+	public bool ModoEntero
+	{
+		get => _ModoEntero;
+		set => _ModoEntero = value;
+	}
+
 	private double _valor;
 
 	[Export]
@@ -26,15 +41,15 @@ public partial class ControlSlider : VBoxContainer
 		set => SetValorInterno(value);
 	}
 
-	private double _minValor = 0;
+	private double _MinValor = 0;
 
 	[Export]
 	public double MinValor
 	{
-		get => _minValor;
+		get => _MinValor;
 		set
 		{
-			_minValor = value;
+			_MinValor = value;
 			AplicarRango();
 		}
 	}
@@ -60,7 +75,7 @@ public partial class ControlSlider : VBoxContainer
 		get => _step;
 		set
 		{
-			_step = value;
+			_step = ModoEntero ? Math.Max(1, Math.Truncate(value)) : value;
 			AplicarRango();
 		}
 	}
@@ -71,9 +86,9 @@ public partial class ControlSlider : VBoxContainer
 	private SpinBox _spinBox;
 	public SpinBox SpinBox => _spinBox ??= UtilidadesNodos.ObtenerNodoDeTipo<SpinBox>(this);
 
-	private nucleo.modelos.HSliderPersonalizado _slider;
-	public nucleo.modelos.HSliderPersonalizado SliderVolumen =>
-		_slider ??= UtilidadesNodos.ObtenerNodoDeTipo<nucleo.modelos.HSliderPersonalizado>(this);
+	private HSliderPersonalizado _slider;
+	public HSliderPersonalizado SliderVolumen =>
+		_slider ??= UtilidadesNodos.ObtenerNodoDeTipo<HSliderPersonalizado>(this);
 
 
 	public override void _Ready()
@@ -87,9 +102,6 @@ public partial class ControlSlider : VBoxContainer
 		SliderVolumen.ValueChanged += OnSliderValueChanged;
 	}
 
-	#region Event handlers
-
-
 	private void OnSpinBoxValueChanged(double value)
 	{
 		SetValorInterno(value);
@@ -100,28 +112,23 @@ public partial class ControlSlider : VBoxContainer
 		SetValorInterno(value);
 	}
 
-	#endregion
-
-	#region Internal logic
-
-
 	public void SetValorInterno(double value, bool emitirSenal = true)
 	{
 		if (NearlyEqual(_valor, value))
 			return;
 
-		_valor = value;
+		_valor = this.ModoEntero ? Math.Truncate(value) : value;
 
 		// Sincronizamos controles sin provocar bucles
 
-		if (!NearlyEqual(SpinBox.Value, value))
-			SpinBox.Value = value;
+		if (!NearlyEqual(SpinBox.Value, _valor))
+			SpinBox.Value = _valor;
 
-		if (!NearlyEqual(SliderVolumen.Value, value))
-			SliderVolumen.Value = value;
+		if (!NearlyEqual(SliderVolumen.Value, _valor))
+			SliderVolumen.Value = _valor;
 
 		if (emitirSenal)
-			EmitSignal(SignalName.ValorCambiado, value);
+			EmitSignal(SignalName.ValorCambiado, _valor);
 	}
 
 	private void AplicarRango()
@@ -129,24 +136,21 @@ public partial class ControlSlider : VBoxContainer
 		if (_spinBox == null || _slider == null)
 			return;
 
-		SpinBox.MinValue = _minValor;
+		SpinBox.MinValue = _MinValor;
 		SpinBox.MaxValue = _maxValor;
 		SpinBox.Step = _step;
 
-		SliderVolumen.MinValue = _minValor;
+		SliderVolumen.MinValue = _MinValor;
 		SliderVolumen.MaxValue = _maxValor;
 		SliderVolumen.Step = _step;
 
 		// Aseguramos que el valor actual sigue siendo válido
 
-		SetValorInterno(Math.Clamp(_valor, _minValor, _maxValor), emitirSenal: false);
+		SetValorInterno(Math.Clamp(_valor, _MinValor, _maxValor), emitirSenal: false);
 	}
 
 	private static bool NearlyEqual(double a, double b, double epsilon = 0.0001)
 	{
 		return Math.Abs(a - b) < epsilon;
 	}
-
-
-	#endregion
 }
