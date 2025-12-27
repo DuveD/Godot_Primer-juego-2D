@@ -16,11 +16,18 @@ public static class Ajustes
     // ================= INTERNOS =================
 
     public static string NombreJuego { get; } = (string)ProjectSettings.GetSetting("application/config/name");
+
     public static string RutaMisDocumentos { get; } = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+
     public static string RutaJuego { get; } = $"{RutaMisDocumentos}/{NombreJuego}";
+
     public static string RutaLogs { get; } = $"{RutaJuego}/logs";
-    public static string NombreArchivoAjustes { get; } = "ajustes.ini";
+
+    public static string NombreArchivoAjustes { get; } = "ajustes.cfg";
     public static string RutaArchivoAjustes { get; } = $"{RutaJuego}/{NombreArchivoAjustes}";
+
+    public static string NombreArchivoEstadisticas { get; } = "estadisticas.cfg";
+    public static string RutaArchivoEstadisticas { get; } = $"{RutaJuego}/{NombreArchivoEstadisticas}";
 
     public static string Version { get; } = (string)ProjectSettings.GetSetting("application/config/version");
 

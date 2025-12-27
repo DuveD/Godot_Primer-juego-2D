@@ -2,7 +2,7 @@ using Godot;
 using Primerjuego2D.escenas.entidades.jugador;
 using Primerjuego2D.escenas.miscelaneo;
 using Primerjuego2D.nucleo.constantes;
-using Primerjuego2D.nucleo.modelos.interfaces;
+using Primerjuego2D.nucleo.modelos.objetos;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
 using static Primerjuego2D.nucleo.utilidades.log.LoggerJuego;
@@ -94,7 +94,7 @@ public partial class Moneda : Consumible
 		GetTree().CurrentScene.AddChild(texto);
 	}
 
-	public float obtenerRadioCollisionShape2D()
+	public float ObtenerRadioCollisionShape2D()
 	{
 		return ((CircleShape2D)CollisionShape2D?.Shape).Radius;
 	}

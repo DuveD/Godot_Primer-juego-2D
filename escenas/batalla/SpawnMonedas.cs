@@ -38,10 +38,6 @@ public partial class SpawnMonedas : Control
 		Spawn();
 	}
 
-	public override void _Process(double delta)
-	{
-	}
-
 	public void Spawn()
 	{
 		LoggerJuego.Trace("Spawneamos una nueva moneda.");
@@ -99,13 +95,12 @@ public partial class SpawnMonedas : Control
 			nuevaPos = new Vector2(x, y);
 
 			cercaJugador = UtilidadesMatematicas.PuntosCerca(centroJugador, nuevaPos, this.DistanciaMinima);
-			cercaOtraMoneda = monedas.Any(moneda => UtilidadesMatematicas.PuntosCerca(moneda.Position, nuevaPos, moneda.obtenerRadioCollisionShape2D() * 2));
+			cercaOtraMoneda = monedas.Any(moneda => UtilidadesMatematicas.PuntosCerca(moneda.Position, nuevaPos, moneda.ObtenerRadioCollisionShape2D() * 2));
 		}
 		while (cercaJugador || cercaOtraMoneda);
 
 		return nuevaPos;
 	}
-
 
 	public void OnMonedaRecogida(Moneda moneda)
 	{

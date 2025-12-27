@@ -1,5 +1,6 @@
 using Godot;
 using Primerjuego2D.escenas.objetos.moneda;
+using Primerjuego2D.nucleo.configuracion;
 using Primerjuego2D.nucleo.constantes;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
@@ -37,6 +38,8 @@ public partial class BatallaControlador : Node
 
     private SpawnEnemigos _SpawnEnemigos;
     private SpawnEnemigos SpawnEnemigos => _SpawnEnemigos ??= GetNode<SpawnEnemigos>("../SpawnEnemigos");
+
+    private GestorEstadisticas _GestorEstadisticas = new GestorEstadisticas();
 
     public override void _Ready()
     {
@@ -99,6 +102,8 @@ public partial class BatallaControlador : Node
 
         BatallaEnCurso = false;
 
+        _GestorEstadisticas.FinalizarPartida(this.Puntuacion);
+
         LoggerJuego.Info("Batalla finalizada.");
         EmitSignal(SignalName.BatallaFinalizada);
     }
@@ -106,6 +111,8 @@ public partial class BatallaControlador : Node
     public void SumarPuntuacion(Moneda moneda)
     {
         this.Puntuacion += moneda.Valor;
+        _GestorEstadisticas.RegistrarMoneda(moneda is MonedaEspecial);
+
         EmitSignal(SignalName.PuntuacionActualizada, Puntuacion);
     }
 }
