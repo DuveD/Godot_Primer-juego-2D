@@ -29,7 +29,7 @@ public partial class Moneda : Consumible
 	public delegate void RecogidaEventHandler(Moneda moneda);
 
 	private CollisionShape2D _CollisionShape2D;
-	private CollisionShape2D CollisionShape2D => _CollisionShape2D ??= GetNode<CollisionShape2D>("CollisionShape2D");
+	public CollisionShape2D CollisionShape2D => _CollisionShape2D ??= GetNode<CollisionShape2D>("CollisionShape2D");
 
 	public static readonly PackedScene TextoFlotanteScene = GD.Load<PackedScene>(UtilidadesNodos.ObtenerRutaEscena<TextoFlotante>());
 
@@ -92,5 +92,10 @@ public partial class Moneda : Consumible
 		texto.PosicionGlobal = GlobalPosition;
 
 		GetTree().CurrentScene.AddChild(texto);
+	}
+
+	public float obtenerRadioCollisionShape2D()
+	{
+		return ((CircleShape2D)CollisionShape2D?.Shape).Radius;
 	}
 }

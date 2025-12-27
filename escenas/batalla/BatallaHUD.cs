@@ -11,20 +11,11 @@ public partial class BatallaHUD : CanvasLayer
     private Label _MessageLabel;
     private Label MessageLabel => _MessageLabel ??= GetNode<Label>("Message");
 
-    private Timer _MessageTimer;
-    private Timer MessageTimer => _MessageTimer ??= GetNode<Timer>("MessageTimer");
-
     private Label _ScoreLabel;
     private Label ScoreLabel => _ScoreLabel ??= GetNode<Label>("ScoreLabel");
 
     private Label _MensajePausa;
     private Label MensajePausa => _MensajePausa ??= GetNode<Label>("MensajePausa");
-
-    private Batalla _Batalla;
-    private Batalla Batalla => _Batalla ??= GetParent<Batalla>();
-
-    private BatallaControlador _Batallacontrolador;
-    private BatallaControlador BatallaControlador => _Batallacontrolador ??= GetNode<BatallaControlador>("../BatallaControlador");
 
     Dictionary<CanvasItem, bool> VisibilidadElementosPausa;
 
@@ -33,35 +24,43 @@ public partial class BatallaHUD : CanvasLayer
         LoggerJuego.Trace(this.Name + " Ready.");
     }
 
-    async public void MostrarMensajePreparate()
+    async public void MostrarMensajesIniciarBatalla()
     {
-        await UtilidadesNodos.EsperarSegundos(this, 1.0);
+        // Cambiamos el texto al inicial de la partida.
+        ActualizarMensaje("BatallaHUD.mensaje.preparate");
+
+        await UtilidadesNodos.EsperarSegundos(this, 2.0);
         await UtilidadesNodos.EsperarRenaudar(this);
 
-        // Cambiamos el texto al inicial de la partida.
-        this.MessageLabel.Text = "BatallaHUD.mensaje.preparate";
-    }
-
-    async private void MostrarMensajeIniciarBatalla()
-    {
-        this.MessageLabel.Text = "BatallaHUD.mensaje.vamos";
+        ActualizarMensaje("BatallaHUD.mensaje.vamos");
 
         // Creamos un timer de 1 segundo y esperamos.
         await UtilidadesNodos.EsperarSegundos(this, 1.0);
-        this.MessageLabel.Hide();
+        await UtilidadesNodos.EsperarRenaudar(this);
+
+        MostrarMensaje(false);
     }
 
-    async public void ShowGameOver()
+    async private void MostrarMensajeGameOver()
     {
         await UtilidadesNodos.EsperarRenaudar(this);
 
         // Mostramos el mensaje de "Game Over" en el Label del centro de la pantalla.
-        this.MessageLabel.Text = "BatallaHUD.mensaje.gameOver";
+        ActualizarMensaje("BatallaHUD.mensaje.gameOver");
         this.MessageLabel.Show();
+    }
 
-        // Esperamos 2 segundos.
-        await UtilidadesNodos.EsperarSegundos(this, 2.0);
-        await UtilidadesNodos.EsperarRenaudar(this);
+    public void ActualizarMensaje(string mensaje)
+    {
+        this.MessageLabel.Text = mensaje;
+    }
+
+    public void MostrarMensaje(bool mostrar)
+    {
+        if (mostrar)
+            this.MessageLabel.Show();
+        else
+            this.MessageLabel.Hide();
     }
 
     public void ActualizarPuntuacion(int score)
@@ -69,30 +68,36 @@ public partial class BatallaHUD : CanvasLayer
         this.ScoreLabel.Text = score.ToString();
     }
 
-    public void OnPauseBattle()
+    private void EsconderHUD()
     {
-        if (this.BatallaControlador.JuegoPausado)
-        {
-            this.VisibilidadElementosPausa = this.GetChildren()
-                .OfType<CanvasItem>()
-                .Where(item => item != this.MensajePausa && item != this.ScoreLabel)
-                .ToDictionary(item => item, item => item.Visible);
+        this.VisibilidadElementosPausa = this.GetChildren()
+            .OfType<CanvasItem>()
+            .Where(item => item != this.MensajePausa && item != this.ScoreLabel)
+            .ToDictionary(item => item, item => item.Visible);
 
-            UtilidadesNodos.EsconderMenos(this, this.ScoreLabel);
+        UtilidadesNodos.EsconderMenos(this, this.ScoreLabel);
 
-            this.MensajePausa.Show();
-        }
-        else
-        {
-            var elementosVisibles = this.VisibilidadElementosPausa
-                .Where(kv => !kv.Key.Visible && kv.Value)
-                .Select(kv => kv.Key)
-                .ToList();
+        MostrarMensajePausa(true);
+    }
 
-            foreach (var elemento in elementosVisibles)
-                elemento.Show();
+    private void MostrarHUD()
+    {
+        MostrarMensajePausa(false);
 
+        var elementosVisibles = this.VisibilidadElementosPausa
+            .Where(kv => !kv.Key.Visible && kv.Value)
+            .Select(kv => kv.Key)
+            .ToList();
+
+        foreach (var elemento in elementosVisibles)
+            elemento.Show();
+    }
+
+    public void MostrarMensajePausa(bool mostrar)
+    {
+        if (mostrar)
             this.MensajePausa.Hide();
-        }
+        else
+            this.MensajePausa.Show();
     }
 }

@@ -1,4 +1,5 @@
 using Godot;
+using Primerjuego2D.escenas.objetos.moneda;
 using Primerjuego2D.nucleo.constantes;
 using Primerjuego2D.nucleo.utilidades;
 using Primerjuego2D.nucleo.utilidades.log;
@@ -8,7 +9,7 @@ namespace Primerjuego2D.escenas.batalla;
 public partial class BatallaControlador : Node
 {
     [Signal]
-    public delegate void PauseBattleEventHandler();
+    public delegate void IniciandoBatallaEventHandler();
 
     [Signal]
     public delegate void BatallaIniciadaEventHandler();
@@ -16,9 +17,26 @@ public partial class BatallaControlador : Node
     [Signal]
     public delegate void BatallaFinalizadaEventHandler();
 
+    [Signal]
+    public delegate void PausarBatallaEventHandler();
+
+    [Signal]
+    public delegate void RenaudarBatallaEventHandler();
+
+    [Signal]
+    public delegate void PuntuacionActualizadaEventHandler(int Puntuacion);
+
+    public int Puntuacion { get; private set; } = 0;
+
     public bool BatallaEnCurso { get; private set; } = false;
 
     public bool JuegoPausado { get; set; } = false;
+
+    private BatallaHUD _BatallaHUD;
+    private BatallaHUD BatallaHUD => _BatallaHUD ??= GetNode<BatallaHUD>("../BatallaHUD");
+
+    private SpawnEnemigos _SpawnEnemigos;
+    private SpawnEnemigos SpawnEnemigos => _SpawnEnemigos ??= GetNode<SpawnEnemigos>("../SpawnEnemigos");
 
     public override void _Ready()
     {
@@ -40,22 +58,35 @@ public partial class BatallaControlador : Node
 
         this.JuegoPausado = !JuegoPausado;
 
-        if (this.JuegoPausado)
-            LoggerJuego.Trace("Juego pausado.");
-        else
-            LoggerJuego.Trace("Juego renaudado.");
-
         UtilidadesNodos.PausarNodo(this, this.JuegoPausado);
 
-        EmitSignal(SignalName.PauseBattle);
+        if (this.JuegoPausado)
+        {
+            LoggerJuego.Trace("Juego pausado.");
+            EmitSignal(SignalName.PausarBatalla);
+        }
+        else
+        {
+            LoggerJuego.Trace("Juego renaudado.");
+            EmitSignal(SignalName.RenaudarBatalla);
+        }
     }
 
-    public void IniciarBatalla()
+    public async void IniciarBatalla()
     {
         if (BatallaEnCurso)
             return;
 
-        BatallaEnCurso = true;
+        LoggerJuego.Info("Iniciamos la batalla.");
+        EmitSignal(SignalName.IniciandoBatalla);
+
+        this.Puntuacion = 0;
+        this.BatallaEnCurso = true;
+
+        EmitSignal(SignalName.PuntuacionActualizada, Puntuacion);
+
+        await UtilidadesNodos.EsperarSegundos(this, 2.0);
+        await UtilidadesNodos.EsperarRenaudar(this);
 
         LoggerJuego.Info("Batalla iniciada.");
         EmitSignal(SignalName.BatallaIniciada);
@@ -67,7 +98,14 @@ public partial class BatallaControlador : Node
             return;
 
         BatallaEnCurso = false;
+
         LoggerJuego.Info("Batalla finalizada.");
         EmitSignal(SignalName.BatallaFinalizada);
+    }
+
+    public void SumarPuntuacion(Moneda moneda)
+    {
+        this.Puntuacion += moneda.Valor;
+        EmitSignal(SignalName.PuntuacionActualizada, Puntuacion);
     }
 }

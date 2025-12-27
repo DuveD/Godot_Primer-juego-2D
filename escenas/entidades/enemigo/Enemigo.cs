@@ -22,10 +22,6 @@ public partial class Enemigo : RigidBody2D
     private AnimatedSprite2D _AnimatedSprite2D;
     private AnimatedSprite2D AnimatedSprite2D => _AnimatedSprite2D ??= GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 
-    public static Array<Node> GetAllEnemies(Node parentNode) => parentNode.GetTree().GetNodesInGroup(GROUP_ENEMIES_NAME);
-
-    public static void DeleteAllEnemies(Node parentNode) => parentNode.GetTree().CallGroup(GROUP_ENEMIES_NAME, Node.MethodName.QueueFree);
-
     public override void _Ready()
     {
         LoggerJuego.Trace(this.Name + " Ready.");

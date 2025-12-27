@@ -49,12 +49,16 @@ public partial class SpawnMonedas : Control
 		// Moneda normal
 		SpawnMoneda();
 
-		// Moneda especial según probabilidad
-		float prob = 0.1f + 0.4f * Mathf.Exp(-0.046f * MonedasRecogidas);
-		if (Randomizador.GetRandomFloat() < prob)
+		bool existeMonedaEspecial = UtilidadesNodos.ObtenerNodosDeTipo<MonedaEspecial>(GetTree().CurrentScene).Any();
+		if (!existeMonedaEspecial)
 		{
-			LoggerJuego.Trace("Spawneamos una moneda especial.");
-			SpawnMoneda(true);
+			// Moneda especial según probabilidad
+			float prob = 0.1f + 0.4f * Mathf.Exp(-0.046f * MonedasRecogidas);
+			if (Randomizador.GetRandomFloat() < prob)
+			{
+				LoggerJuego.Trace("Spawneamos una moneda especial.");
+				SpawnMoneda(true);
+			}
 		}
 	}
 
@@ -82,15 +86,22 @@ public partial class SpawnMonedas : Control
 	private Vector2 ObtenerPosicionAleatoriaSegura()
 	{
 		Vector2 nuevaPos;
-		Vector2 centroJugador = Jugador?.GlobalPosition ?? Vector2.Inf;
+		Vector2 centroJugador = Jugador.GlobalPosition;
+		bool cercaJugador;
+
+		List<Moneda> monedas = UtilidadesNodos.ObtenerNodosDeTipo<Moneda>(GetTree().CurrentScene);
+		bool cercaOtraMoneda;
 
 		do
 		{
 			float x = (float)Randomizador.GetRandomDouble(GlobalPosition.X, GlobalPosition.X + Size.X);
 			float y = (float)Randomizador.GetRandomDouble(GlobalPosition.Y, GlobalPosition.Y + Size.Y);
 			nuevaPos = new Vector2(x, y);
+
+			cercaJugador = UtilidadesMatematicas.PuntosCerca(centroJugador, nuevaPos, this.DistanciaMinima);
+			cercaOtraMoneda = monedas.Any(moneda => UtilidadesMatematicas.PuntosCerca(moneda.Position, nuevaPos, moneda.obtenerRadioCollisionShape2D() * 2));
 		}
-		while (Jugador != null && UtilidadesMatematicas.PuntosCerca(centroJugador, nuevaPos, DistanciaMinima));
+		while (cercaJugador || cercaOtraMoneda);
 
 		return nuevaPos;
 	}

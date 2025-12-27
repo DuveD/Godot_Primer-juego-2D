@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://c5upcb2qwjqbe"]
+[gd_scene load_steps=11 format=3 uid="uid://c5upcb2qwjqbe"]
 
 [ext_resource type="PackedScene" uid="uid://cmwoy08j3qtdy" path="res://escenas/entidades/jugador/Jugador.tscn" id="1_6xjdp"]
 [ext_resource type="Script" uid="uid://b2ttu6lilr5x8" path="res://escenas/batalla/Batalla.cs" id="1_jxdra"]
 [ext_resource type="PackedScene" uid="uid://b77k6jhiy8djq" path="res://escenas/entidades/enemigo/Enemigo.tscn" id="2_7rrnp"]
 [ext_resource type="PackedScene" uid="uid://bkvjycp3edtfo" path="res://escenas/batalla/BatallaHUD.tscn" id="4_ef4qm"]
 [ext_resource type="PackedScene" uid="uid://qrdflnq7hp0f" path="res://escenas/batalla/BatallaControlador.tscn" id="5_kuqqq"]
+[ext_resource type="Script" uid="uid://cijph1iskyc4" path="res://escenas/batalla/SpawnEnemigos.cs" id="6_ddidh"]
 [ext_resource type="Script" uid="uid://b4ipj0a72tkyu" path="res://escenas/batalla/SpawnMonedas.cs" id="6_w3cb5"]
 [ext_resource type="PackedScene" uid="uid://c1ptij2whe824" path="res://escenas/objetos/moneda/Moneda.tscn" id="7_t4q4m"]
 [ext_resource type="PackedScene" uid="uid://cj766hajq1d2u" path="res://escenas/objetos/moneda/MonedaEspecial.tscn" id="8_c2dy2"]
@@ -18,29 +19,32 @@ point_count = 5
 [node name="Batalla" type="Node"]
 process_mode = 3
 script = ExtResource("1_jxdra")
-EnemyScene = ExtResource("2_7rrnp")
 
-[node name="Jugador" parent="." instance=ExtResource("1_6xjdp")]
-position = Vector2(-161, 113)
+[node name="BatallaControlador" parent="." instance=ExtResource("5_kuqqq")]
 
-[node name="EnemyTimer" type="Timer" parent="."]
-wait_time = 0.5
-
-[node name="StartTimer" type="Timer" parent="."]
-wait_time = 2.0
-one_shot = true
+[node name="BatallaHUD" parent="." instance=ExtResource("4_ef4qm")]
 
 [node name="StartPosition" type="Marker2D" parent="."]
 position = Vector2(240, 450)
 
-[node name="EnemyPath" type="Path2D" parent="."]
+[node name="Jugador" parent="." instance=ExtResource("1_6xjdp")]
+position = Vector2(-161, 113)
+
+[node name="SpawnEnemigos" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("6_ddidh")
+PackedSceneEnemigo = ExtResource("2_7rrnp")
+
+[node name="EnemyPath" type="Path2D" parent="SpawnEnemigos"]
 curve = SubResource("Curve2D_w0at3")
 
-[node name="EnemySpawnLocation" type="PathFollow2D" parent="EnemyPath"]
+[node name="EnemySpawnLocation" type="PathFollow2D" parent="SpawnEnemigos/EnemyPath"]
 
-[node name="BatallaHUD" parent="." instance=ExtResource("4_ef4qm")]
-
-[node name="BatallaControlador" parent="." instance=ExtResource("5_kuqqq")]
+[node name="TimerSpawnEnemigo" type="Timer" parent="SpawnEnemigos"]
+wait_time = 0.5
 
 [node name="SpawnMonedas" type="Control" parent="." node_paths=PackedStringArray("Jugador")]
 layout_mode = 3
@@ -49,8 +53,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 30.0
 offset_top = 30.0
-offset_right = -30.0
-offset_bottom = -30.0
+offset_right = -10.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("6_w3cb5")
@@ -59,12 +63,15 @@ MonedaEspecialScene = ExtResource("8_c2dy2")
 Jugador = NodePath("../Jugador")
 
 [connection signal="GameOverFinalizado" from="." to="SpawnMonedas" method="DestruirMonedas"]
+[connection signal="BatallaFinalizada" from="BatallaControlador" to="BatallaHUD" method="MostrarMensajeGameOver"]
+[connection signal="BatallaFinalizada" from="BatallaControlador" to="SpawnEnemigos" method="Stop"]
+[connection signal="BatallaIniciada" from="BatallaControlador" to="BatallaHUD" method="MostrarMensajeIniciarBatalla"]
+[connection signal="BatallaIniciada" from="BatallaControlador" to="SpawnEnemigos" method="Start"]
+[connection signal="IniciandoBatalla" from="BatallaControlador" to="BatallaHUD" method="MostrarMensajesIniciarBatalla"]
+[connection signal="PausarBatalla" from="BatallaControlador" to="BatallaHUD" method="EsconderHUD"]
+[connection signal="PuntuacionActualizada" from="BatallaControlador" to="BatallaHUD" method="ActualizarPuntuacion"]
+[connection signal="RenaudarBatalla" from="BatallaControlador" to="BatallaHUD" method="MostrarHUD"]
 [connection signal="AnimacionMuerteJugadorTerminada" from="Jugador" to="." method="FinGameOver"]
 [connection signal="MuerteJugador" from="Jugador" to="." method="InicioGameOver"]
-[connection signal="timeout" from="EnemyTimer" to="." method="OnEnemyTimerTimeout"]
-[connection signal="timeout" from="StartTimer" to="." method="OnStartTimerTimeout"]
-[connection signal="timeout" from="StartTimer" to="BatallaHUD" method="MostrarMensajeIniciarBatalla"]
-[connection signal="BatallaFinalizada" from="BatallaControlador" to="BatallaHUD" method="ShowGameOver"]
-[connection signal="BatallaIniciada" from="BatallaControlador" to="BatallaHUD" method="ShowStartMessage"]
-[connection signal="PauseBattle" from="BatallaControlador" to="BatallaHUD" method="OnPauseBattle"]
-[connection signal="MonedaRecogida" from="SpawnMonedas" to="." method="SumarPuntuacion"]
+[connection signal="timeout" from="SpawnEnemigos/TimerSpawnEnemigo" to="." method="OnEnemyTimerTimeout"]
+[connection signal="MonedaRecogida" from="SpawnMonedas" to="BatallaControlador" method="SumarPuntuacion"]
