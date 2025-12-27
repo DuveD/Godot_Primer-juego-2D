@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://bh5bqht52xtwi"]
+[gd_scene load_steps=2 format=3 uid="uid://b6epq0laoly4m"]
 
-[ext_resource type="Script" uid="uid://d18lwkmtif5u3" path="res://escenas/sistema/GestorEstadisticas.cs" id="1_sfp1c"]
+[ext_resource type="Script" path="res://escenas/sistema/GestorEstadisticas.cs" id="1_sfp1c"]
 
 [node name="GestorEstadisticas" type="Node"]
 script = ExtResource("1_sfp1c")
